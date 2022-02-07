@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>968947313570-73t21aa5ksq3acvpc7o9dp67nqea01hm.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.968947313570-73t21aa5ksq3acvpc7o9dp67nqea01hm</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDgmnnzYmVLBq5sBPmRAzEmoCWv_2V1zac</string>
+	<key>GCM_SENDER_ID</key>
+	<string>968947313570</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.sn30.suwonuniv.info.suwonMate</string>
+	<key>PROJECT_ID</key>
+	<string>suwon-mate</string>
+	<key>STORAGE_BUCKET</key>
+	<string>suwon-mate.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:968947313570:ios:abbe022cc79774b3da20fb</string>
+	<key>DATABASE_URL</key>
+	<string>https://suwon-mate-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
