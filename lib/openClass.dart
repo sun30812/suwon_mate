@@ -11,11 +11,15 @@ class OpenClass extends StatefulWidget {
 }
 
 class _OpenClassState extends State<OpenClass> {
+  List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
   List<DropdownMenuItem<String>> dropdownList = [];
+  List<DropdownMenuItem<String>> gradeDownList = [];
   List orgClassList = [];
   bool isSaved = false;
   String _mySub = '컴퓨터학부';
+  String _myGrade = '1학년';
   bool _isFirst = true;
+  bool _isFirstDp = true;
 
   void getData() async {
 
@@ -60,8 +64,12 @@ class _OpenClassState extends State<OpenClass> {
   @override
   void initState() {
     super.initState();
-    dropdownList.add(const DropdownMenuItem(child: Text('컴퓨터학부'), value: '컴퓨터학부',));
-    dropdownList.add(const DropdownMenuItem(child: Text('경영학부'), value: '경영학부',));
+    // dropdownList.add(const DropdownMenuItem(child: Text('컴퓨터학부'), value: '컴퓨터학부',));
+    // dropdownList.add(const DropdownMenuItem(child: Text('경영학부'), value: '경영학부',));
+
+    for(var dat in gradeList) {
+      gradeDownList.add(DropdownMenuItem(child: Text(dat), value: dat,));
+    }
   }
 
   @override
@@ -94,8 +102,18 @@ class _OpenClassState extends State<OpenClass> {
                 orgClassList = _event.snapshot.value as List;
               }
               List classList = [];
+              Set dpSet = {};
+              for(var dat in orgClassList) {
+                dpSet.add(dat['estbDpmjNm'].toString());
+              }
+              if (_isFirstDp) {
+                for(String depart in dpSet) {
+                  dropdownList.add(DropdownMenuItem(child: Text(depart), value: depart,));
+                }
+                _isFirstDp = false;
+              }
               for (var classData in orgClassList) {
-                if (classData['estbDpmjNm'] == _mySub) {
+                if ((classData['estbDpmjNm'] == _mySub) && classData['trgtGrdeNm'] == _myGrade) {
                   classList.add(classData);
                 }
               }
@@ -113,7 +131,15 @@ class _OpenClassState extends State<OpenClass> {
                               });
                         }, value: _mySub,),
                       ),
-
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownButton(
+                          items: gradeDownList, onChanged: (String? value) {
+                          setState(() {
+                            _myGrade = value!;
+                          });
+                        }, value: _myGrade,),
+                      ),
                     ],
                   ),
                   Flexible(
