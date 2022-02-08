@@ -32,13 +32,19 @@ class InfoPage extends StatelessWidget {
             await launch('https://suwon.ac.kr',
                 forceSafariVC: true, forceWebView: true);
           }),
-      appBar: AppBar(title: Text('공지사항')),
+      appBar: AppBar(title: const Text('공지사항')),
       body: Center(
         child: FutureBuilder(
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
-              return CircularProgressIndicator.adaptive();
+              return Column(
+                children: const [
+                  CircularProgressIndicator.adaptive(),
+                  Text('수원대 사이트에 접속 중..'
+                      '웹 버전에서는 정상적으로 작동하지 않습니다.')
+                ],
+              );
             } else {
               var rows = parse((snapshot.data as http.Response).body)
                   .getElementsByClassName('board_basic_list')[0];
@@ -56,7 +62,7 @@ class InfoPage extends StatelessWidget {
                                   .getElementsByClassName('subject')[index]
                                   .text
                                   .trim(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 18.0, fontWeight: FontWeight.bold),
                             ),
                             Text(
@@ -72,7 +78,7 @@ class InfoPage extends StatelessWidget {
                                       .text
                                       .trim(),
                               textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 16.0),
+                              style: const TextStyle(fontSize: 16.0),
                             ),
                           ],
                         ),

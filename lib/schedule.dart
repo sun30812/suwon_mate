@@ -27,7 +27,7 @@ class SchedulePage extends StatelessWidget {
     getData();
     return Scaffold(
         appBar: AppBar(
-          title: Text('학사 일정'),
+          title: const Text('학사 일정'),
         ),
         body: checkInternetPage());
   }
@@ -42,7 +42,7 @@ class SchedulePage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Card(
               child: Row(
-                children: [
+                children: const [
                   Icon(Icons.announcement),
                   Text("오류가 발생했습니다."),
                 ],
@@ -54,7 +54,7 @@ class SchedulePage extends StatelessWidget {
             if (_result == ConnectivityResult.none) {
               return Center(
                 child: Column(
-                  children: [
+                  children: const [
                     Icon(Icons.signal_cellular_connected_no_internet_0_bar),
                     Text('사용자의 기기가 네트워크에 연결되어있지 않습니다.')
                   ],
@@ -76,7 +76,7 @@ class SchedulePage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.none) {
             return Card(
               child: Row(
-                children: [
+                children: const [
                   Icon(Icons.announcement),
                   Text("오류가 발생했습니다."),
                 ],
@@ -86,15 +86,16 @@ class SchedulePage extends StatelessWidget {
           } else if (!snapshot.hasData) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 CircularProgressIndicator.adaptive(),
-                Text('수원대 사이트에 접속 중..')
+                Text('수원대 사이트에 접속 중..'
+                    '웹 버전에서는 정상적으로 작동하지 않습니다.')
               ],
             );
           } else if (snapshot.hasError) {
             return Card(
               child: Row(
-                children: [
+                children: const [
                   Icon(Icons.announcement),
                   Text("오류가 발생했습니다."),
                 ],
@@ -118,7 +119,7 @@ class SchedulePage extends StatelessWidget {
                           Text(
                             (rows[1 + index].getElementsByTagName('td')[1])
                                 .text,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 18.0, fontWeight: FontWeight.bold),
                           ),
                           Text(

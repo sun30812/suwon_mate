@@ -30,9 +30,11 @@ class _OpenClassState extends State<OpenClass> {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
-    print(versionInfo);
-    print("now info: " + (_pref.getString('db_ver') ?? "null"));
     isSaved = _pref.containsKey('class');
+    if ((_pref.getString('db_ver') ?? "null") != versionInfo["db_ver"]) {
+      isSaved = false;
+      return null;
+    }
     return _pref.getString('class');
   }
 
@@ -118,13 +120,13 @@ class _OpenClassState extends State<OpenClass> {
                                 children: [
                                   Text(
                                     classList[index]["subjtNm"],
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 18.0,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
                                     classList[index]["stafNm"] ?? "이름 공개 안됨",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 15.0,
                                         fontWeight: FontWeight.bold),
                                   ),
