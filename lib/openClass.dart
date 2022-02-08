@@ -170,7 +170,7 @@ class _OpenClassState extends State<OpenClass> {
                                       ", " +
                                       classList[index]["point"].toString() +
                                       "학점, " +
-                                      classList[index]["facDvnm"]),
+                                      classList[index]["facDvnm"] + ', ' + (classList[index]["timtSmryCn"] ?? "공개 안됨")),
                                 ],
                               ),
                             ),
