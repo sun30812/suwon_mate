@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
     }
 
     throw UnsupportedError(
@@ -58,6 +55,17 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDgmnnzYmVLBq5sBPmRAzEmoCWv_2V1zac',
+    appId: '1:968947313570:ios:abbe022cc79774b3da20fb',
+    messagingSenderId: '968947313570',
+    projectId: 'suwon-mate',
+    databaseURL: 'https://suwon-mate-default-rtdb.firebaseio.com',
+    storageBucket: 'suwon-mate.appspot.com',
+    iosClientId: '968947313570-73t21aa5ksq3acvpc7o9dp67nqea01hm.apps.googleusercontent.com',
+    iosBundleId: 'com.sn30.suwonuniv.info.suwonMate',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDgmnnzYmVLBq5sBPmRAzEmoCWv_2V1zac',
     appId: '1:968947313570:ios:abbe022cc79774b3da20fb',
     messagingSenderId: '968947313570',
