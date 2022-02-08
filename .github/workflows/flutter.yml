@@ -29,6 +29,8 @@ jobs:
           path: |
             build/web/
             firebase.json
+            staticwebapp.config.json
+            .firebaserc
           
 
 
