@@ -1,0 +1,42 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Dart
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Flutter action
+        uses: subosito/flutter-action@v2.3.0
+
+      - name: Install dependancy
+        run: flutter pub get
+
+      - name: Build Web App
+        run: flutter build web
+        
+      - name: Azure Static Web Apps Deploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          # Action to perform
+          action: upload
+          # Directory location of the application source code
+          app_location: build/web
+          # Required token
+          azure_static_web_apps_api_token: eac500685f0b45f4ec5a7a495f19147ccbd47059e8b33878b48a679e955c4d511-7549c4c7-699a-4475-90a5-959de4a1541c00020804
+          # Directory location of the compiled application code after building
+          output_location: build/web
+          # Skips the build step for the application source code if set to true.
+          skip_app_build: true
