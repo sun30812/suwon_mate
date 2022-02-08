@@ -7,11 +7,15 @@
       "**/node_modules/**"
     ]
   },
-  "headers": [ {
-    "source": "**/*.@(html|css)",
-    "headers": [ {
-      "key": "Access-Control-Allow-Origin",
-      "value": "*"
-    } ]
-  } ]
+  "headers": [
+    {
+      "source": "**/*.@(html|css)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ]
 }

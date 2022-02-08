@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:suwon_mate/main.dart';
 
 class OpenClass extends StatefulWidget {
   const OpenClass({Key? key}) : super(key: key);
@@ -12,17 +11,20 @@ class OpenClass extends StatefulWidget {
 }
 
 class _OpenClassState extends State<OpenClass> {
-  List<DropdownMenuItem> dropdownList = [];
+  List<DropdownMenuItem<String>> dropdownList = [];
   List orgClassList = [];
   bool isSaved = false;
+  String _mySub = '컴퓨터학부';
+  bool _isFirst = true;
 
   void getData() async {
+
     DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
     DatabaseEvent event = await ref.once();
     List map = event.snapshot.value as List;
 
     for (var dat in map) {
-      if (dat['estbDpmjNm'] == '컴퓨터학부') print(dat);
+      if (dat['estbDpmjNm'] == ('컴퓨터학부')) print(dat);
     }
   }
 
@@ -38,13 +40,18 @@ class _OpenClassState extends State<OpenClass> {
     return _pref.getString('class');
   }
 
+
   Future getClass() async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    if (_isFirst) {
+      _mySub = _pref.getString('mySub') ?? '컴퓨터학부';
+      _isFirst = false;
+    }
     if (await getExistClass() != null) {
       return getExistClass();
     }
     DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
-    SharedPreferences _pref = await SharedPreferences.getInstance();
     Map versionInfo = (await version.once()).snapshot.value as Map;
     _pref.setString('db_ver', versionInfo["db_ver"]);
     return await ref.once();
@@ -53,7 +60,8 @@ class _OpenClassState extends State<OpenClass> {
   @override
   void initState() {
     super.initState();
-    dropdownList.add(DropdownMenuItem(child: Text('컴퓨터학부')));
+    dropdownList.add(const DropdownMenuItem(child: Text('컴퓨터학부'), value: '컴퓨터학부',));
+    dropdownList.add(const DropdownMenuItem(child: Text('경영학부'), value: '경영학부',));
   }
 
   @override
@@ -68,15 +76,15 @@ class _OpenClassState extends State<OpenClass> {
   Widget build(BuildContext context) {
     // getData();
     return Scaffold(
-        appBar: AppBar(title: Text('개설 강좌 조회')),
+        appBar: AppBar(title: const Text('개설 강좌 조회')),
         body: FutureBuilder(
           future: getClass(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator.adaptive());
+              return const Center(child: CircularProgressIndicator.adaptive());
             } else if (snapshot.hasError) {
               return Column(
-                children: [Icon(Icons.error_outline), Text('오류가 발생했습니다.')],
+                children: const [Icon(Icons.error_outline), Text('오류가 발생했습니다.')],
               );
             } else {
               if (isSaved) {
@@ -87,24 +95,25 @@ class _OpenClassState extends State<OpenClass> {
               }
               List classList = [];
               for (var classData in orgClassList) {
-                if (classData['estbDpmjNm'] == '컴퓨터학부') {
+                if (classData['estbDpmjNm'] == _mySub) {
                   classList.add(classData);
                 }
               }
               return Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: DropdownButton(
-                            items: dropdownList, onChanged: null),
+                            items: dropdownList, onChanged: (String? value) {
+                              setState(() {
+                                _mySub = value!;
+                              });
+                        }, value: _mySub,),
                       ),
-                      SuwonButton(
-                          icon: Icons.search,
-                          buttonName: '조회하기',
-                          onPressed: () {}),
+
                     ],
                   ),
                   Flexible(
