@@ -2,9 +2,9 @@ name: Flutter build & Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [ web ]
   pull_request:
-    branches: [ main ]
+    branches: [ web ]
 
 jobs:
   build:
