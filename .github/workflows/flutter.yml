@@ -25,6 +25,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Azure Static Web Apps Deploy
         uses: Azure/static-web-apps-deploy@v1
@@ -39,10 +40,10 @@ jobs:
           output_location: build/web
           # Skips the build step for the application source code if set to true.
           skip_app_build: true
-
-        - name: Firebase Hosting Deploy
-          uses: FirebaseExtended/action-hosting-deploy@v0
-          with:
-            repoToken: '${{ secrets.GITHUB_TOKEN }}'
-            firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SUWON_MATE }}'
-            projectId: suwon-mate
+          
+      - name: Firebase Hosting Deploy
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SUWON_MATE }}'
+          projectId: suwon-mate
