@@ -31,18 +31,19 @@ class _OpenClassState extends State<OpenClass> {
       if (dat['estbDpmjNm'] == ('컴퓨터학부')) print(dat);
     }
   }
+  // TODO: 웹 상에서 getExistClass함수 동작하도록 하기
 
-  Future<String?> getExistClass() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    DatabaseReference version = FirebaseDatabase.instance.ref('version');
-    Map versionInfo = (await version.once()).snapshot.value as Map;
-    isSaved = _pref.containsKey('class');
-    if ((_pref.getString('db_ver') ?? "null") != versionInfo["db_ver"]) {
-      isSaved = false;
-      return null;
-    }
-    return _pref.getString('class');
-  }
+  // Future<String?> getExistClass() async {
+  //   SharedPreferences _pref = await SharedPreferences.getInstance();
+  //   DatabaseReference version = FirebaseDatabase.instance.ref('version');
+  //   Map versionInfo = (await version.once()).snapshot.value as Map;
+  //   isSaved = _pref.containsKey('class');
+  //   if ((_pref.getString('db_ver') ?? "null") != versionInfo["db_ver"]) {
+  //     isSaved = false;
+  //     return null;
+  //   }
+  //   return _pref.getString('class');
+  // }
 
 
   Future getClass() async {
@@ -51,9 +52,9 @@ class _OpenClassState extends State<OpenClass> {
       _mySub = _pref.getString('mySub') ?? '컴퓨터학부';
       _isFirst = false;
     }
-    if (await getExistClass() != null) {
-      return getExistClass();
-    }
+    // if (await getExistClass() != null) {
+    //   return getExistClass();
+    // }
     DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
