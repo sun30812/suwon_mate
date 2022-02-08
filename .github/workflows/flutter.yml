@@ -18,14 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Install Flutter SDK
-        run: sudo snap install flutter --classic
+      - name: Flutter action
+        uses: subosito/flutter-action@v2.3.0
 
       - name: Install dependancy
         run: flutter pub get
-        
-      - name: Go to Project Directory
-        run: cd ../..
 
       - name: Build Web App
         run: flutter build web
