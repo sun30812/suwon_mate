@@ -39,6 +39,7 @@ class _OpenClassState extends State<OpenClass> {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     if (_isFirst) {
       _myDept = _pref.getString('mySub') ?? '컴퓨터학부';
+      _myGrade = _pref.getString('myGrade') ?? '1학년';
       _isFirst = false;
     }
     if (await getExistClass() != null) {
