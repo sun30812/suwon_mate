@@ -113,7 +113,7 @@ class _OpenClassState extends State<OpenClass> {
                 _isFirstDp = false;
               }
               for (var classData in orgClassList) {
-                if ((classData['estbDpmjNm'] == _myDept) && (classData['trgtGrdeNm'] == _myGrade)) {
+                if ((classData['estbDpmjNm'] == _myDept) && ((classData['trgtGrdeCd'].toString()+'학년') == _myGrade)) {
                   if (_mySub == '전체') {
                   classList.add(classData);
                   }
@@ -166,14 +166,14 @@ class _OpenClassState extends State<OpenClass> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      classList[index]["stafNm"] ?? "이름 공개 안됨",
+                                      classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
                                       style: const TextStyle(
                                           fontSize: 15.0,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Text((classList[index]["estbMjorNm"] ?? "학부 전체 대상(전공 없음)") +
+                                    Text((classList[index]["deptNm"] ?? "학부 전체 대상(전공 없음)") +
                                         ", " +
-                                        classList[index]["trgtGrdeNm"] +
+                                        classList[index]["trgtGrdeCd"].toString() +
                                         ", " +
                                         classList[index]["point"].toString() +
                                         "학점, " +
