@@ -16,7 +16,8 @@ class _OpenClassState extends State<OpenClass> {
   List<DropdownMenuItem<String>> gradeDownList = [];
   List orgClassList = [];
   bool isSaved = false;
-  String _mySub = '컴퓨터학부';
+  String _myDept = '컴퓨터학부';
+  String _mySub = '전체';
   String _myGrade = '1학년';
   bool _isFirst = true;
   bool _isFirstDp = true;
@@ -49,7 +50,7 @@ class _OpenClassState extends State<OpenClass> {
   Future getClass() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     if (_isFirst) {
-      _mySub = _pref.getString('mySub') ?? '컴퓨터학부';
+      _myDept = _pref.getString('mySub') ?? '컴퓨터학부';
       _isFirst = false;
     }
     // if (await getExistClass() != null) {
@@ -65,8 +66,6 @@ class _OpenClassState extends State<OpenClass> {
   @override
   void initState() {
     super.initState();
-    // dropdownList.add(const DropdownMenuItem(child: Text('컴퓨터학부'), value: '컴퓨터학부',));
-    // dropdownList.add(const DropdownMenuItem(child: Text('경영학부'), value: '경영학부',));
 
     for(var dat in gradeList) {
       gradeDownList.add(DropdownMenuItem(child: Text(dat), value: dat,));
@@ -83,7 +82,6 @@ class _OpenClassState extends State<OpenClass> {
 
   @override
   Widget build(BuildContext context) {
-    // getData();
     return Scaffold(
         appBar: AppBar(title: const Text('개설 강좌 조회')),
         body: FutureBuilder(
@@ -114,8 +112,10 @@ class _OpenClassState extends State<OpenClass> {
                 _isFirstDp = false;
               }
               for (var classData in orgClassList) {
-                if ((classData['estbDpmjNm'] == _mySub) && classData['trgtGrdeNm'] == _myGrade) {
+                if ((classData['estbDpmjNm'] == _myDept) && (classData['trgtGrdeNm'] == _myGrade)) {
+                  if (_mySub == '전체') {
                   classList.add(classData);
+                  }
                 }
               }
               return Column(
@@ -128,9 +128,9 @@ class _OpenClassState extends State<OpenClass> {
                         child: DropdownButton(
                             items: dropdownList, onChanged: (String? value) {
                               setState(() {
-                                _mySub = value!;
+                                _myDept = value!;
                               });
-                        }, value: _mySub,),
+                        }, value: _myDept,),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -148,30 +148,37 @@ class _OpenClassState extends State<OpenClass> {
                         shrinkWrap: true,
                         itemCount: classList.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    classList[index]["subjtNm"],
-                                    style: const TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    classList[index]["stafNm"] ?? "이름 공개 안됨",
-                                    style: const TextStyle(
-                                        fontSize: 15.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(classList[index]["trgtGrdeNm"] +
-                                      ", " +
-                                      classList[index]["point"].toString() +
-                                      "학점, " +
-                                      classList[index]["facDvnm"] + ', ' + (classList[index]["timtSmryCn"] ?? "공개 안됨")),
-                                ],
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/oclass/info', arguments: classList[index]);
+                            },
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      classList[index]["subjtNm"],
+                                      style: const TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      classList[index]["stafNm"] ?? "이름 공개 안됨",
+                                      style: const TextStyle(
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text((classList[index]["estbMjorNm"] ?? "학부 전체 대상(전공 없음)") +
+                                        ", " +
+                                        classList[index]["trgtGrdeNm"] +
+                                        ", " +
+                                        classList[index]["point"].toString() +
+                                        "학점, " +
+                                        classList[index]["facDvnm"] + ', ' + (classList[index]["timtSmryCn"] ?? "공개 안됨")),
+                                  ],
+                                ),
                               ),
                             ),
                           );

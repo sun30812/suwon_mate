@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:suwon_mate/main.dart';
+import 'styleWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InfoPage extends StatelessWidget {
@@ -12,18 +12,8 @@ class InfoPage extends StatelessWidget {
         .get(Uri.parse('https://www.suwon.ac.kr/index.html?menuno=674'));
   }
 
-  void getTestData() async {
-    var dd = await http
-        .get(Uri.parse('https://www.suwon.ac.kr/index.html?menuno=674'));
-    print(parse(dd.body)
-        .getElementsByClassName('board_basic_list')[0]
-        .getElementsByClassName('subject')[0]
-        .text);
-  }
-
   @override
   Widget build(BuildContext context) {
-    getTestData();
     return Scaffold(
       floatingActionButton: SuwonButton(
           icon: Icons.school_outlined,
