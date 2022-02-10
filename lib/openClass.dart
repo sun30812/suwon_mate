@@ -19,33 +19,9 @@ class _OpenClassState extends State<OpenClass> {
   String _myDept = '컴퓨터학부';
   String _mySub = '전체';
   String _myGrade = '1학년';
+  Set<String> dpSet = {};
   bool _isFirst = true;
   bool _isFirstDp = true;
-
-  void getData() async {
-
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
-    DatabaseEvent event = await ref.once();
-    List map = event.snapshot.value as List;
-
-    for (var dat in map) {
-      if (dat['estbDpmjNm'] == ('컴퓨터학부')) print(dat);
-    }
-  }
-  // TODO: 웹 상에서 getExistClass함수 동작하도록 하기
-
-  // Future<String?> getExistClass() async {
-  //   SharedPreferences _pref = await SharedPreferences.getInstance();
-  //   DatabaseReference version = FirebaseDatabase.instance.ref('version');
-  //   Map versionInfo = (await version.once()).snapshot.value as Map;
-  //   isSaved = _pref.containsKey('class');
-  //   if ((_pref.getString('db_ver') ?? "null") != versionInfo["db_ver"]) {
-  //     isSaved = false;
-  //     return null;
-  //   }
-  //   return _pref.getString('class');
-  // }
-
 
   Future getClass() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
@@ -54,12 +30,14 @@ class _OpenClassState extends State<OpenClass> {
       _myGrade = _pref.getString('myGrade') ?? '1학년';
       _isFirst = false;
     }
-    // if (await getExistClass() != null) {
-    //   return getExistClass();
-    // }
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_next');
+
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
+    if ((_pref.getString('db_ver')) == versionInfo["db_ver"]) {
+      isSaved = true;
+      return _pref.getString('class');
+    }
+    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_next');
     _pref.setString('db_ver', versionInfo["db_ver"]);
     return await ref.once();
   }
@@ -71,6 +49,7 @@ class _OpenClassState extends State<OpenClass> {
     for(var dat in gradeList) {
       gradeDownList.add(DropdownMenuItem(child: Text(dat), value: dat,));
     }
+
   }
 
   @override
@@ -79,6 +58,7 @@ class _OpenClassState extends State<OpenClass> {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     String _saveData = jsonEncode(orgClassList);
     _pref.setString('class', _saveData);
+    _pref.setStringList('dp_set', dpSet.toList());
   }
 
   @override
@@ -102,7 +82,6 @@ class _OpenClassState extends State<OpenClass> {
                 orgClassList = _event.snapshot.value as List;
               }
               List classList = [];
-              Set dpSet = {};
               for(var dat in orgClassList) {
                 dpSet.add(dat['estbDpmjNm'].toString());
               }
