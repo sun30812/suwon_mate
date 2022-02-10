@@ -57,7 +57,7 @@ class _OpenClassState extends State<OpenClass> {
     // if (await getExistClass() != null) {
     //   return getExistClass();
     // }
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
+    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_next');
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
     _pref.setString('db_ver', versionInfo["db_ver"]);
@@ -110,6 +110,7 @@ class _OpenClassState extends State<OpenClass> {
                 for(String depart in dpSet) {
                   dropdownList.add(DropdownMenuItem(child: Text(depart), value: depart,));
                 }
+                dropdownList.sort((a,b) => a.value!.compareTo(b.value!));
                 _isFirstDp = false;
               }
               for (var classData in orgClassList) {
@@ -119,6 +120,7 @@ class _OpenClassState extends State<OpenClass> {
                   }
                 }
               }
+              classList.sort((a,b) => ((a["subjtNm"] as String).compareTo((b["subjtNm"] as String))));
               return Column(
                 children: [
                   Row(
