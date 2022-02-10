@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:suwon_mate/Settings.dart';
+import 'package:suwon_mate/help.dart';
 import 'OpenClassInfo.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class App extends StatelessWidget {
         '/oclass/info': (context) => OpenClassInfo(),
         '/info': (context) => InfoPage(),
         '/settings': (context) => SettingPage(),
+        '/help': (context) => HelpPage()
       },
     );
   }
@@ -46,6 +48,11 @@ class MainPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SuwonButton(
+                icon: Icons.help_outline,
+                buttonName: '도움말',
+                onPressed: () => Navigator.of(context).pushNamed('/help'),
+              ),
               SuwonButton(
                 icon: Icons.schedule_outlined,
                 buttonName: '학사 일정',
