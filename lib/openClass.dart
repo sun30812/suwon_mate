@@ -154,10 +154,6 @@ class _OpenClassState extends State<OpenClass> {
                                     ),
                                     Text((classList[index]["deptNm"] ?? "학부 전체 대상(전공 없음)") +
                                         ", " +
-                                        classList[index]["trgtGrdeCd"].toString() +
-                                        ", " +
-                                        classList[index]["point"].toString() +
-                                        "학점, " +
                                         classList[index]["facDvnm"] + ', ' + (classList[index]["timtSmryCn"] ?? "공개 안됨")),
                                   ],
                                 ),
