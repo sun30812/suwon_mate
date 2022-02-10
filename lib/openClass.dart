@@ -37,7 +37,7 @@ class _OpenClassState extends State<OpenClass> {
       isSaved = true;
       return _pref.getString('class');
     }
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_next');
+    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
     _pref.setString('db_ver', versionInfo["db_ver"]);
     return await ref.once();
   }
