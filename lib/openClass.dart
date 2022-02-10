@@ -19,21 +19,9 @@ class _OpenClassState extends State<OpenClass> {
   String _myDept = '컴퓨터학부';
   String _mySub = '전체';
   String _myGrade = '1학년';
+  Set<String> dpSet = {};
   bool _isFirst = true;
   bool _isFirstDp = true;
-
-  Future<String?> getExistClass() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    DatabaseReference version = FirebaseDatabase.instance.ref('version');
-    Map versionInfo = (await version.once()).snapshot.value as Map;
-    isSaved = _pref.containsKey('class');
-    if ((_pref.getString('db_ver') ?? "null") != versionInfo["db_ver"]) {
-      isSaved = false;
-      return null;
-    }
-    return _pref.getString('class');
-  }
-
 
   Future getClass() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
@@ -42,12 +30,14 @@ class _OpenClassState extends State<OpenClass> {
       _myGrade = _pref.getString('myGrade') ?? '1학년';
       _isFirst = false;
     }
-    if (await getExistClass() != null) {
-      return getExistClass();
-    }
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
+
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
+    if ((_pref.getString('db_ver')) == versionInfo["db_ver"]) {
+      isSaved = true;
+      return _pref.getString('class');
+    }
+    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_next');
     _pref.setString('db_ver', versionInfo["db_ver"]);
     return await ref.once();
   }
@@ -59,6 +49,7 @@ class _OpenClassState extends State<OpenClass> {
     for(var dat in gradeList) {
       gradeDownList.add(DropdownMenuItem(child: Text(dat), value: dat,));
     }
+
   }
 
   @override
@@ -67,6 +58,7 @@ class _OpenClassState extends State<OpenClass> {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     String _saveData = jsonEncode(orgClassList);
     _pref.setString('class', _saveData);
+    _pref.setStringList('dp_set', dpSet.toList());
   }
 
   @override
@@ -90,7 +82,6 @@ class _OpenClassState extends State<OpenClass> {
                 orgClassList = _event.snapshot.value as List;
               }
               List classList = [];
-              Set dpSet = {};
               for(var dat in orgClassList) {
                 dpSet.add(dat['estbDpmjNm'].toString());
               }
@@ -98,15 +89,17 @@ class _OpenClassState extends State<OpenClass> {
                 for(String depart in dpSet) {
                   dropdownList.add(DropdownMenuItem(child: Text(depart), value: depart,));
                 }
+                dropdownList.sort((a,b) => a.value!.compareTo(b.value!));
                 _isFirstDp = false;
               }
               for (var classData in orgClassList) {
-                if ((classData['estbDpmjNm'] == _myDept) && (classData['trgtGrdeNm'] == _myGrade)) {
+                if ((classData['estbDpmjNm'] == _myDept) && ((classData['trgtGrdeCd'].toString()+'학년') == _myGrade)) {
                   if (_mySub == '전체') {
                   classList.add(classData);
                   }
                 }
               }
+              classList.sort((a,b) => ((a["subjtNm"] as String).compareTo((b["subjtNm"] as String))));
               return Column(
                 children: [
                   Row(
@@ -154,14 +147,14 @@ class _OpenClassState extends State<OpenClass> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      classList[index]["stafNm"] ?? "이름 공개 안됨",
+                                      classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
                                       style: const TextStyle(
                                           fontSize: 15.0,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Text((classList[index]["estbMjorNm"] ?? "학부 전체 대상(전공 없음)") +
+                                    Text((classList[index]["deptNm"] ?? "학부 전체 대상(전공 없음)") +
                                         ", " +
-                                        classList[index]["trgtGrdeNm"] +
+                                        classList[index]["trgtGrdeCd"].toString() +
                                         ", " +
                                         classList[index]["point"].toString() +
                                         "학점, " +

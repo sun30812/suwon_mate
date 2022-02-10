@@ -14,21 +14,18 @@ class _SettingPageState extends State<SettingPage> {
   String _mySub = '컴퓨터학부';
   String _grade = '1학년';
   bool _isFirst = true;
+  bool _isSynced = false;
   List<DropdownMenuItem<String>> subDropdownList = [];
   List<DropdownMenuItem<String>> gradeDropdownList = [];
 
   Future<SharedPreferences> getSettings() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    // _mySub = _pref.getString('mySub') ?? '';
-    // _grade = _pref.getString('myGrade') ?? '';
     return _pref;
   }
 
   @override
   void initState() {
     super.initState();
-    getSettings();
-    print("init");
     subDropdownList = subList
         .map((dat) => DropdownMenuItem(
               child: Text(dat),
@@ -41,7 +38,6 @@ class _SettingPageState extends State<SettingPage> {
               value: dat,
             ))
         .toList();
-    print(_grade);
   }
 
   @override
@@ -50,6 +46,27 @@ class _SettingPageState extends State<SettingPage> {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     _pref.setString('mySub', _mySub);
     _pref.setString('myGrade', _grade);
+  }
+
+  Widget noSyncWarning() {
+    if (_isSynced) {
+      return Container();
+    }
+    return Card(
+      color: Colors.amber,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.warning),
+              Text('주의', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),)
+            ],
+          ),
+          Text('아직 개설 강좌 조회를 들어가지 않은 경우 기본 전공을 지정할 수 있는 범위가 좁습니다.')
+        ],
+      ),
+    );
   }
 
   @override
@@ -64,6 +81,16 @@ class _SettingPageState extends State<SettingPage> {
         if (!snapshot.hasData) {
           return Container();
         } else {
+          if ((snapshot.data as SharedPreferences).containsKey('dp_set')) {
+            subDropdownList = (snapshot.data as SharedPreferences).getStringList('dp_set')!
+                .map((dat) => DropdownMenuItem(
+              child: Text(dat),
+              value: dat,
+            ))
+                .toList();
+            subDropdownList.sort((a,b) => a.value!.compareTo(b.value!));
+            _isSynced = true;
+          }
           if (_isFirst)
           {
                 _grade =
@@ -76,6 +103,10 @@ class _SettingPageState extends State<SettingPage> {
               }
               return ListView(
             children: [
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                child: noSyncWarning(),
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -130,6 +161,7 @@ class _SettingPageState extends State<SettingPage> {
                                     SharedPreferences _pref =
                                         await SharedPreferences.getInstance();
                                     _pref.remove('class');
+                                    Navigator.of(context).pop();
                                   },
                                   child: Text('확인')),
                               TextButton(
@@ -161,7 +193,8 @@ class _SettingPageState extends State<SettingPage> {
                                   onPressed: () async {
                                     SharedPreferences _pref =
                                         await SharedPreferences.getInstance();
-                                    _pref.remove('class');
+                                    _pref.clear();
+                                    Navigator.of(context).pop();
                                   },
                                   child: Text('확인')),
                               TextButton(
@@ -173,7 +206,8 @@ class _SettingPageState extends State<SettingPage> {
                   },
                   child: Text('디버그: 앱의 모든 설정 데이터 지우기',
                       style: TextStyle(color: Colors.redAccent))),
-              Divider()
+              Divider(),
+              Center(child: Text('DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? 'unknown'}'))
             ],
           );
         }
