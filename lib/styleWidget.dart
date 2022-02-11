@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class ClassDetailInfoCard extends StatelessWidget {
-  String subjectCode,
+  final String subjectCode,
       openYear,
       subjectKind,
       hostName,
@@ -15,9 +15,8 @@ class ClassDetailInfoCard extends StatelessWidget {
       point,
       sex,
       guestGrade,
-      guestMajor,
       guestDept;
-  ClassDetailInfoCard(
+  const ClassDetailInfoCard(
       {Key? key,
       required String subjectCode,
       required String openYear,
@@ -32,207 +31,124 @@ class ClassDetailInfoCard extends StatelessWidget {
       required String extra,
       required String sex,
       required String guestGrade,
-      required String guestMajor,
       required String guestDept})
-      : this.subjectCode = subjectCode,
-        this.openYear = openYear,
-        this.subjectKind = subjectKind,
-        this.hostName = hostName,
-        this.hostGrade = hostGrade,
-        this.classLocation = classLocation,
-        this.region = region,
-        this.classLang = classLang,
-        this.promise = promise,
-        this.extra = extra,
-        this.sex = sex,
-        this.point = point,
-        this.guestGrade = guestGrade,
-        this.guestMajor = guestMajor,
-        this.guestDept = guestDept,
+      : subjectCode = subjectCode,
+        openYear = openYear,
+        subjectKind = subjectKind,
+        hostName = hostName,
+        hostGrade = hostGrade,
+        classLocation = classLocation,
+        region = region,
+        classLang = classLang,
+        promise = promise,
+        extra = extra,
+        sex = sex,
+        point = point,
+        guestGrade = guestGrade,
+        guestDept = guestDept,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: const [
-                    Icon(Icons.account_circle_outlined),
-                    Text(
-                      '수업 대상자',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 19.0),
-                    )
-                  ],
-                ),
-                Text(
-                  '대상 학년: $guestGrade',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-                Text(
-                  '대상 학부: $guestDept',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-                Text(
-                  '대상 전공: $guestMajor',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-              ],
+    return Flexible(
+      child: ListView(
+        children: [
+          CardInfo(
+              icon: Icons.account_circle_outlined,
+              title: '수업 대상자',
+              detail: Text(
+                '대상 학년: $guestGrade\n대상 학부/전공: $guestDept',
+                style: const TextStyle(fontSize: 17.0),
+              )),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(Icons.book_outlined),
+                          Text(
+                            '과목 정보',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 19.0),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: subjectCode))
+                                .then((value) => {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text('과목 코드가 복사되었습니다.'),
+                                        duration: Duration(seconds: 1),
+                                      ))
+                                    });
+                          },
+                          icon: const Icon(Icons.copy))
+                    ],
+                  ),
+                  Text(
+                    '과목 코드: $subjectCode',
+                    style: const TextStyle(fontSize: 17.0),
+                  ),
+                  Text(
+                    '개설년도: $openYear',
+                    style: const TextStyle(fontSize: 17.0),
+                  ),
+                  Text(
+                    '교과 종류: $subjectKind',
+                    style: const TextStyle(fontSize: 17.0),
+                  ),
+                  Text(
+                    '학점: $point',
+                    style: const TextStyle(fontSize: 17.0),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: const [
-                        Icon(Icons.book_outlined),
-                        Text(
-                          '과목 정보',
-                          style:
-                              TextStyle(fontWeight: FontWeight.bold, fontSize: 19.0),
-                        ),
+          CardInfo(
+              icon: Icons.work_outline,
+              title: '강의자 정보',
+              detail: Text(
+                '성별: $sex\n성함: $hostName\n직책: $hostGrade',
+                style: const TextStyle(fontSize: 17.0),
+              )),
+          CardInfo(
+              icon: Icons.school_outlined,
+              title: '수업 관련 사항',
+              detail: Text(
+                '수업 장소 및 요일: $classLocation\n교양 영역: $region\n수업 언어: $classLang',
+                style: const TextStyle(fontSize: 17.0),
+              )),
+          CardInfo(
+              icon: Icons.info_outline,
+              title: '추가 정보',
+              detail: Text(
+                '강의자 계약 정보: $promise\n수업 방식: $extra\n수업 언어: $classLang',
+                style: const TextStyle(fontSize: 17.0),
+              ))
+        ],
+      ),
+    );
+  }
+}
 
-                      ],
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          Clipboard.setData(ClipboardData(text: subjectCode)).then((value) =>
-                          {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text('과목 코드가 복사되었습니다.'),
-                              duration: Duration(seconds: 1),
-                            ))
-                          });
-                        }, icon: const Icon(Icons.copy))
-                  ],
-                ),
-                Text(
-                  '과목 코드: $subjectCode',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-                Text(
-                  '개설년도: $openYear',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-                Text(
-                  '교과 종류: $subjectKind',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-                Text(
-                  '학점: $point',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: const [
-                    Icon(Icons.work_outline),
-                    Text(
-                      '강의자 정보',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 19.0),
-                    )
-                  ],
-                ),
-                Text(
-                  '성별: $sex',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-                Text(
-                  '성함: $hostName',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-                Text(
-                  '직책: $hostGrade',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: const [
-                    Icon(Icons.school_outlined),
-                    Text(
-                      '수업 관련 사항',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 19.0),
-                    )
-                  ],
-                ),
-                Text(
-                  '수업 장소 및 요일: $classLocation',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-                Text(
-                  '교양 영역: $region',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-                Text(
-                  '수업 언어: $classLang',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: const [
-                    Icon(Icons.info_outline),
-                    Text(
-                      '추가 정보',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 19.0),
-                    )
-                  ],
-                ),
-                Text(
-                  '강의자 계약 정보: $promise',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-                Text(
-                  '수업 방식: $extra',
-                  style: const TextStyle(fontSize: 17.0),
-                ),
-              ],
-            ),
-          ),
-        )
-      ],
+class DataLoadingError extends StatelessWidget {
+  const DataLoadingError({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: const [Icon(Icons.error_outline), Text('데이터를 불러올 수 없습니다.')],
+      ),
     );
   }
 }
@@ -246,9 +162,9 @@ class SuwonButton extends StatelessWidget {
     required IconData icon,
     required String buttonName,
     required void Function()? onPressed,
-  })  : this.icon = icon,
+  })  : icon = icon,
         btnName = buttonName,
-        this.onPressed = onPressed,
+        onPressed = onPressed,
         super(key: key);
 
   @override
@@ -278,6 +194,80 @@ class SuwonButton extends StatelessWidget {
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(50.0),
               )))),
+    );
+  }
+}
+
+class CardInfo extends StatelessWidget {
+  IconData icon;
+  String title;
+  Widget detail;
+  CardInfo(
+      {Key? key,
+      required IconData icon,
+      required String title,
+      required Widget detail})
+      : icon = icon,
+        title = title,
+        detail = detail,
+        super(key: key);
+
+  static Widget Simplified({required String title, String? subTitle, required Widget content}) {
+    Widget SubTitle(String? text) {
+      if (text != null) {
+        return Text(
+          text,
+          style: const TextStyle(
+              fontSize: 15.0,
+              fontWeight: FontWeight.bold),
+        );
+      } else {
+        return Container();
+      }
+    }
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style:
+                  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            SubTitle(subTitle),
+            content
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon),
+                Padding(padding: EdgeInsets.only(right: 10.0)),
+                Text(
+                  title,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                ),
+              ],
+            ),
+            Divider(),
+            detail
+          ],
+        ),
+      ),
     );
   }
 }

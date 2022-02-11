@@ -42,38 +42,26 @@ class InfoPage extends StatelessWidget {
               return ListView.builder(
                   itemCount: rows.getElementsByClassName('subject').length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Text(
+                    return CardInfo.Simplified(
+                        title: rows
+                            .getElementsByClassName('subject')[index]
+                            .text
+                            .trim(),
+                        content: Text(
+                          rows
+                                  .getElementsByClassName('info')[index]
+                                  .getElementsByClassName('date')[0]
+                                  .text
+                                  .trim() +
+                              '/' +
                               rows
-                                  .getElementsByClassName('subject')[index]
+                                  .getElementsByClassName('info')[index]
+                                  .getElementsByClassName('hit')[0]
                                   .text
                                   .trim(),
-                              style: const TextStyle(
-                                  fontSize: 18.0, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              rows
-                                      .getElementsByClassName('info')[index]
-                                      .getElementsByClassName('date')[0]
-                                      .text
-                                      .trim() +
-                                  '/' +
-                                  rows
-                                      .getElementsByClassName('info')[index]
-                                      .getElementsByClassName('hit')[0]
-                                      .text
-                                      .trim(),
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(fontSize: 16.0),
+                        ));
                   });
             }
           },
