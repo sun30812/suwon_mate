@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:suwon_mate/styleWidget.dart';
 
 class OpenClass extends StatefulWidget {
   const OpenClass({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class _OpenClassState extends State<OpenClass> {
   List orgClassList = [];
   bool isSaved = false;
   String _myDept = '컴퓨터학부';
-  String _mySub = '전체';
+  final String _mySub = '전체';
   String _myGrade = '1학년';
   Set<String> dpSet = {};
   bool _isFirst = true;
@@ -127,38 +128,16 @@ class _OpenClassState extends State<OpenClass> {
                   ),
                   Flexible(
                     child: ListView.builder(
-                        shrinkWrap: true,
                         itemCount: classList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                             onTap: () {
                               Navigator.of(context).pushNamed('/oclass/info', arguments: classList[index]);
                             },
-                            child: Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      classList[index]["subjtNm"],
-                                      style: const TextStyle(
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
-                                      style: const TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text((classList[index]["deptNm"] ?? "학부 전체 대상(전공 없음)") +
-                                        ", " +
-                                        classList[index]["facDvnm"] + ', ' + (classList[index]["timtSmryCn"] ?? "공개 안됨")),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            child: CardInfo.Simplified(title: classList[index]["subjtNm"], subTitle: classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨"
+                                , content: Text((classList[index]["deptNm"] ?? "학부 전체 대상(전공 없음)") +
+                                  ", " +
+                                  classList[index]["facDvnm"] + ', ' + (classList[index]["timtSmryCn"] ?? "공개 안됨")),)
                           );
                         }),
                   ),

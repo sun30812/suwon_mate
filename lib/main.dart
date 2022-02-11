@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:suwon_mate/Settings.dart';
+import 'package:suwon_mate/favoriteSubject.dart';
 import 'package:suwon_mate/help.dart';
 import 'OpenClassInfo.dart';
 import 'firebase_options.dart';
@@ -21,13 +22,14 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Suwon Mate',
+      title: '수원 메이트',
       home: MainPage(),
       routes: {
         '/schedule': (context) => SchedulePage(),
         '/oclass': (context) => OpenClass(),
         '/oclass/info': (context) => OpenClassInfo(),
         '/info': (context) => InfoPage(),
+        '/favorite': (context) => FavoriteSubjectPage(),
         '/settings': (context) => SettingPage(),
         '/help': (context) => HelpPage()
       },
@@ -70,8 +72,8 @@ class MainPage extends StatelessWidget {
               ),
               SuwonButton(
                 icon: Icons.star_outline,
-                buttonName: '즐겨찾는 과목',
-                onPressed: null
+                buttonName: '즐겨찾는 과목(베타)',
+                onPressed: () => Navigator.of(context).pushNamed('/favorite')
               ),
               SuwonButton(
                   icon: Icons.settings,
