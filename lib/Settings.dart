@@ -16,6 +16,7 @@ class _SettingPageState extends State<SettingPage> {
   String _grade = '1학년';
   bool _isFirst = true;
   bool _isSynced = false;
+  final isDebug = true;
   List<DropdownMenuItem<String>> subDropdownList = [];
   List<DropdownMenuItem<String>> gradeDropdownList = [];
 
@@ -68,6 +69,134 @@ class _SettingPageState extends State<SettingPage> {
         ],
       ),
     );
+  }
+
+  Widget debugWidget() {
+    if (isDebug) {
+      return CardInfo(icon: Icons.adb_outlined, title: '디버그 설정',
+          detail: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Card(
+                color: Colors.amber,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.warning_amber_outlined),
+                      Padding(padding: EdgeInsets.only(right: 3.0)),
+                      Flexible(child: Text('이 설정을 숨기려면 Settings.dart의 isDebug변수를 false로 지정합니다.')),
+                    ],
+                  ),
+                ),
+              ),
+              TextButton(
+                  onPressed: () async {
+                    showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Row(
+                              children: const [
+                                Icon(Icons.warning_amber_outlined),
+                                Text('경고')
+                              ],
+                            ),
+                            content: const Text('저장된 개설 과목 데이터를 지우고 '
+                                '다음 실행 시 다시 받도록 하시겠습니까?'),
+                            scrollable: true,
+                            actions: [
+                              TextButton(
+                                  onPressed: () async {
+                                    SharedPreferences _pref =
+                                    await SharedPreferences.getInstance();
+                                    _pref.remove('class');
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('확인')),
+                              TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text('취소'))
+                            ],
+                          );
+                        });
+                  },
+                  child: const Text('디버그: 다음 번에 개설 과목 동기화')),
+              TextButton(
+                  onPressed: () async {
+                    showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Row(
+                              children: const [
+                                Icon(Icons.warning_amber_outlined),
+                                Text('경고')
+                              ],
+                            ),
+                            content: const Text('저장된 즐겨찾기 과목을 모두 지우시겠습니까?'),
+                            scrollable: true,
+                            actions: [
+                              TextButton(
+                                  onPressed: () async {
+                                    SharedPreferences _pref =
+                                    await SharedPreferences.getInstance();
+                                    _pref.remove('favorites');
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('확인')),
+                              TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text('취소'))
+                            ],
+                          );
+                        });
+                  },
+                  child: const Text('디버그: 즐겨찾기 항목 모두 제거')),
+              TextButton(
+                  onPressed: () async {
+                    showDialog(
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Row(
+                              children: const [
+                                Icon(Icons.error_outline),
+                                Text('경고')
+                              ],
+                            ),
+                            content: const Text('이 앱의 모든 데이터를 지우시겠습니까?'),
+                            scrollable: true,
+                            actions: [
+                              TextButton(
+                                  onPressed: () async {
+                                    SharedPreferences _pref =
+                                    await SharedPreferences.getInstance();
+                                    _pref.clear();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('확인'),
+                              ),
+                              TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text('취소'))
+                            ],
+                          );
+                        });
+                  },
+                  style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.redAccent.withAlpha(50)),
+                    foregroundColor: MaterialStateProperty.all(Colors.redAccent)
+                  ),
+                  child: const Text('디버그: 앱의 모든 설정 데이터 지우기',
+                      )),
+            ],
+          ));
+    } else {
+      return Container();
+    }
   }
 
   @override
@@ -145,111 +274,7 @@ class _SettingPageState extends State<SettingPage> {
                     ],
                   )
               ),
-              CardInfo(icon: Icons.adb_outlined, title: '디버그 설정',
-                  detail: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextButton(
-                          onPressed: () async {
-                            showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Row(
-                                      children: const [
-                                        Icon(Icons.warning_amber_outlined),
-                                        Text('경고')
-                                      ],
-                                    ),
-                                    content: const Text('저장된 개설 과목 데이터를 지우고 '
-                                        '다음 실행 시 다시 받도록 하시겠습니까?'),
-                                    scrollable: true,
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () async {
-                                            SharedPreferences _pref =
-                                            await SharedPreferences.getInstance();
-                                            _pref.remove('class');
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('확인')),
-                                      TextButton(
-                                          onPressed: () => Navigator.of(context).pop(),
-                                          child: const Text('취소'))
-                                    ],
-                                  );
-                                });
-                          },
-                          child: const Text('디버그: 다음 번에 개설 과목 동기화')),
-                      TextButton(
-                          onPressed: () async {
-                            showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Row(
-                                      children: const [
-                                        Icon(Icons.warning_amber_outlined),
-                                        Text('경고')
-                                      ],
-                                    ),
-                                    content: const Text('저장된 즐겨찾기 과목을 모두 지우시겠습니까?'),
-                                    scrollable: true,
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () async {
-                                            SharedPreferences _pref =
-                                            await SharedPreferences.getInstance();
-                                            _pref.remove('favorites');
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('확인')),
-                                      TextButton(
-                                          onPressed: () => Navigator.of(context).pop(),
-                                          child: const Text('취소'))
-                                    ],
-                                  );
-                                });
-                          },
-                          child: const Text('디버그: 즐겨찾기 항목 모두 제거')),
-                      TextButton(
-                          onPressed: () async {
-                            showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Row(
-                                      children: const [
-                                        Icon(Icons.error_outline),
-                                        Text('경고')
-                                      ],
-                                    ),
-                                    content: const Text('이 앱의 모든 데이터를 지우시겠습니까?'),
-                                    scrollable: true,
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () async {
-                                            SharedPreferences _pref =
-                                            await SharedPreferences.getInstance();
-                                            _pref.clear();
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('확인')),
-                                      TextButton(
-                                          onPressed: () => Navigator.of(context).pop(),
-                                          child: const Text('취소'))
-                                    ],
-                                  );
-                                });
-                          },
-                          child: const Text('디버그: 앱의 모든 설정 데이터 지우기',
-                              style: TextStyle(color: Colors.redAccent))),
-                    ],
-                  )),
-              const Divider(),
+              debugWidget(),
               CardInfo(
                 icon: Icons.info_outline,
                 title: '버전 정보',

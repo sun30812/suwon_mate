@@ -70,7 +70,12 @@ class _OpenClassState extends State<OpenClass> {
           future: getClass(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator.adaptive());
+              return Column(
+                children: const [
+                  Center(child: CircularProgressIndicator.adaptive()),
+                  Text('DB 버전 확인 및 갱신 중')
+                ],
+              );
             } else if (snapshot.hasError) {
               return Column(
                 children: const [Icon(Icons.error_outline), Text('오류가 발생했습니다.')],
