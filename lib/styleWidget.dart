@@ -60,59 +60,35 @@ class ClassDetailInfoCard extends StatelessWidget {
                 '대상 학년: $guestGrade\n대상 학부/전공: $guestDept',
                 style: const TextStyle(fontSize: 17.0),
               )),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
+          CardInfo(
+              icon: Icons.book_outlined,
+              title: '과목 정보',
+              detail: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: const [
-                          Icon(Icons.book_outlined),
-                          Text(
-                            '과목 정보',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 19.0),
-                          ),
-                        ],
-                      ),
+                      Text('과목 코드: $subjectCode', style: const TextStyle(fontSize: 17.0)),
                       IconButton(
+                        tooltip: '과목 코드 복사',
                           onPressed: () {
-                            Clipboard.setData(ClipboardData(text: subjectCode))
-                                .then((value) => {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text('과목 코드가 복사되었습니다.'),
-                                        duration: Duration(seconds: 1),
-                                      ))
-                                    });
-                          },
-                          icon: const Icon(Icons.copy))
+                        Clipboard.setData(ClipboardData(text: subjectCode))
+                            .then((value) => {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('과목 코드가 복사되었습니다.'),
+                                  duration: Duration(seconds: 1),)
+                              )
+                        });
+                      }, icon: Icon(Icons.copy)),
                     ],
                   ),
                   Text(
-                    '과목 코드: $subjectCode',
-                    style: const TextStyle(fontSize: 17.0),
-                  ),
-                  Text(
-                    '개설년도: $openYear',
-                    style: const TextStyle(fontSize: 17.0),
-                  ),
-                  Text(
-                    '교과 종류: $subjectKind',
-                    style: const TextStyle(fontSize: 17.0),
-                  ),
-                  Text(
-                    '학점: $point',
+                    '개설년도: $openYear\n교과 종류: $subjectKind\n학점: $point',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
-              ),
-            ),
-          ),
+              )),
           CardInfo(
               icon: Icons.work_outline,
               title: '강의자 정보',
