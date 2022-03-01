@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:suwon_mate/styleWidget.dart';
+import 'package:suwon_mate/style_widget.dart';
 
 class FavoriteSubjectPage extends StatelessWidget {
   const FavoriteSubjectPage({Key? key}) : super(key: key);
@@ -56,7 +56,6 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     return await ref.once();
   }
 
-
   @override
   void dispose() async {
     super.dispose();
@@ -75,8 +74,8 @@ class _FavoriteListViewState extends State<FavoriteListView> {
             if (_isSaved) {
               _classList = jsonDecode(snapshot.data);
             }
-            for(var favorite in _favorites) {
-              for(var dat in _classList) {
+            for (var favorite in _favorites) {
+              for (var dat in _classList) {
                 if ('${dat['subjtCd']}-${dat['diclNo']}' == favorite) {
                   _favoriteClassList.add(dat);
                 }
@@ -91,7 +90,8 @@ class _FavoriteListViewState extends State<FavoriteListView> {
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
                       onTap: () {
-                        Navigator.of(context).pushNamed('/oclass/info', arguments: _favoriteClassList[index]);
+                        Navigator.of(context).pushNamed('/oclass/info',
+                            arguments: _favoriteClassList[index]);
                       },
                       child: Card(
                         child: Padding(
@@ -106,14 +106,19 @@ class _FavoriteListViewState extends State<FavoriteListView> {
                                     fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                _favoriteClassList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
+                                _favoriteClassList[index]["ltrPrfsNm"] ??
+                                    "이름 공개 안됨",
                                 style: const TextStyle(
                                     fontSize: 15.0,
                                     fontWeight: FontWeight.bold),
                               ),
-                              Text((_favoriteClassList[index]["deptNm"] ?? "학부 전체 대상(전공 없음)") +
+                              Text((_favoriteClassList[index]["deptNm"] ??
+                                      "학부 전체 대상(전공 없음)") +
                                   ", " +
-                                  _favoriteClassList[index]["facDvnm"] + ', ' + (_favoriteClassList[index]["timtSmryCn"] ?? "공개 안됨")),
+                                  _favoriteClassList[index]["facDvnm"] +
+                                  ', ' +
+                                  (_favoriteClassList[index]["timtSmryCn"] ??
+                                      "공개 안됨")),
                             ],
                           ),
                         ),

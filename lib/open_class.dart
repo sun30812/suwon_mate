@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:suwon_mate/styleWidget.dart';
+import 'package:suwon_mate/style_widget.dart';
 
 class OpenClass extends StatefulWidget {
   const OpenClass({Key? key}) : super(key: key);
@@ -37,7 +36,6 @@ class _OpenClassState extends State<OpenClass> {
       }
     }
     if ((_pref.containsKey('db_ver')) && _offline) {
-      log('offline');
       isSaved = true;
       return _pref.getString('class');
     }

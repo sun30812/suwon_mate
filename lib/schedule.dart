@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
-import 'package:suwon_mate/styleWidget.dart';
+import 'package:suwon_mate/style_widget.dart';
 
 Future<http.Response> getData() async {
   return await http.get(
@@ -68,11 +68,10 @@ class SchedulePage extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) {
                     return CardInfo.Simplified(
                         title: (rows[1 + index].getElementsByTagName('td')[1])
-                        .text,
-                    content: Text(
-                      (rows[1 + index].getElementsByTagName('td')[0])
-                          .text
-                    ));
+                            .text,
+                        content: Text(
+                            (rows[1 + index].getElementsByTagName('td')[0])
+                                .text));
                   });
             }
           },
