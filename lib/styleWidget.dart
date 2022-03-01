@@ -130,25 +130,36 @@ class DataLoadingError extends StatelessWidget {
 }
 
 class SuwonButton extends StatelessWidget {
+  bool? isActivate;
   IconData icon;
   String btnName;
   void Function()? onPressed;
   SuwonButton({
     Key? key,
+    bool? isActivate,
     required IconData icon,
     required String buttonName,
     required void Function()? onPressed,
-  })  : icon = icon,
+  })  : isActivate = isActivate,
+        icon = icon,
         btnName = buttonName,
         onPressed = onPressed,
         super(key: key);
+  void Function()? buttonAction() {
+    if (isActivate != null) {
+      if (isActivate == false) {
+    return null;
+      }
+    }
+    return onPressed;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextButton(
-          onPressed: onPressed,
+          onPressed: buttonAction(),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
