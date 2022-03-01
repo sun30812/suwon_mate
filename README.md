@@ -1,16 +1,92 @@
-# suwon_mate
+# Suwon Mate
 
-수원대학교에 대한 정보를 알 수 있는 앱 입니다.
+수원대학교의 개설 강좌 목록이나 학사 일정 등을 볼 수 있는 앱 입니다.  
+사용해보기에 있는 링크로 들어가시면 웹 버전으로 사용해보실 수 있습니다.
 
-## Getting Started
+## 목차
+- [Suwon Mate](#suwon-mate)
+	- [목차](#목차)
+	- [지원되는 플랫폼](#지원되는-플랫폼)
+	- [간단 기능 소개](#간단-기능-소개)
+	- [사용해보기](#사용해보기)
+	- [앱 사용 도움말](#앱-사용-도움말)
+	- [DB안내](#db안내)
+	- [빌드해보기](#빌드해보기)
+	- [개발 참고 사항](#개발-참고-사항)
+		- [설정 내 디버그 설정 숨기기](#설정-내-디버그-설정-숨기기)
+		- [디자인 요소 수정하기](#디자인-요소-수정하기)
+		- [Web버전에서는 왜 일부 기능이 안되나요?](#web버전에서는-왜-일부-기능이-안되나요)
+		- [Windows에서는 작동이 안되나요?](#windows에서는-작동이-안되나요)
 
-This project is a starting point for a Flutter application.
+## 지원되는 플랫폼
+현재 확인된 기능 별 지원되는 플랫폼 목록입니다.
 
-A few resources to get you started if this is your first Flutter project:
+| 플랫폼  | 앱 실행(메인화면) | 도움말 | 학사 일정 | 개설 강좌 조회 | 공지사항 | 즐겨찾는 과목(베타) | 설정 |
+| ------- | ----------------- | ------ | --------- | -------------- | -------- | ------------------- | ---- |
+| Android | ✅                 | ✅      | ✅         | ✅              | ✅        | ✅                   | ✅    |
+| iOS     | ✅                 | ✅      | ✅         | ✅              | ✅        | ✅                   | ✅    |
+| macOS   | ✅                 | ✅      | ✅         | ✅              | ✅        | ✅                   | ✅    |
+| Web     | ✅                 | ✅      | ❌         | ✅              | ❌        | ✅                   | ✅    |
+| Windows | ❌                 |        |           |                |          |                     |      |
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## 간단 기능 소개
+* 학사 일정을 간단하게 볼 수 있음
+* 학교에 대한 공지사항을 볼 수 있음
+* 학과 및 학년 별 개설 강좌를 볼 수 있음
+* 개설강좌를 탭하면 자세한 정보가 나오고, 해당 강의자의 다른 과목들도 볼 수 있음
+## 사용해보기
+아래 링크에 접속하시면 이 앱을 체험할 수 있습니다.  
+다만, Web플랫폼이기 때문에 상단에 있는 [지원되는 플랫폼](#지원되는-플랫폼)에 명시된 것 처럼 일부 기능이 동작하지 않습니다.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Firebase hosting](https://suwon-mate.web.app)
+- [Azure Web App](https://orange-moss-005eb8300.1.azurestaticapps.net)
+
+## 앱 사용 도움말
+앱의 도움말 메뉴를 참고하면 대부분의 설명을 보실 수 있습니다.
+개설 강좌 조회같은 경우 초기에 DB를 받아오기 때문에 시간이 어느정도 소요됩니다. 다만 너무 오래 걸리는 경우 사이트를 다시 열어주세요.
+
+## DB안내
+개설 강좌 조회 버튼을 누를 때 사용되는 DB는 Google의 Firebase를 사용합니다. 수원대 서버에서 직접 받아오지 않습니다. 본인이 직접 DB를 Firebase로 업로드 하기 때문에 항상 최신 정보를 보장하지 않습니다.
+
+DB가 언제 업데이트 되었는지는 앱 내 설정에서 로컬 DB 버전에서 확인할 수 있습니다.
+
+## 빌드해보기
+해당 소스코드를 다운받아서 iOS, Android, Web앱 등으로 빌드할 수 있습니다.
+
+iOS나 macOS는 macOS가 필요하고, Flutter SDK가 설치되어 있어야 합니다.  
+또한 Android용으로 빌드를 위해서는 Android SDK설치가 되어 있어야 합니다.  
+```bash
+# 앱 빌드를 위한 필수 패키지 다운로드
+flutter pub get
+# Android용
+flutter build apk
+# iOS용
+flutter build ios
+# Web용
+flutter build web
+```
+나머지 옵션은 터미널 창에 `flutter build --help` 를 입력하면 알 수 있습니다.
+## 개발 참고 사항
+### 설정 내 디버그 설정 숨기기
+소스코드 내에 `Settings.dart` 에 `isDebug` 변수가 있습니다. 이 값을 `false` 로 지정하시면 디버그 설정이 나타나지 않습니다.
+### 디자인 요소 수정하기
+거의 대부분의 요소는 `styleWidget.dart` 라는 파일에서 편집할 수 있습니다.
+메소드 설명은 어래와 같습니다.
+
+* `ClassDetailInfoCard` -> 개설 강좌 조회에서 카드를 누르면 나오는 세부 페이지 입니다.
+* `SuwonButton` -> 메인 메뉴나 즐겨찾기 추가에 사용된 버튼입니다.
+* `CardInfo` -> 카드 형식의 위젯입니다. 설정에 있는 각 항목들에 사용되었습니다.
+* `CardInfo.Simplified` -> 카드 형식의 위젯입니다. 다만 개설 강좌 조회 페이지에 있는 것 처럼 아이콘이 없는 위젯입니다.
+
+### Web버전에서는 왜 일부 기능이 안되나요?
+특정 사이트가 다른 특정 사이트의 데이터를 가져오는 경우 CORS를 차단하기 위해 데이터를 가져올 수 없습니다.  
+물론 이를 해결하기 위한 방법이 있는 것으로 알지만 지금 저의 능력으로는
+해결이 불가능 합니다.  
+세부적인 내용은 [여기](https://developer.mozilla.org/ko/docs/Web/HTTP/CORS)를 참고하세요.
+
+### Windows에서는 작동이 안되나요?
+해당 앱은 시작할 때 Firebase와의 연결을 일부 진행합니다.  
+iOS나 Android는 Firebase통신을 위한 키가 제공되고 등록되지만 Windows에서는 그러한 방법이 보이지 않기 때문에 작동이 되지 않습니다.
+
+이 부분은 계속 찾아보겠습니다.  
+README.md에 추가해야할 내용이 있다면 언제든 건의 부탁드립니다.

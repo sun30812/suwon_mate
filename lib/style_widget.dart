@@ -69,18 +69,21 @@ class ClassDetailInfoCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('과목 코드: $subjectCode', style: const TextStyle(fontSize: 17.0)),
+                      Text('과목 코드: $subjectCode',
+                          style: const TextStyle(fontSize: 17.0)),
                       IconButton(
-                        tooltip: '과목 코드 복사',
+                          tooltip: '과목 코드 복사',
                           onPressed: () {
-                        Clipboard.setData(ClipboardData(text: subjectCode))
-                            .then((value) => {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('과목 코드가 복사되었습니다.'),
-                                  duration: Duration(seconds: 1),)
-                              )
-                        });
-                      }, icon: Icon(Icons.copy)),
+                            Clipboard.setData(ClipboardData(text: subjectCode))
+                                .then((value) => {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text('과목 코드가 복사되었습니다.'),
+                                        duration: Duration(seconds: 1),
+                                      ))
+                                    });
+                          },
+                          icon: const Icon(Icons.copy)),
                     ],
                   ),
                   Text(
@@ -92,9 +95,33 @@ class ClassDetailInfoCard extends StatelessWidget {
           CardInfo(
               icon: Icons.work_outline,
               title: '강의자 정보',
-              detail: Text(
-                '성별: $sex\n성함: $hostName\n직책: $hostGrade',
-                style: const TextStyle(fontSize: 17.0),
+              detail: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '성별: $sex',
+                    style: const TextStyle(fontSize: 17.0),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '성함: $hostName',
+                        style: const TextStyle(fontSize: 17.0),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context)
+                            .pushNamed('/professor', arguments: hostName),
+                        icon: const Icon(Icons.search),
+                        tooltip: '해당 강의자가 강의하는 모든 과목을 검색합니다.',
+                      )
+                    ],
+                  ),
+                  Text(
+                    '나이: $hostGrade',
+                    style: const TextStyle(fontSize: 17.0),
+                  ),
+                ],
               )),
           CardInfo(
               icon: Icons.school_outlined,
@@ -148,7 +175,7 @@ class SuwonButton extends StatelessWidget {
   void Function()? buttonAction() {
     if (isActivate != null) {
       if (isActivate == false) {
-    return null;
+        return null;
       }
     }
     return onPressed;
@@ -199,19 +226,19 @@ class CardInfo extends StatelessWidget {
         detail = detail,
         super(key: key);
 
-  static Widget Simplified({required String title, String? subTitle, required Widget content}) {
+  static Widget Simplified(
+      {required String title, String? subTitle, required Widget content}) {
     Widget SubTitle(String? text) {
       if (text != null) {
         return Text(
           text,
-          style: const TextStyle(
-              fontSize: 15.0,
-              fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         );
       } else {
         return Container();
       }
     }
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -243,14 +270,15 @@ class CardInfo extends StatelessWidget {
             Row(
               children: [
                 Icon(icon),
-                Padding(padding: EdgeInsets.only(right: 10.0)),
+                const Padding(padding: EdgeInsets.only(right: 10.0)),
                 Text(
                   title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18.0),
                 ),
               ],
             ),
-            Divider(),
+            const Divider(),
             detail
           ],
         ),

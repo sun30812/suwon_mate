@@ -2,16 +2,17 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:suwon_mate/Settings.dart';
-import 'package:suwon_mate/favoriteSubject.dart';
+import 'package:suwon_mate/settings.dart';
+import 'package:suwon_mate/favorite_subject.dart';
 import 'package:suwon_mate/help.dart';
-import 'OpenClassInfo.dart';
+import 'package:suwon_mate/profesor_subjects.dart';
+import 'open_class_info.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
-import 'package:suwon_mate/Information.dart';
+import 'package:suwon_mate/info.dart';
 import 'package:suwon_mate/schedule.dart';
-import 'styleWidget.dart';
-import 'openClass.dart';
+import 'style_widget.dart';
+import 'open_class.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,15 +27,16 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '수원 메이트',
-      home: MainPage(),
+      home: const MainPage(),
       routes: {
-        '/schedule': (context) => SchedulePage(),
-        '/oclass': (context) => OpenClass(),
-        '/oclass/info': (context) => OpenClassInfo(),
-        '/info': (context) => InfoPage(),
-        '/favorite': (context) => FavoriteSubjectPage(),
-        '/settings': (context) => SettingPage(),
-        '/help': (context) => HelpPage()
+        '/schedule': (context) => const SchedulePage(),
+        '/oclass': (context) => const OpenClass(),
+        '/oclass/info': (context) => const OpenClassInfo(),
+        '/professor': (context) => ProfessorSubjectsPage(),
+        '/info': (context) => const InfoPage(),
+        '/favorite': (context) => const FavoriteSubjectPage(),
+        '/settings': (context) => const SettingPage(),
+        '/help': (context) => const HelpPage()
       },
     );
   }
@@ -60,7 +62,7 @@ class MainPage extends StatelessWidget {
             if (!snapshot.hasData) {
               return Container();
             } else if (snapshot.hasError) {
-              return Text('Error');
+              return const Text('Error');
             } else {
               return MainMenu(preferences: snapshot.data as SharedPreferences);
             }
