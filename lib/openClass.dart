@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +17,7 @@ class _OpenClassState extends State<OpenClass> {
   List<DropdownMenuItem<String>> dropdownList = [];
   List<DropdownMenuItem<String>> gradeDownList = [];
   List orgClassList = [];
+  bool _offline = false;
   bool isSaved = false;
   String _myDept = '컴퓨터학부';
   final String _mySub = '전체';
@@ -30,8 +32,15 @@ class _OpenClassState extends State<OpenClass> {
       _myDept = _pref.getString('mySub') ?? '컴퓨터학부';
       _myGrade = _pref.getString('myGrade') ?? '1학년';
       _isFirst = false;
+      if (_pref.containsKey('settings')) {
+        _offline = (jsonDecode(_pref.getString('settings')!) as Map)['offline'];
+      }
     }
-
+    if ((_pref.containsKey('db_ver')) && _offline) {
+      log('offline');
+      isSaved = true;
+      return _pref.getString('class');
+    }
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
     if ((_pref.getString('db_ver')) == versionInfo["db_ver"]) {
@@ -47,10 +56,12 @@ class _OpenClassState extends State<OpenClass> {
   void initState() {
     super.initState();
 
-    for(var dat in gradeList) {
-      gradeDownList.add(DropdownMenuItem(child: Text(dat), value: dat,));
+    for (var dat in gradeList) {
+      gradeDownList.add(DropdownMenuItem(
+        child: Text(dat),
+        value: dat,
+      ));
     }
-
   }
 
   @override
@@ -78,7 +89,10 @@ class _OpenClassState extends State<OpenClass> {
               );
             } else if (snapshot.hasError) {
               return Column(
-                children: const [Icon(Icons.error_outline), Text('오류가 발생했습니다.')],
+                children: const [
+                  Icon(Icons.error_outline),
+                  Text('오류가 발생했습니다.')
+                ],
               );
             } else {
               if (isSaved) {
@@ -88,24 +102,29 @@ class _OpenClassState extends State<OpenClass> {
                 orgClassList = _event.snapshot.value as List;
               }
               List classList = [];
-              for(var dat in orgClassList) {
+              for (var dat in orgClassList) {
                 dpSet.add(dat['estbDpmjNm'].toString());
               }
               if (_isFirstDp) {
-                for(String depart in dpSet) {
-                  dropdownList.add(DropdownMenuItem(child: Text(depart), value: depart,));
+                for (String depart in dpSet) {
+                  dropdownList.add(DropdownMenuItem(
+                    child: Text(depart),
+                    value: depart,
+                  ));
                 }
-                dropdownList.sort((a,b) => a.value!.compareTo(b.value!));
+                dropdownList.sort((a, b) => a.value!.compareTo(b.value!));
                 _isFirstDp = false;
               }
               for (var classData in orgClassList) {
-                if ((classData['estbDpmjNm'] == _myDept) && ((classData['trgtGrdeCd'].toString()+'학년') == _myGrade)) {
+                if ((classData['estbDpmjNm'] == _myDept) &&
+                    ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
                   if (_mySub == '전체') {
-                  classList.add(classData);
+                    classList.add(classData);
                   }
                 }
               }
-              classList.sort((a,b) => ((a["subjtNm"] as String).compareTo((b["subjtNm"] as String))));
+              classList.sort((a, b) => ((a["subjtNm"] as String)
+                  .compareTo((b["subjtNm"] as String))));
               return Column(
                 children: [
                   Row(
@@ -114,20 +133,26 @@ class _OpenClassState extends State<OpenClass> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: DropdownButton(
-                            items: dropdownList, onChanged: (String? value) {
-                              setState(() {
-                                _myDept = value!;
-                              });
-                        }, value: _myDept,),
+                          items: dropdownList,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _myDept = value!;
+                            });
+                          },
+                          value: _myDept,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: DropdownButton(
-                          items: gradeDownList, onChanged: (String? value) {
-                          setState(() {
-                            _myGrade = value!;
-                          });
-                        }, value: _myGrade,),
+                          items: gradeDownList,
+                          onChanged: (String? value) {
+                            setState(() {
+                              _myGrade = value!;
+                            });
+                          },
+                          value: _myGrade,
+                        ),
                       ),
                     ],
                   ),
@@ -136,14 +161,22 @@ class _OpenClassState extends State<OpenClass> {
                         itemCount: classList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed('/oclass/info', arguments: classList[index]);
-                            },
-                            child: CardInfo.Simplified(title: classList[index]["subjtNm"], subTitle: classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨"
-                                , content: Text((classList[index]["deptNm"] ?? "학부 전체 대상(전공 없음)") +
-                                  ", " +
-                                  classList[index]["facDvnm"] + ', ' + (classList[index]["timtSmryCn"] ?? "공개 안됨")),)
-                          );
+                              onTap: () {
+                                Navigator.of(context).pushNamed('/oclass/info',
+                                    arguments: classList[index]);
+                              },
+                              child: CardInfo.Simplified(
+                                title: classList[index]["subjtNm"],
+                                subTitle:
+                                    classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
+                                content: Text((classList[index]["deptNm"] ??
+                                        "학부 전체 대상(전공 없음)") +
+                                    ", " +
+                                    classList[index]["facDvnm"] +
+                                    ', ' +
+                                    (classList[index]["timtSmryCn"] ??
+                                        "공개 안됨")),
+                              ));
                         }),
                   ),
                 ],
