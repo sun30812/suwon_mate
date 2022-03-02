@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,6 +44,14 @@ class _FavoriteListViewState extends State<FavoriteListView> {
 
     _favorites = _pref.getStringList('favorites') ?? [];
 
+    if (_pref.containsKey('settings')) {
+      if (_pref.containsKey('class') &&
+          (jsonDecode(_pref.getString('settings')!))['offline']) {
+        _isSaved = true;
+        return _pref.getString('class');
+      }
+    }
+
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
     if ((_pref.getString('db_ver')) == versionInfo["db_ver"]) {
@@ -59,6 +66,8 @@ class _FavoriteListViewState extends State<FavoriteListView> {
   @override
   void dispose() async {
     super.dispose();
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    _pref.setString('class', jsonEncode(_classList));
   }
 
   @override
@@ -73,6 +82,9 @@ class _FavoriteListViewState extends State<FavoriteListView> {
           } else {
             if (_isSaved) {
               _classList = jsonDecode(snapshot.data);
+            } else {
+              DatabaseEvent _event = snapshot.data;
+              _classList = _event.snapshot.value as List;
             }
             for (var favorite in _favorites) {
               for (var dat in _classList) {

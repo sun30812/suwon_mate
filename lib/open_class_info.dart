@@ -83,6 +83,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
       _favorites = _pref.getStringList('favorites') ?? [];
       _isFirst = false;
     }
+
     for (var _favorite in _favorites) {
       if (_favorite == widget._subjectCode) {
         return true;
