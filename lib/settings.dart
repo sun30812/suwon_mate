@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/style_widget.dart';
@@ -19,11 +19,14 @@ class _SettingPageState extends State<SettingPage> {
   bool _isFirst = true;
   bool _isSynced = false;
   final isDebug = true;
+  late PackageInfo packageInfo;
+  late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
   List<DropdownMenuItem<String>> gradeDropdownList = [];
   Map<String, dynamic> functionSetting = {'offline': false};
 
   Future<SharedPreferences> getSettings() async {
+    packageInfo = await PackageInfo.fromPlatform();
     SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref;
   }
@@ -287,9 +290,9 @@ class _SettingPageState extends State<SettingPage> {
                                           });
                                     },
                                     child: Row(
-                                      children: [
+                                      children: const [
                                         Icon(Icons.offline_bolt_outlined),
-                                        const Text('오프라인 모드'),
+                                        Text('오프라인 모드'),
                                       ],
                                     )),
                                 Switch(
@@ -309,7 +312,8 @@ class _SettingPageState extends State<SettingPage> {
                     icon: Icons.info_outline,
                     title: '버전 정보',
                     detail: Text(
-                        '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? 'unknown'}'),
+                        '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? 'unknown'}\n'
+                        '로컬 앱 버전: ${packageInfo.version}'),
                   )
                 ],
               );
