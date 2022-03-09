@@ -75,6 +75,12 @@ class _OpenClassState extends State<OpenClass> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text('개설 강좌 조회')),
+        floatingActionButton: SuwonButton(
+            isActivate: true,
+            icon: Icons.search,
+            buttonName: '검색',
+            onPressed: () => Navigator.of(context)
+                .pushNamed('/oclass/search', arguments: orgClassList)),
         body: FutureBuilder(
           future: getClass(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
