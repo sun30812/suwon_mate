@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:suwon_mate/search.dart';
 import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/favorite_subject.dart';
 import 'package:suwon_mate/help.dart';
@@ -31,8 +32,9 @@ class App extends StatelessWidget {
       routes: {
         '/schedule': (context) => const SchedulePage(),
         '/oclass': (context) => const OpenClass(),
+        '/oclass/search': (context) => const SearchPage(),
         '/oclass/info': (context) => const OpenClassInfo(),
-        '/professor': (context) => ProfessorSubjectsPage(),
+        '/professor': (context) => const ProfessorSubjectsPage(),
         '/info': (context) => const InfoPage(),
         '/favorite': (context) => const FavoriteSubjectPage(),
         '/settings': (context) => const SettingPage(),
@@ -72,8 +74,8 @@ class MainPage extends StatelessWidget {
 }
 
 class MainMenu extends StatefulWidget {
-  SharedPreferences _preferences;
-  MainMenu({
+  final SharedPreferences _preferences;
+  const MainMenu({
     Key? key,
     required SharedPreferences preferences,
   })  : _preferences = preferences,
