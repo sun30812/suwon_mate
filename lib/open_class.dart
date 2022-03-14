@@ -15,12 +15,47 @@ class _OpenClassState extends State<OpenClass> {
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
   List<DropdownMenuItem<String>> dropdownList = [];
   List<DropdownMenuItem<String>> gradeDownList = [];
+  List<DropdownMenuItem<String>> regionList = const [
+    DropdownMenuItem(
+      child: Text('전체'),
+      value: '전체',
+    ),
+    DropdownMenuItem(
+      child: Text('1영역(언어와 소통)'),
+      value: '언어와 소통',
+    ),
+    DropdownMenuItem(
+      child: Text('2영역(세계와 문명)'),
+      value: '세계와 문명',
+    ),
+    DropdownMenuItem(
+      child: Text('3영역(역사와 사회)'),
+      value: '역사와 사회',
+    ),
+    DropdownMenuItem(
+      child: Text('4영역(문화와 철학)'),
+      value: '문화와 철학',
+    ),
+    DropdownMenuItem(
+      child: Text('5영역(기술과 정보)'),
+      value: '기술과 정보',
+    ),
+    DropdownMenuItem(
+      child: Text('6영역(건강과 예술)'),
+      value: '건강과 예술',
+    ),
+    DropdownMenuItem(
+      child: Text('7영역(자연과 과학)'),
+      value: '자연과 과학',
+    )
+  ];
   List orgClassList = [];
   bool _offline = false;
   bool isSaved = false;
   String _myDept = '컴퓨터학부';
   final String _mySub = '전체';
   String _myGrade = '1학년';
+  String _region = '전체';
   Set<String> dpSet = {};
   bool _isFirst = true;
   bool _isFirstDp = true;
@@ -48,6 +83,20 @@ class _OpenClassState extends State<OpenClass> {
     DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
     _pref.setString('db_ver', versionInfo["db_ver"]);
     return await ref.once();
+  }
+
+  Widget regionSelector(String dept) {
+    if (dept == '교양') {
+      return DropdownButton(
+          items: regionList,
+          onChanged: (String? value) {
+            setState(() {
+              _region = value!;
+            });
+          },
+          value: _region);
+    }
+    return Container();
   }
 
   @override
@@ -122,7 +171,9 @@ class _OpenClassState extends State<OpenClass> {
               for (var classData in orgClassList) {
                 if ((classData['estbDpmjNm'] == _myDept) &&
                     ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
-                  if (_mySub == '전체') {
+                  if (_mySub == '전체' &&
+                      (_region == '전체' ||
+                          _region == (classData["cltTerrNm"] ?? 'none'))) {
                     classList.add(classData);
                   }
                 }
@@ -134,6 +185,10 @@ class _OpenClassState extends State<OpenClass> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: regionSelector(_myDept),
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: DropdownButton(

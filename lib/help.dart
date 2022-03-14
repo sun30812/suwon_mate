@@ -27,7 +27,8 @@ class HelpPage extends StatelessWidget {
                 children: const [
                   Text(
                     '본인 전공을 고르시면 그에 맞는 과목이 나옵니다. 과목을 누르면 더욱 자세히 볼 수 있습니다.\n'
-                    '아이콘으로 된 버튼은 누르고 있으면 설명이 나옵니다.\n',
+                    '아이콘으로 된 버튼은 누르고 있으면 설명이 나옵니다.\n'
+                    '교양 영역의 경우 과를 교양으로 선택하면 고를 수 있습니다.\n',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   Text(
