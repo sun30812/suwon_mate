@@ -16,10 +16,10 @@ class InfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: SuwonButton(
-          icon: Icons.school_outlined,
-          buttonName: '학교사이트 이동',
+          icon: Icons.screen_share_outlined,
+          buttonName: '웹에서 보기',
           onPressed: () async {
-            await launch('https://suwon.ac.kr',
+            await launch('https://www.suwon.ac.kr/index.html?menuno=674',
                 forceSafariVC: true, forceWebView: true);
           }),
       appBar: AppBar(title: const Text('공지사항')),
