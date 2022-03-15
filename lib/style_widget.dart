@@ -286,3 +286,41 @@ class CardInfo extends StatelessWidget {
     );
   }
 }
+
+class InputBar extends StatelessWidget {
+  void Function(String)? _onChanged;
+  InputBar(
+      {Key? key,
+      required TextEditingController controller,
+      void Function(String)? onChanged})
+      : _onChanged = onChanged,
+        _controller = controller,
+        super(key: key);
+
+  final TextEditingController _controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3.0),
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.black12,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(25.0)),
+        child: TextField(
+          onChanged: _onChanged,
+          controller: _controller,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+            hintText: "입력하여 검색",
+            icon: Padding(
+              padding: EdgeInsets.only(left: 8.0),
+              child: Icon(Icons.search),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

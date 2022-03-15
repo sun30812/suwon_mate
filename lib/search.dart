@@ -31,15 +31,12 @@ class _SearchPageState extends State<SearchPage> {
           Row(
             children: [
               Flexible(
-                child: TextField(
-                  controller: _controller,
-                ),
+                child: InputBar(
+                    controller: _controller,
+                    onChanged: (value) {
+                      setState(() {});
+                    }),
               ),
-              IconButton(
-                  onPressed: () {
-                    setState(() {});
-                  },
-                  icon: const Icon(Icons.search))
             ],
           ),
           Flexible(
@@ -47,8 +44,12 @@ class _SearchPageState extends State<SearchPage> {
                 itemCount: classList.length,
                 itemBuilder: (BuildContext context, int index) {
                   if (_controller.text.isEmpty ||
-                      classList[index]["ltrPrfsNm"] == _controller.text ||
-                      classList[index]["subjtNm"] == _controller.text) {
+                      classList[index]["ltrPrfsNm"]
+                          .toString()
+                          .contains(_controller.text) ||
+                      classList[index]["subjtNm"]
+                          .toString()
+                          .contains(_controller.text)) {
                     return GestureDetector(
                         onTap: () {
                           Navigator.of(context).pushNamed('/oclass/info',
