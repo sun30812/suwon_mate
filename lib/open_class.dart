@@ -120,6 +120,8 @@ class _OpenClassState extends State<OpenClass> {
     _pref.setStringList('dp_set', dpSet.toList());
   }
 
+  void _forceUpdate() async {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,38 +184,41 @@ class _OpenClassState extends State<OpenClass> {
                   .compareTo((b["subjtNm"] as String))));
               return Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: regionSelector(_myDept),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: DropdownButton(
-                          items: dropdownList,
-                          onChanged: (String? value) {
-                            setState(() {
-                              _myDept = value!;
-                            });
-                          },
-                          value: _myDept,
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: regionSelector(_myDept),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: DropdownButton(
-                          items: gradeDownList,
-                          onChanged: (String? value) {
-                            setState(() {
-                              _myGrade = value!;
-                            });
-                          },
-                          value: _myGrade,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DropdownButton(
+                            items: dropdownList,
+                            onChanged: (String? value) {
+                              setState(() {
+                                _myDept = value!;
+                              });
+                            },
+                            value: _myDept,
+                          ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DropdownButton(
+                            items: gradeDownList,
+                            onChanged: (String? value) {
+                              setState(() {
+                                _myGrade = value!;
+                              });
+                            },
+                            value: _myGrade,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Flexible(
                     child: ListView.builder(

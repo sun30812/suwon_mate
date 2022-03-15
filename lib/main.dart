@@ -124,7 +124,7 @@ class _MainMenuState extends State<MainMenu> {
           ),
           SuwonButton(
               icon: Icons.star_outline,
-              buttonName: '즐겨찾는 과목(베타)',
+              buttonName: '즐겨찾는 과목',
               onPressed: () => Navigator.of(context).pushNamed('/favorite')),
           SuwonButton(
               icon: Icons.settings,
