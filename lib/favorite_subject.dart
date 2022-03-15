@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class FavoriteSubjectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('즐겨찾는 과목(베타)'),
+        title: const Text('즐겨찾는 과목'),
       ),
       body: const FavoriteListView(),
     );
@@ -37,6 +38,10 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     _classList = [];
     _favorites = [];
     _favoriteClassList = [];
+  }
+
+  FutureOr onGoBack(dynamic data) {
+    setState(() {});
   }
 
   Future getData() async {
@@ -94,16 +99,27 @@ class _FavoriteListViewState extends State<FavoriteListView> {
               }
             }
             if (_favorites.isEmpty) {
-              return const Center(
-                  child: Text('아직 즐겨찾기에 등록하신 과목이 없습니다. 추가해보세요'));
+              return Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.star_border,
+                    size: 50.0,
+                  ),
+                  Text('아직 즐겨찾기에 등록하신 과목이 없습니다. 추가해보세요'),
+                ],
+              ));
             } else {
               return ListView.builder(
                   itemCount: _favorites.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
                       onTap: () {
-                        Navigator.of(context).pushNamed('/oclass/info',
-                            arguments: _favoriteClassList[index]);
+                        Navigator.of(context)
+                            .pushNamed('/oclass/info',
+                                arguments: _favoriteClassList[index])
+                            .then(onGoBack);
                       },
                       child: Card(
                         child: Padding(

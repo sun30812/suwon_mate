@@ -98,6 +98,11 @@ class _FavoriteButtonState extends State<FavoriteButton> {
     _favorites = [];
   }
 
+  void syncFavorite() async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    _pref.setStringList('favorites', _favorites);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -123,6 +128,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                   _isAddFavorite = true;
                   _favorites.add(widget._subjectCode);
                 });
+                syncFavorite();
               },
             );
           } else {
@@ -132,19 +138,14 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               onPressed: () {
                 setState(() {
                   _isAddFavorite = false;
+                  _favorites.remove(widget._subjectCode);
                 });
+                syncFavorite();
               },
             );
           }
         }
       },
     );
-  }
-
-  @override
-  void dispose() async {
-    super.dispose();
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setStringList('favorites', _favorites);
   }
 }

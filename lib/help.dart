@@ -47,25 +47,11 @@ class HelpPage extends StatelessWidget {
               )),
           CardInfo(
               icon: Icons.star_outline,
-              title: '즐겨찾는 과목(베타)',
+              title: '즐겨찾는 과목',
               detail: Column(
-                children: [
-                  Card(
-                    color: Colors.amber,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: const [
-                          Icon(Icons.warning_amber_outlined),
-                          Text('주의: 이 기능은 베타상태입니다.')
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    '개설 강좌 조회에서 즐겨찾기에 추가한 과목들만 확인할 수 있습니다.\n'
-                    '베타 상태에서는 즐겨찾는 과목메뉴에 들어가서 즐겨찾기를 해제한 경우 즐겨찾기 목록에 '
-                    '과목이 여전히 남아 있습니다. \n완전히 메인 화면으로 나갔다가 오면 사라집니다.',
+                children: const [
+                  Text(
+                    '개설 강좌 조회에서 즐겨찾기에 추가한 과목들만 확인할 수 있습니다.',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],
