@@ -118,7 +118,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    '나이: $hostGrade',
+                    '직책: $hostGrade',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
