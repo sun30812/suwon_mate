@@ -120,8 +120,6 @@ class _OpenClassState extends State<OpenClass> {
     _pref.setStringList('dp_set', dpSet.toList());
   }
 
-  void _forceUpdate() async {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

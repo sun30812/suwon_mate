@@ -89,51 +89,27 @@ class _SettingPageState extends State<SettingPage> {
           detail: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Card(
+              NotiCard(
                 color: Colors.amber,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: const [
-                      Icon(Icons.warning_amber_outlined),
-                      Padding(padding: EdgeInsets.only(right: 3.0)),
-                      Flexible(
-                          child: Text(
-                              '이 설정을 숨기려면 Settings.dart의 isDebug변수를 false로 지정합니다.')),
-                    ],
-                  ),
-                ),
+                icon: Icons.warning_amber_outlined,
+                message: '이 설정을 숨기려면 settings.dart의 isDebug변수를 false로 지정합니다.',
               ),
               TextButton(
                   onPressed: () async {
                     showDialog(
                         barrierDismissible: false,
                         context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Row(
-                              children: const [
-                                Icon(Icons.warning_amber_outlined),
-                                Text('경고')
-                              ],
-                            ),
-                            content: const Text('저장된 즐겨찾기 과목을 모두 지우시겠습니까?'),
-                            scrollable: true,
-                            actions: [
-                              TextButton(
-                                  onPressed: () async {
-                                    SharedPreferences _pref =
-                                        await SharedPreferences.getInstance();
-                                    _pref.remove('favorites');
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('확인')),
-                              TextButton(
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  child: const Text('취소'))
-                            ],
-                          );
-                        });
+                        builder: (BuildContext context) => SuwonDialog(
+                              icon: Icons.error_outline,
+                              title: '경고',
+                              content: Text('즐겨찾는 과목의 데이터를 모두 지웁니까?'),
+                              onPressed: () async {
+                                SharedPreferences _pref =
+                                    await SharedPreferences.getInstance();
+                                _pref.remove('favorites');
+                                Navigator.of(context).pop();
+                              },
+                            ));
                   },
                   child: const Text('디버그: 즐겨찾기 항목 모두 제거')),
               TextButton(
@@ -141,36 +117,21 @@ class _SettingPageState extends State<SettingPage> {
                     showDialog(
                         barrierDismissible: false,
                         context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Row(
-                              children: const [
-                                Icon(Icons.error_outline),
-                                Text('경고')
-                              ],
-                            ),
-                            content: const Text('이 앱의 모든 데이터를 지우시겠습니까?'),
-                            scrollable: true,
-                            actions: [
-                              TextButton(
-                                onPressed: () async {
-                                  SharedPreferences _pref =
-                                      await SharedPreferences.getInstance();
-                                  _pref.clear();
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('확인'),
-                              ),
-                              TextButton(
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  child: const Text('취소'))
-                            ],
-                          );
-                        });
+                        builder: (BuildContext context) => SuwonDialog(
+                              icon: Icons.error_outline,
+                              title: '경고',
+                              content: Text('앱의 데이터를 모두 지웁니까?'),
+                              onPressed: () async {
+                                SharedPreferences _pref =
+                                    await SharedPreferences.getInstance();
+                                _pref.remove('favorites');
+                                Navigator.of(context).pop();
+                              },
+                            ));
                   },
                   style: ButtonStyle(
                       overlayColor: MaterialStateProperty.all(
-                          Colors.redAccent.withAlpha(50)),
+                          Colors.redAccent.withAlpha(30)),
                       foregroundColor:
                           MaterialStateProperty.all(Colors.redAccent)),
                   child: const Text(
@@ -291,7 +252,11 @@ class _SettingPageState extends State<SettingPage> {
                                     },
                                     child: Row(
                                       children: const [
-                                        Icon(Icons.offline_bolt_outlined),
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 10.0),
+                                          child:
+                                              Icon(Icons.offline_bolt_outlined),
+                                        ),
                                         Text('오프라인 모드'),
                                       ],
                                     )),
@@ -307,12 +272,77 @@ class _SettingPageState extends State<SettingPage> {
                           )
                         ],
                       )),
+                  CardInfo(
+                    icon: Icons.restore,
+                    title: '초기화 메뉴',
+                    detail: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextButton(
+                            onPressed: () async {
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      SuwonDialog(
+                                          icon: Icons.error_outline,
+                                          title: '경고',
+                                          content: const Text(
+                                              '앱의 모든 데이터를 초기화합니다. 계속하시겠습니까?'),
+                                          onPressed: () async {
+                                            SharedPreferences _pref =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            _pref.clear();
+                                            Navigator.of(context).pop();
+                                          }));
+                            },
+                            style: ButtonStyle(
+                                overlayColor: MaterialStateProperty.all(
+                                    Colors.redAccent.withAlpha(30)),
+                                foregroundColor: MaterialStateProperty.all(
+                                    Colors.redAccent)),
+                            child: const Text(
+                              '전체 데이터 초기화',
+                            )),
+                        TextButton(
+                            onPressed: () async {
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SuwonDialog(
+                                      icon: Icons.error_outline,
+                                      title: '경고',
+                                      content: const Text(
+                                          'DB의 데이터를 다시 받습니다. 계속하시겠습니까?'),
+                                      onPressed: () async {
+                                        SharedPreferences _pref =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        _pref.remove('class');
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  });
+                            },
+                            style: ButtonStyle(
+                                overlayColor: MaterialStateProperty.all(
+                                    Colors.redAccent.withAlpha(30)),
+                                foregroundColor: MaterialStateProperty.all(
+                                    Colors.redAccent)),
+                            child: const Text(
+                              'DB 데이터 다시 받기',
+                            )),
+                      ],
+                    ),
+                  ),
                   debugWidget(),
                   CardInfo(
                     icon: Icons.info_outline,
                     title: '버전 정보',
                     detail: Text(
-                        '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? 'unknown'}\n'
+                        '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
                         '로컬 앱 버전: ${packageInfo.version}'),
                   )
                 ],
