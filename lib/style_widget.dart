@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ClassDetailInfoCard extends StatelessWidget {
   final String subjectCode,
@@ -289,11 +290,14 @@ class CardInfo extends StatelessWidget {
 
 class InputBar extends StatelessWidget {
   void Function(String)? _onChanged;
+  final IconData? _icon;
   InputBar(
       {Key? key,
       required TextEditingController controller,
+      IconData? icon,
       void Function(String)? onChanged})
       : _onChanged = onChanged,
+        _icon = icon,
         _controller = controller,
         super(key: key);
 
@@ -311,14 +315,88 @@ class InputBar extends StatelessWidget {
         child: TextField(
           onChanged: _onChanged,
           controller: _controller,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             border: InputBorder.none,
             hintText: "입력하여 검색",
             icon: Padding(
-              padding: EdgeInsets.only(left: 8.0),
-              child: Icon(Icons.search),
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Icon(_icon),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SuwonDialog extends StatelessWidget {
+  IconData _icon;
+  String _title;
+  Widget _content;
+  void Function()? _onPressed;
+  SuwonDialog({
+    required IconData icon,
+    required String title,
+    required Widget content,
+    void Function()? onPressed,
+    Key? key,
+  })  : _icon = icon,
+        _title = title,
+        _content = content,
+        _onPressed = onPressed,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        children: [
+          Icon(_icon),
+          const Padding(padding: EdgeInsets.only(right: 10.0)),
+          Text(_title)
+        ],
+      ),
+      content: _content,
+      scrollable: true,
+      actions: [
+        TextButton(
+          onPressed: _onPressed,
+          child: const Text('확인'),
+        ),
+        TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('취소'))
+      ],
+    );
+  }
+}
+
+class NotiCard extends StatelessWidget {
+  IconData? _icon = Icons.warning_amber_outlined;
+  Color? _color = Colors.white;
+  String _mesage;
+  NotiCard({
+    IconData? icon,
+    Color? color,
+    required String message,
+    Key? key,
+  })  : _mesage = message,
+        _icon = icon,
+        _color = color,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: _color,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Icon(_icon),
+            const Padding(padding: const EdgeInsets.only(right: 10.0)),
+            Flexible(child: Text(_mesage)),
+          ],
         ),
       ),
     );

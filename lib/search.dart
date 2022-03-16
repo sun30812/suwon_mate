@@ -32,6 +32,7 @@ class _SearchPageState extends State<SearchPage> {
             children: [
               Flexible(
                 child: InputBar(
+                    icon: Icons.search,
                     controller: _controller,
                     onChanged: (value) {
                       setState(() {});
@@ -39,17 +40,18 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ],
           ),
+          searchHint(_controller.text.isNotEmpty),
           Flexible(
             child: ListView.builder(
                 itemCount: classList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  if (_controller.text.isEmpty ||
-                      classList[index]["ltrPrfsNm"]
-                          .toString()
-                          .contains(_controller.text) ||
-                      classList[index]["subjtNm"]
-                          .toString()
-                          .contains(_controller.text)) {
+                  if ((_controller.text.isNotEmpty) &&
+                      (classList[index]["ltrPrfsNm"]
+                              .toString()
+                              .contains(_controller.text) ||
+                          classList[index]["subjtNm"]
+                              .toString()
+                              .contains(_controller.text))) {
                     return GestureDetector(
                         onTap: () {
                           Navigator.of(context).pushNamed('/oclass/info',
@@ -71,6 +73,23 @@ class _SearchPageState extends State<SearchPage> {
           )
         ]),
       ),
+    );
+  }
+
+  Widget searchHint(bool available) {
+    if (available) {
+      return Container();
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        Icon(
+          Icons.search,
+          color: Colors.grey,
+          size: 80.0,
+        ),
+        Text('강의자의 이름이나 과목명을 입력하면 검색을 시작합니다.'),
+      ],
     );
   }
 }
