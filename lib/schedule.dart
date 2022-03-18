@@ -66,7 +66,7 @@ class SchedulePage extends StatelessWidget {
               return ListView.builder(
                   itemCount: rows.length - 1,
                   itemBuilder: (BuildContext context, int index) {
-                    return CardInfo.Simplified(
+                    return CardInfo.simplified(
                         title: (rows[1 + index].getElementsByTagName('td')[1])
                             .text,
                         content: Text(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/info_detail.dart';
 import 'package:suwon_mate/search.dart';
@@ -15,10 +16,18 @@ import 'package:suwon_mate/schedule.dart';
 import 'style_widget.dart';
 import 'open_class.dart';
 
+bool isSupportPlatform = (defaultTargetPlatform != TargetPlatform.windows) &&
+    (defaultTargetPlatform != TargetPlatform.linux);
+
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const App());
+  if (!isSupportPlatform) {
+    runApp(const App());
+  } else {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+    runApp(const App());
+  }
 }
 
 class App extends StatelessWidget {
@@ -99,38 +108,48 @@ class _MainMenuState extends State<MainMenu> {
 
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SuwonButton(
-            icon: Icons.help_outline,
-            buttonName: '도움말',
-            onPressed: () => Navigator.of(context).pushNamed('/help'),
+          const NotSupportPlatformMessage(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SuwonButton(
+                icon: Icons.help_outline,
+                buttonName: '도움말',
+                onPressed: () => Navigator.of(context).pushNamed('/help'),
+              ),
+              SuwonButton(
+                icon: Icons.schedule_outlined,
+                buttonName: '학사 일정',
+                isActivate: isActivated && !kIsWeb,
+                onPressed: () => Navigator.of(context).pushNamed('/schedule'),
+              ),
+              SuwonButton(
+                isActivate: isSupportPlatform,
+                icon: Icons.date_range,
+                buttonName: '개설 강좌 조회',
+                onPressed: () => Navigator.of(context).pushNamed('/oclass'),
+              ),
+              SuwonButton(
+                icon: Icons.notifications_none,
+                buttonName: '공지사항',
+                isActivate: isActivated && !kIsWeb,
+                onPressed: () => Navigator.of(context).pushNamed('/info'),
+              ),
+              SuwonButton(
+                  isActivate: isSupportPlatform,
+                  icon: Icons.star_outline,
+                  buttonName: '즐겨찾는 과목',
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed('/favorite')),
+              SuwonButton(
+                  isActivate: isSupportPlatform,
+                  icon: Icons.settings,
+                  buttonName: '설정',
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed('/settings')),
+            ],
           ),
-          SuwonButton(
-            icon: Icons.schedule_outlined,
-            buttonName: '학사 일정',
-            isActivate: isActivated,
-            onPressed: () => Navigator.of(context).pushNamed('/schedule'),
-          ),
-          SuwonButton(
-            icon: Icons.date_range,
-            buttonName: '개설 강좌 조회',
-            onPressed: () => Navigator.of(context).pushNamed('/oclass'),
-          ),
-          SuwonButton(
-            icon: Icons.notifications_none,
-            buttonName: '공지사항',
-            isActivate: isActivated,
-            onPressed: () => Navigator.of(context).pushNamed('/info'),
-          ),
-          SuwonButton(
-              icon: Icons.star_outline,
-              buttonName: '즐겨찾는 과목',
-              onPressed: () => Navigator.of(context).pushNamed('/favorite')),
-          SuwonButton(
-              icon: Icons.settings,
-              buttonName: '설정',
-              onPressed: () => Navigator.of(context).pushNamed('/settings')),
         ],
       ),
     );

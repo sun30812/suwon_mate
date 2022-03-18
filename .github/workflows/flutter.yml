@@ -16,7 +16,7 @@ jobs:
       - name: Flutter action
         uses: subosito/flutter-action@v2.3.0
 
-      - name: Install dependancy
+      - name: Install dependency
         run: flutter pub get
 
       - name: Build Web App

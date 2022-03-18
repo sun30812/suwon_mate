@@ -227,7 +227,7 @@ class _OpenClassState extends State<OpenClass> {
                                 Navigator.of(context).pushNamed('/oclass/info',
                                     arguments: classList[index]);
                               },
-                              child: CardInfo.Simplified(
+                              child: CardInfo.simplified(
                                 title: classList[index]["subjtNm"],
                                 subTitle:
                                     classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
