@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -94,7 +92,7 @@ class _ProfessorSubjectsPageState extends State<ProfessorSubjectsPage> {
                               Navigator.of(context).pushNamed('/oclass/info',
                                   arguments: classList[index]);
                             },
-                            child: CardInfo.Simplified(
+                            child: CardInfo.simplified(
                               title: classList[index]["subjtNm"],
                               subTitle:
                                   classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",

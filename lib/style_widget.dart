@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -226,7 +228,7 @@ class CardInfo extends StatelessWidget {
         detail = detail,
         super(key: key);
 
-  static Widget Simplified(
+  static Widget simplified(
       {required String title, String? subTitle, required Widget content}) {
     Widget SubTitle(String? text) {
       if (text != null) {
@@ -350,6 +352,29 @@ class SuwonDialog extends StatelessWidget {
         _onPressed = onPressed,
         super(key: key);
 
+  static Widget simple(
+      {required BuildContext context,
+      required IconData icon,
+      required String title,
+      required Widget content}) {
+    return AlertDialog(
+      title: Row(
+        children: [
+          Icon(icon),
+          const Padding(padding: EdgeInsets.only(right: 10.0)),
+          Text(title)
+        ],
+      ),
+      content: content,
+      scrollable: true,
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('확인'))
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -404,5 +429,69 @@ class NotiCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class NotSupportInPlatform extends StatelessWidget {
+  String _platform;
+  NotSupportInPlatform(
+    String platform, {
+    Key? key,
+  })  : _platform = platform,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline),
+          Text('$_platform 플랫폼에서는 지원되지 않습니다.')
+        ],
+      ),
+    );
+  }
+}
+
+class NotSupportPlatformMessage extends StatelessWidget {
+  const NotSupportPlatformMessage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return MaterialBanner(
+          content: const Text('Web 플랫폼의 경우 일부 기능이 동작하지 않습니다.'),
+          actions: [
+            TextButton(
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => SuwonDialog.simple(
+                        context: context,
+                        icon: Icons.help_outline,
+                        title: '안내',
+                        content: const Text(
+                            'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.'))),
+                child: const Text('설명 보기'))
+          ]);
+    } else if (Platform.isWindows || Platform.isLinux) {
+      return MaterialBanner(
+          content: const Text('Windows/Linux 플랫폼의 경우 일부 기능이 동작하지 않습니다.'),
+          actions: [
+            TextButton(
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => SuwonDialog.simple(
+                        context: context,
+                        icon: Icons.help_outline,
+                        title: '안내',
+                        content: const Text(
+                            'Windows/Linux 플랫폼에서는 [개설 강좌 조회]나 [즐겨찾는 과목] 및 [설정] 기능을 아직 사용할 수 없습니다.'))),
+                child: const Text('설명 보기'))
+          ]);
+    }
+    return Container();
   }
 }

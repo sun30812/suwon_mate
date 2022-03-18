@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/style_widget.dart';
@@ -77,6 +78,15 @@ class _FavoriteListViewState extends State<FavoriteListView> {
 
   @override
   Widget build(BuildContext context) {
+    return mainScreen();
+  }
+
+  Widget mainScreen() {
+    if (!kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.windows ||
+            defaultTargetPlatform == TargetPlatform.linux)) {
+      return NotSupportInPlatform('Windows나 Linux');
+    }
     return FutureBuilder(
         future: getData(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
