@@ -18,10 +18,10 @@ class InfoPage extends StatelessWidget {
     return Scaffold(
       floatingActionButton: SuwonButton(
           icon: Icons.screen_share_outlined,
-          buttonName: '웹에서 보기',
+          buttonName: '브라우저로 보기',
           onPressed: () async {
             await launch('https://www.suwon.ac.kr/index.html?menuno=674',
-                forceSafariVC: true, forceWebView: true);
+                forceSafariVC: false, forceWebView: false);
           }),
       appBar: AppBar(title: const Text('공지사항')),
       body: mainScreen(),
@@ -38,10 +38,10 @@ class InfoPage extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 CircularProgressIndicator.adaptive(),
-                Text('수원대 사이트에 접속 중..'
-                    '웹 버전에서는 정상적으로 작동하지 않습니다.')
+                Text('공지사항 불러오는 중..')
               ],
             );
           } else {

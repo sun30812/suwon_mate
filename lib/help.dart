@@ -42,7 +42,8 @@ class HelpPage extends StatelessWidget {
               icon: Icons.notifications_none,
               title: '공지사항',
               detail: const Text(
-                '학교의 공지사항을 볼 수 있습니다.',
+                '학교의 공지사항을 볼 수 있습니다.\n제목을 클릭하면 세부정보가 나오며 '
+                '첨부파일을 받기 위해 브라우저로 이동이 필요한 경우 브라우저로 이동 버튼을 누르면 됩니다.',
                 style: TextStyle(fontSize: 16.0),
               )),
           CardInfo(
