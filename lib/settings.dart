@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -343,18 +344,39 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ),
                   debugWidget(),
-                  CardInfo(
-                    icon: Icons.info_outline,
-                    title: '버전 정보',
-                    detail: Text(
-                        '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
-                        '로컬 앱 버전: ${packageInfo.version}\n'
-                        '최신 앱 버전: $_version'),
-                  )
+                  versionInfo(snapshot)
                 ],
               );
             }
           }),
+    );
+  }
+
+  Widget versionInfo(AsyncSnapshot<dynamic> snapshot) {
+    if (kIsWeb) {
+      return CardInfo(
+        icon: Icons.info_outline,
+        title: '버전 정보',
+        detail: Column(
+          children: [
+            const Text(
+              'Web 플랫폼에서는 앱 버전이 항상 최신 버전으로 유지됩니다.',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+                '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
+                '앱 버전: ${packageInfo.version}'),
+          ],
+        ),
+      );
+    }
+    return CardInfo(
+      icon: Icons.info_outline,
+      title: '버전 정보',
+      detail: Text(
+          '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
+          '로컬 앱 버전: ${packageInfo.version}\n'
+          '최신 앱 버전: $_version'),
     );
   }
 }
