@@ -57,11 +57,31 @@ jobs:
           path: |
             build\windows\runner\Windows_Release
   
-  
+  BuildmacOS:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Flutter action
+        uses: subosito/flutter-action@v2.3.0
+
+      - name: Install dependency
+        run: flutter pub get
+
+      - name: Build macOS App
+        run: flutter build macos
+
+      - name: Upload files
+        uses: actions/upload-artifact@v2
+        with:
+          name: output
+          path: |
+            build/macos/Build/Products/Release/suwon_mate
 
   Release:
     runs-on: ubuntu-latest
-    needs: [BuildWindows,BuildAPK]
+    needs: [BuildWindows,BuildAPK,BuildmacOS]
     steps:
       - name: Download files
         uses: actions/download-artifact@v2
@@ -73,3 +93,4 @@ jobs:
           files: |
             app-release.apk
             Windows_Release
+            suwon_mate
