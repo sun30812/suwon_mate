@@ -40,13 +40,14 @@ class SchedulePage extends StatelessWidget {
                 color: Colors.amber,
               );
             } else if (!snapshot.hasData) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircularProgressIndicator.adaptive(),
-                  Text('수원대 사이트에 접속 중..'
-                      '웹 버전에서는 정상적으로 작동하지 않습니다.')
-                ],
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    CircularProgressIndicator.adaptive(),
+                    Text('학사 일정 불러오는 중..')
+                  ],
+                ),
               );
             } else if (snapshot.hasError) {
               return Card(

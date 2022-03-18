@@ -108,6 +108,7 @@ class _MainMenuState extends State<MainMenu> {
 
     return Center(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const NotSupportPlatformMessage(),
           Column(

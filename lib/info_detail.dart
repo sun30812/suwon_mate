@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:suwon_mate/style_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InfoDetailPage extends StatelessWidget {
   Future getData(String siteCode) async {
@@ -15,14 +15,23 @@ class InfoDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
+      floatingActionButton: SuwonButton(
+          icon: Icons.screen_share_outlined,
+          buttonName: '브라우저로 보기',
+          onPressed: () async {
+            await launch(
+                'https://www.suwon.ac.kr/index.html?menuno=674&bbsno=${args['site_code']}&boardno=${args['site_code']}&siteno=37&act=view',
+                forceSafariVC: false,
+                forceWebView: false);
+          }),
       appBar: AppBar(title: Text(args['title'])),
       body: FutureBuilder(
         future: getData(args['site_code']),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator.adaptive());
+            return const Center(child: CircularProgressIndicator.adaptive());
           } else if (snapshot.hasError) {
-            return Text('ERR');
+            return const Text('ERR');
           } else {
             var body = parse((snapshot.data as http.Response).body);
             return SingleChildScrollView(
