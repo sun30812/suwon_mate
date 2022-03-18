@@ -61,9 +61,7 @@ jobs:
 
   Release:
     runs-on: ubuntu-latest
-    needs: |
-      BuildAPK
-      BuildWindows
+    needs: [BuildWindows,BuildAPK]
     steps:
       - name: Download files
         uses: actions/download-artifact@v2
