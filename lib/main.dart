@@ -1,7 +1,7 @@
 import 'dart:convert';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:suwon_mate/info_detail.dart';
 import 'package:suwon_mate/search.dart';
 import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/favorite_subject.dart';
@@ -36,6 +36,7 @@ class App extends StatelessWidget {
         '/oclass/info': (context) => const OpenClassInfo(),
         '/professor': (context) => const ProfessorSubjectsPage(),
         '/info': (context) => const InfoPage(),
+        '/info/detail': (context) => InfoDetailPage(),
         '/favorite': (context) => const FavoriteSubjectPage(),
         '/settings': (context) => const SettingPage(),
         '/help': (context) => const HelpPage()
