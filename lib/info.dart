@@ -38,30 +38,40 @@ class InfoPage extends StatelessWidget {
             } else {
               var rows = parse((snapshot.data as http.Response).body)
                   .getElementsByClassName('board_basic_list')[0];
-
               return ListView.builder(
                   itemCount: rows.getElementsByClassName('subject').length,
                   itemBuilder: (BuildContext context, int index) {
-                    return CardInfo.Simplified(
-                        title: rows
-                            .getElementsByClassName('subject')[index]
-                            .text
-                            .trim(),
-                        content: Text(
-                          rows
-                                  .getElementsByClassName('info')[index]
-                                  .getElementsByClassName('date')[0]
-                                  .text
-                                  .trim() +
-                              '/' +
-                              rows
-                                  .getElementsByClassName('info')[index]
-                                  .getElementsByClassName('hit')[0]
-                                  .text
-                                  .trim(),
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(fontSize: 16.0),
-                        ));
+                    Map<String, String> dat = {};
+                    dat['title'] = rows
+                        .getElementsByClassName('subject')[index]
+                        .text
+                        .trim();
+                    dat['site_code'] = rows
+                        .getElementsByClassName('subject')[index]
+                        .innerHtml
+                        .split(',')[2]
+                        .split(')')[0];
+                    return GestureDetector(
+                      onTap: () => Navigator.of(context)
+                          .pushNamed('/info/detail', arguments: dat),
+                      child: CardInfo.Simplified(
+                          title: dat['title']!,
+                          content: Text(
+                            rows
+                                    .getElementsByClassName('info')[index]
+                                    .getElementsByClassName('date')[0]
+                                    .text
+                                    .trim() +
+                                '/' +
+                                rows
+                                    .getElementsByClassName('info')[index]
+                                    .getElementsByClassName('hit')[0]
+                                    .text
+                                    .trim(),
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(fontSize: 16.0),
+                          )),
+                    );
                   });
             }
           },

@@ -40,7 +40,7 @@ class _SearchPageState extends State<SearchPage> {
               showDialog(
                 context: context,
                 builder: (context) => SuwonDialog(
-                  icon: Icons.code,
+                  icon: Icons.manage_search_outlined,
                   title: '과목 코드로 검색',
                   content: Column(
                     children: [
@@ -94,7 +94,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               );
             },
-            icon: const Icon(Icons.code),
+            icon: const Icon(Icons.manage_search_outlined),
             tooltip: '과목코드 검색',
           )
         ],
