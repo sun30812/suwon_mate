@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/info_detail.dart';
 import 'package:suwon_mate/search.dart';
@@ -16,9 +17,7 @@ import 'package:suwon_mate/schedule.dart';
 import 'style_widget.dart';
 import 'open_class.dart';
 
-bool isSupportPlatform = (defaultTargetPlatform != TargetPlatform.windows) &&
-    (defaultTargetPlatform != TargetPlatform.linux);
-
+bool isSupportPlatform = kIsWeb || (!Platform.isWindows && !Platform.isLinux);
 void main() async {
   if (!isSupportPlatform) {
     runApp(const App());
