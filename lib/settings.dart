@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +19,8 @@ class _SettingPageState extends State<SettingPage> {
   String _grade = '1학년';
   bool _isFirst = true;
   bool _isSynced = false;
-  final isDebug = true;
+  late String _version;
+  final isDebug = false;
   late PackageInfo packageInfo;
   late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
@@ -27,6 +29,9 @@ class _SettingPageState extends State<SettingPage> {
 
   Future<SharedPreferences> getSettings() async {
     packageInfo = await PackageInfo.fromPlatform();
+    DatabaseReference appVer = FirebaseDatabase.instance.ref('version');
+    Map versionInfo = (await appVer.once()).snapshot.value as Map;
+    _version = versionInfo['app_ver'];
     SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref;
   }
@@ -154,7 +159,7 @@ class _SettingPageState extends State<SettingPage> {
           future: getSettings(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
-              return Container();
+              return const Center(child: CircularProgressIndicator.adaptive());
             } else {
               if (_isFirst &&
                   (snapshot.data as SharedPreferences)
@@ -243,7 +248,7 @@ class _SettingPageState extends State<SettingPage> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return const AlertDialog(
-                                              title: Text('오프라인 모드'),
+                                              title: Text('데이터 절약 모드'),
                                               content: Text(
                                                   '데이터 사용량을 줄이기 위해 일부 기능의 사용을 제한하고, DB 업데이트를 '
                                                   '자동으로 하지 않습니다.'),
@@ -257,7 +262,7 @@ class _SettingPageState extends State<SettingPage> {
                                           child:
                                               Icon(Icons.offline_bolt_outlined),
                                         ),
-                                        Text('오프라인 모드'),
+                                        Text('데이터 절약 모드'),
                                       ],
                                     )),
                                 Switch(
@@ -343,7 +348,8 @@ class _SettingPageState extends State<SettingPage> {
                     title: '버전 정보',
                     detail: Text(
                         '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
-                        '로컬 앱 버전: ${packageInfo.version}'),
+                        '로컬 앱 버전: ${packageInfo.version}\n'
+                        '최신 앱 버전: $_version'),
                   )
                 ],
               );
