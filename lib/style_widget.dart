@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ClassDetailInfoCard extends StatelessWidget {
   final String subjectCode,
@@ -288,10 +287,10 @@ class CardInfo extends StatelessWidget {
   }
 }
 
-class InputBar extends StatelessWidget {
-  void Function(String)? _onChanged;
+class InputBar extends StatefulWidget {
+  final void Function(String)? _onChanged;
   final IconData? _icon;
-  InputBar(
+  const InputBar(
       {Key? key,
       required TextEditingController controller,
       IconData? icon,
@@ -304,6 +303,11 @@ class InputBar extends StatelessWidget {
   final TextEditingController _controller;
 
   @override
+  State<InputBar> createState() => _InputBarState();
+}
+
+class _InputBarState extends State<InputBar> {
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3.0),
@@ -313,14 +317,14 @@ class InputBar extends StatelessWidget {
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(25.0)),
         child: TextField(
-          onChanged: _onChanged,
-          controller: _controller,
+          onChanged: widget._onChanged,
+          controller: widget._controller,
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: "입력하여 검색",
             icon: Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: Icon(_icon),
+              child: Icon(widget._icon),
             ),
           ),
         ),
@@ -330,11 +334,11 @@ class InputBar extends StatelessWidget {
 }
 
 class SuwonDialog extends StatelessWidget {
-  IconData _icon;
-  String _title;
-  Widget _content;
-  void Function()? _onPressed;
-  SuwonDialog({
+  final IconData _icon;
+  final String _title;
+  final Widget _content;
+  final void Function()? _onPressed;
+  const SuwonDialog({
     required IconData icon,
     required String title,
     required Widget content,
@@ -374,7 +378,7 @@ class SuwonDialog extends StatelessWidget {
 class NotiCard extends StatelessWidget {
   IconData? _icon = Icons.warning_amber_outlined;
   Color? _color = Colors.white;
-  String _mesage;
+  final String _mesage;
   NotiCard({
     IconData? icon,
     Color? color,
@@ -394,7 +398,7 @@ class NotiCard extends StatelessWidget {
         child: Row(
           children: [
             Icon(_icon),
-            const Padding(padding: const EdgeInsets.only(right: 10.0)),
+            const Padding(padding: EdgeInsets.only(right: 10.0)),
             Flexible(child: Text(_mesage)),
           ],
         ),

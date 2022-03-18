@@ -102,7 +102,7 @@ class _SettingPageState extends State<SettingPage> {
                         builder: (BuildContext context) => SuwonDialog(
                               icon: Icons.error_outline,
                               title: '경고',
-                              content: Text('즐겨찾는 과목의 데이터를 모두 지웁니까?'),
+                              content: const Text('즐겨찾는 과목의 데이터를 모두 지웁니까?'),
                               onPressed: () async {
                                 SharedPreferences _pref =
                                     await SharedPreferences.getInstance();
@@ -120,7 +120,7 @@ class _SettingPageState extends State<SettingPage> {
                         builder: (BuildContext context) => SuwonDialog(
                               icon: Icons.error_outline,
                               title: '경고',
-                              content: Text('앱의 데이터를 모두 지웁니까?'),
+                              content: const Text('앱의 데이터를 모두 지웁니까?'),
                               onPressed: () async {
                                 SharedPreferences _pref =
                                     await SharedPreferences.getInstance();
