@@ -345,7 +345,7 @@ class _SettingPageState extends State<SettingPage> {
                                         SharedPreferences _pref =
                                             await SharedPreferences
                                                 .getInstance();
-                                        _pref.remove('class');
+                                        _pref.remove('db_ver');
                                         Navigator.of(context).pop();
                                       },
                                     );
