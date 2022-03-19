@@ -143,7 +143,6 @@ class _MainMenuState extends State<MainMenu> {
                   onPressed: () =>
                       Navigator.of(context).pushNamed('/favorite')),
               SuwonButton(
-                  isActivate: isSupportPlatform,
                   icon: Icons.settings,
                   buttonName: '설정',
                   onPressed: () =>
