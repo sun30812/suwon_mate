@@ -488,7 +488,7 @@ class NotSupportPlatformMessage extends StatelessWidget {
                         icon: Icons.help_outline,
                         title: '안내',
                         content: const Text(
-                            'Windows/Linux 플랫폼에서는 [개설 강좌 조회]나 [즐겨찾는 과목] 및 [설정] 기능을 아직 사용할 수 없습니다.'))),
+                            'Windows/Linux 플랫폼에서는 [개설 강좌 조회]나 [즐겨찾는 과목] 기능을 아직 사용할 수 없습니다.'))),
                 child: const Text('설명 보기'))
           ]);
     }

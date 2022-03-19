@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/style_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -20,7 +22,6 @@ class _SettingPageState extends State<SettingPage> {
   String _grade = '1학년';
   bool _isFirst = true;
   bool _isSynced = false;
-  late String _version;
   final isDebug = false;
   late PackageInfo packageInfo;
   late String serverVersion;
@@ -30,11 +31,14 @@ class _SettingPageState extends State<SettingPage> {
 
   Future<SharedPreferences> getSettings() async {
     packageInfo = await PackageInfo.fromPlatform();
-    DatabaseReference appVer = FirebaseDatabase.instance.ref('version');
-    Map versionInfo = (await appVer.once()).snapshot.value as Map;
-    _version = versionInfo['app_ver'];
     SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref;
+  }
+
+  Future getVersionData() async {
+    DatabaseReference appVer = FirebaseDatabase.instance.ref('version');
+    Map versionInfo = (await appVer.once()).snapshot.value as Map;
+    return versionInfo['app_ver'];
   }
 
   @override
@@ -252,7 +256,7 @@ class _SettingPageState extends State<SettingPage> {
                                               title: Text('데이터 절약 모드'),
                                               content: Text(
                                                   '데이터 사용량을 줄이기 위해 일부 기능의 사용을 제한하고, DB 업데이트를 '
-                                                  '자동으로 하지 않습니다.'),
+                                                  '자동으로 하지 않습니다. \nWeb 플랫폼에서는 지원하지 않습니다.'),
                                             );
                                           });
                                     },
@@ -269,6 +273,13 @@ class _SettingPageState extends State<SettingPage> {
                                 Switch(
                                     value: functionSetting['offline']!,
                                     onChanged: (newValue) {
+                                      if (kIsWeb) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    '해당 플랫폼에서는 지원하지 않습니다.')));
+                                        return;
+                                      }
                                       setState(() {
                                         functionSetting['offline'] = newValue;
                                       });
@@ -352,12 +363,35 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
+  Widget updater(bool equalVersion) {
+    if (equalVersion) {
+      return Container();
+    } else {
+      return Column(
+        children: [
+          Row(
+            children: const [
+              Icon(Icons.system_update_alt),
+              Padding(padding: EdgeInsets.only(right: 10.0)),
+              Text(
+                '업데이트 사용가능',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
+          downloadUpdate(),
+        ],
+      );
+    }
+  }
+
   Widget versionInfo(AsyncSnapshot<dynamic> snapshot) {
     if (kIsWeb) {
       return CardInfo(
         icon: Icons.info_outline,
         title: '버전 정보',
         detail: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               'Web 플랫폼에서는 앱 버전이 항상 최신 버전으로 유지됩니다.',
@@ -369,14 +403,64 @@ class _SettingPageState extends State<SettingPage> {
           ],
         ),
       );
+    } else if (Platform.isWindows || Platform.isLinux) {
+      return CardInfo(
+        icon: Icons.info_outline,
+        title: '버전 정보',
+        detail: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+                '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
+                '로컬 앱 버전: ${packageInfo.version}\n'
+                '최신 앱 버전: 해당 플랫폼에서 확인 불가'),
+            downloadUpdate()
+          ],
+        ),
+      );
     }
-    return CardInfo(
-      icon: Icons.info_outline,
-      title: '버전 정보',
-      detail: Text(
-          '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
-          '로컬 앱 버전: ${packageInfo.version}\n'
-          '최신 앱 버전: $_version'),
-    );
+    return FutureBuilder(
+        future: getVersionData(),
+        builder: (context, _snapshot) {
+          if (!_snapshot.hasData) {
+            return CardInfo(
+              icon: Icons.info_outline,
+              title: '버전 정보',
+              detail: const Center(child: CircularProgressIndicator.adaptive()),
+            );
+          } else if (_snapshot.hasError) {
+            return CardInfo(
+              icon: Icons.info_outline,
+              title: '버전 정보',
+              detail: Text(
+                  '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
+                  '로컬 앱 버전: ${packageInfo.version}\n'
+                  '최신 앱 버전: 정보를 가져오는데 오류가 발생했습니다.'),
+            );
+          } else {
+            return CardInfo(
+              icon: Icons.info_outline,
+              title: '버전 정보',
+              detail: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  updater(_snapshot.data == packageInfo.version),
+                  Text(
+                      '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
+                      '로컬 앱 버전: ${packageInfo.version}\n'
+                      '최신 앱 버전: ${_snapshot.data}'),
+                ],
+              ),
+            );
+          }
+        });
+  }
+
+  Widget downloadUpdate() {
+    return TextButton(
+        onPressed: (() async {
+          await launch('https://github.com/sun30812/suwon_mate/releases');
+        }),
+        child: const Text('업데이트 확인 및 다운받기(사이트 이동)'));
   }
 }
