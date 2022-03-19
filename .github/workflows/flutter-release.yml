@@ -79,7 +79,7 @@ jobs:
         run: flutter build macos
 
       - name: Zip .app file
-        run:  cd build/macos/Build/Products/Release && zip -rD suwon_mate.app.zip suwon_mate.app
+        run: zip -Dr suwon_mate.app.zip build/macos/Build/Products/Release/suwon_mate.app
 
       - name: Upload files
         uses: actions/upload-artifact@v2
@@ -114,7 +114,7 @@ jobs:
         run: flutter build linux
 
       - name: Zip output files
-        run: cd build/linux/x64/release && zip -rD suwon_mate_linux.zip bundle
+        run: zip -Dr suwon_mate_linux.zip build/linux/x64/release/bundle
 
       - name: Upload files
         uses: actions/upload-artifact@v2
@@ -139,15 +139,3 @@ jobs:
             suwon_mate_win.zip
             suwon_mate.app.zip
             suwon_mate_linux.zip
-
-  AlertNewVersion:
-    runs-on: ubuntu-latest
-    needs: Release
-    steps:
-      - name: Firebase Trigger
-        uses: w9jds/firebase-trigger@v1.0.1
-        with:
-          credentials: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SUWON_MATE }}
-          databaseUrl: https://suwon-mate-default-rtdb.firebaseio.com/
-          path: version/app_ver
-          value: v2.0.0
