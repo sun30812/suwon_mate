@@ -30,14 +30,14 @@ class _SettingPageState extends State<SettingPage> {
   Map<String, dynamic> functionSetting = {'offline': false};
 
   Future<SharedPreferences> getSettings() async {
-    if (Platform.isWindows || Platform.isLinux) {
-      packageInfo = PackageInfo(
+    try {
+      packageInfo = await PackageInfo.fromPlatform();
+    } catch (_) {
+      packageInfo = packageInfo = PackageInfo(
           appName: 'Suwon Mate',
           packageName: 'suwon_mate',
           version: '1.3.4',
           buildNumber: '1');
-    } else {
-      packageInfo = await PackageInfo.fromPlatform();
     }
     SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref;
