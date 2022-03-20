@@ -44,7 +44,7 @@ class App extends StatelessWidget {
         '/oclass/info': (context) => const OpenClassInfo(),
         '/professor': (context) => const ProfessorSubjectsPage(),
         '/info': (context) => const InfoPage(),
-        '/info/detail': (context) => InfoDetailPage(),
+        '/info/detail': (context) => const InfoDetailPage(),
         '/favorite': (context) => const FavoriteSubjectPage(),
         '/settings': (context) => const SettingPage(),
         '/help': (context) => const HelpPage()
@@ -73,7 +73,7 @@ class MainPage extends StatelessWidget {
             if (!snapshot.hasData) {
               return Container();
             } else if (snapshot.hasError) {
-              return const Text('Error');
+              return const DataLoadingError();
             } else {
               return MainMenu(preferences: snapshot.data as SharedPreferences);
             }
@@ -106,50 +106,53 @@ class _MainMenuState extends State<MainMenu> {
     }
 
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const NotSupportPlatformMessage(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SuwonButton(
-                icon: Icons.help_outline,
-                buttonName: '도움말',
-                onPressed: () => Navigator.of(context).pushNamed('/help'),
-              ),
-              SuwonButton(
-                icon: Icons.schedule_outlined,
-                buttonName: '학사 일정',
-                isActivate: isActivated && !kIsWeb,
-                onPressed: () => Navigator.of(context).pushNamed('/schedule'),
-              ),
-              SuwonButton(
-                isActivate: isSupportPlatform,
-                icon: Icons.date_range,
-                buttonName: '개설 강좌 조회',
-                onPressed: () => Navigator.of(context).pushNamed('/oclass'),
-              ),
-              SuwonButton(
-                icon: Icons.notifications_none,
-                buttonName: '공지사항',
-                isActivate: isActivated && !kIsWeb,
-                onPressed: () => Navigator.of(context).pushNamed('/info'),
-              ),
-              SuwonButton(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: isSupportPlatform
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.start,
+          children: [
+            const NotSupportPlatformMessage(),
+            Column(
+              children: [
+                SuwonButton(
+                  icon: Icons.help_outline,
+                  buttonName: '도움말',
+                  onPressed: () => Navigator.of(context).pushNamed('/help'),
+                ),
+                SuwonButton(
+                  icon: Icons.schedule_outlined,
+                  buttonName: '학사 일정',
+                  isActivate: isActivated && !kIsWeb,
+                  onPressed: () => Navigator.of(context).pushNamed('/schedule'),
+                ),
+                SuwonButton(
                   isActivate: isSupportPlatform,
-                  icon: Icons.star_outline,
-                  buttonName: '즐겨찾는 과목',
-                  onPressed: () =>
-                      Navigator.of(context).pushNamed('/favorite')),
-              SuwonButton(
-                  icon: Icons.settings,
-                  buttonName: '설정',
-                  onPressed: () =>
-                      Navigator.of(context).pushNamed('/settings')),
-            ],
-          ),
-        ],
+                  icon: Icons.date_range,
+                  buttonName: '개설 강좌 조회',
+                  onPressed: () => Navigator.of(context).pushNamed('/oclass'),
+                ),
+                SuwonButton(
+                  icon: Icons.notifications_none,
+                  buttonName: '공지사항',
+                  isActivate: isActivated && !kIsWeb,
+                  onPressed: () => Navigator.of(context).pushNamed('/info'),
+                ),
+                SuwonButton(
+                    isActivate: isSupportPlatform,
+                    icon: Icons.star_outline,
+                    buttonName: '즐겨찾는 과목',
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed('/favorite')),
+                SuwonButton(
+                    icon: Icons.settings,
+                    buttonName: '설정',
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed('/settings')),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -36,7 +36,7 @@ class _SettingPageState extends State<SettingPage> {
       packageInfo = packageInfo = PackageInfo(
           appName: 'Suwon Mate',
           packageName: 'suwon_mate',
-          version: '1.3.4',
+          version: '1.3.5',
           buildNumber: '1');
     }
     SharedPreferences _pref = await SharedPreferences.getInstance();
@@ -79,24 +79,10 @@ class _SettingPageState extends State<SettingPage> {
     if (_isSynced) {
       return Container();
     }
-    return Card(
-      color: Colors.amber,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.warning),
-              Text(
-                '주의',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-              )
-            ],
-          ),
-          const Text('아직 개설 강좌 조회를 들어가지 않은 경우 기본 전공을 지정할 수 있는 범위가 좁습니다.')
-        ],
-      ),
-    );
+    return NotiCard(
+        icon: Icons.warning_amber,
+        color: Colors.amber,
+        message: '아직 개설 강좌 조회를 들어가지 않은 경우 기본 전공을 지정할 수 있는 범위가 좁습니다.');
   }
 
   Widget debugWidget() {
@@ -173,6 +159,8 @@ class _SettingPageState extends State<SettingPage> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator.adaptive());
+            } else if (snapshot.hasError) {
+              return const DataLoadingError();
             } else {
               if (_isFirst &&
                   (snapshot.data as SharedPreferences)
@@ -205,9 +193,13 @@ class _SettingPageState extends State<SettingPage> {
                 children: [
                   CardInfo(
                       icon: Icons.school_outlined,
-                      title: '기본 정보 수정',
+                      title: '기본 정보 설정',
                       detail: Column(
                         children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('개설 강좌메뉴에서 기본으로 보여질 전공과 학년을 선택합니다.'),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: noSyncWarning(),

@@ -142,12 +142,7 @@ class _OpenClassState extends State<OpenClass> {
                 ],
               );
             } else if (snapshot.hasError) {
-              return Column(
-                children: const [
-                  Icon(Icons.error_outline),
-                  Text('오류가 발생했습니다.')
-                ],
-              );
+              return const DataLoadingError();
             } else {
               if (isSaved) {
                 orgClassList = jsonDecode(snapshot.data as String);
