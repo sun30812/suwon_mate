@@ -6,6 +6,7 @@
 ## 목차
 - [Suwon Mate](#suwon-mate)
 	- [목차](#목차)
+	- [분기(브랜치) 소개](#분기브랜치-소개)
 	- [지원되는 플랫폼](#지원되는-플랫폼)
 	- [간단 기능 소개](#간단-기능-소개)
 	- [사용해보기](#사용해보기)
@@ -19,6 +20,14 @@
 		- [디자인 요소 수정하기](#디자인-요소-수정하기)
 		- [Web버전에서는 왜 일부 기능이 안되나요?](#web버전에서는-왜-일부-기능이-안되나요)
 		- [Windows/Linux에서는 왜 일부 기능이 안되나요?](#windowslinux에서는-왜-일부-기능이-안되나요)
+
+## 분기(브랜치) 소개
+해당 분기는 `legacy` 입니다. 현재 1.x 버전 대를 제공하는 분기이고
+최신 버전을 보고 싶으신 경우 [main](https://github.com/sun30812/suwon_mate/tree/main) 분기에서 확인할 수 있습니다.  
+모든 새로운 기능이 이곳에  반영되는 것은 아니지만 버그 해결이나 일부 기능의 경우에는 해당 분기에 일부 반영할 예정입니다.
+
+main분기가 3.x버전 대로 올라갈 시 해당 분기는 2.x버전대로 대체됩니다.
+
 
 ## 지원되는 플랫폼
 현재 확인된 기능 별 지원되는 플랫폼 목록입니다.
@@ -42,11 +51,12 @@
 ## 사용해보기
 macOS, Windows, Android, Linux용으로 빌드된 파일을 쓰거나 Web 사이트 상에서 바로 사용이 가능합니다.
 ### 사전 빌드된 파일 사용하기
-> ⚠️ 태그를 지정한 커밋만 빌드됩니다. 모든 커밋의 변경사항을 바로 추척하려면 Web 플랫폼을 사용하세요.
+> ⚠️ 태그를 지정한 커밋만 빌드됩니다. 모든 커밋의 변경사항을 바로 추척하려면 Web 플랫폼을 사용하세요. 또한 버전명 뒤에 _legacy가 붙은 것이 legacy 버전입니다.
 
 아래 사이트에 접속하셔서 파일을 받으시면 됩니다.
 
 [Github Release](https://github.com/sun30812/suwon_mate/releases)
+
 
 * suwon_mate_android.apk: Android 기기에서 동작하는 파일입니다.
 * suwon_mate_win.zip: windows 환경에서 동작하는 파일입니다.
@@ -61,8 +71,8 @@ macOS, Windows, Android, Linux용으로 빌드된 파일을 쓰거나 Web 사이
 아래 링크에 접속하시면 다운로드 및 실행 없이 바로 이 앱을 체험할 수 있습니다.  
 다만, 아래 링크는 Web플랫폼이기 때문에 상단에 있는 [지원되는 플랫폼](#지원되는-플랫폼)에 명시된 것 처럼 일부 기능이 동작하지 않습니다.
 
-- [Firebase hosting](https://suwon-mate.web.app)
-- [Azure Web App](https://orange-moss-005eb8300.1.azurestaticapps.net)
+- [Firebase hosting-최신버전](https://suwon-mate.web.app)
+- [Firebase hosting-legacy](https://suwon-mate-legacy.web.app)
 
 ## 앱 사용 도움말
 앱의 도움말 메뉴를 참고하면 대부분의 설명을 보실 수 있습니다.  

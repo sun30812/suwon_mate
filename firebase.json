@@ -1,7 +1,7 @@
 {
   "hosting": {
     "public": "build/web",
-    "site": "suwon-mate",
+    "site": "suwon-mate-legacy",
     "ignore": [
       "firebase.json",
       "**/.*",

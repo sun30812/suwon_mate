@@ -46,7 +46,7 @@ class _SettingPageState extends State<SettingPage> {
   Future getVersionData() async {
     DatabaseReference appVer = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await appVer.once()).snapshot.value as Map;
-    return versionInfo['app_ver'];
+    return versionInfo['legacy_app_ver'];
   }
 
   @override
@@ -399,7 +399,7 @@ class _SettingPageState extends State<SettingPage> {
             ),
             Text(
                 '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
-                '앱 버전: ${packageInfo.version}'),
+                '앱 버전(legacy): ${packageInfo.version}'),
           ],
         ),
       );
@@ -413,7 +413,7 @@ class _SettingPageState extends State<SettingPage> {
             Text(
                 '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
                 '로컬 앱 버전: ${packageInfo.version}\n'
-                '최신 앱 버전: 해당 플랫폼에서 확인 불가'),
+                '최신 앱 버전(legacy): 해당 플랫폼에서 확인 불가'),
             downloadUpdate()
           ],
         ),
@@ -435,7 +435,7 @@ class _SettingPageState extends State<SettingPage> {
               detail: Text(
                   '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
                   '로컬 앱 버전: ${packageInfo.version}\n'
-                  '최신 앱 버전: 정보를 가져오는데 오류가 발생했습니다.'),
+                  '최신 앱 버전(legacy): 정보를 가져오는데 오류가 발생했습니다.'),
             );
           } else {
             return CardInfo(
@@ -448,7 +448,7 @@ class _SettingPageState extends State<SettingPage> {
                   Text(
                       '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
                       '로컬 앱 버전: ${packageInfo.version}\n'
-                      '최신 앱 버전: ${_snapshot.data}'),
+                      '최신 앱 버전(legacy): ${_snapshot.data}'),
                 ],
               ),
             );
