@@ -6,6 +6,7 @@
 ## 목차
 - [Suwon Mate](#suwon-mate)
 	- [목차](#목차)
+	- [분기(브랜치) 소개](#분기브랜치-소개)
 	- [지원되는 플랫폼](#지원되는-플랫폼)
 	- [간단 기능 소개](#간단-기능-소개)
 	- [사용해보기](#사용해보기)
@@ -19,6 +20,10 @@
 		- [디자인 요소 수정하기](#디자인-요소-수정하기)
 		- [Web버전에서는 왜 일부 기능이 안되나요?](#web버전에서는-왜-일부-기능이-안되나요)
 		- [Windows/Linux에서는 왜 일부 기능이 안되나요?](#windowslinux에서는-왜-일부-기능이-안되나요)
+
+## 분기(브랜치) 소개
+해당 분기는 `main` 입니다. 항상 새로운 기능이 적용됩니다.
+이전 버전을 보고 싶으신 경우 [legacy](https://github.com/sun30812/suwon_mate/tree/legacy) 분기에서 확인할 수 있습니다.
 
 ## 지원되는 플랫폼
 현재 확인된 기능 별 지원되는 플랫폼 목록입니다.
@@ -62,6 +67,7 @@ macOS, Windows, Android, Linux용으로 빌드된 파일을 쓰거나 Web 사이
 다만, 아래 링크는 Web플랫폼이기 때문에 상단에 있는 [지원되는 플랫폼](#지원되는-플랫폼)에 명시된 것 처럼 일부 기능이 동작하지 않습니다.
 
 - [Firebase hosting](https://suwon-mate.web.app)
+- [Firebase hosting-legacy](https://suwon-mate-legacy.web.app)
 - [Azure Web App](https://orange-moss-005eb8300.1.azurestaticapps.net)
 
 ## 앱 사용 도움말
