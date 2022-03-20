@@ -48,7 +48,7 @@ class _ProfessorSubjectsPageState extends State<ProfessorSubjectsPage> {
           if (!snapshot.hasData) {
             return Container();
           } else if (snapshot.hasError) {
-            return Text('error');
+            return const DataLoadingError();
           } else {
             orgClassList = jsonDecode(snapshot.data as String);
             List classList = [];

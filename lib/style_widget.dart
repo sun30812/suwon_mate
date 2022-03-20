@@ -230,7 +230,7 @@ class CardInfo extends StatelessWidget {
 
   static Widget simplified(
       {required String title, String? subTitle, required Widget content}) {
-    Widget SubTitle(String? text) {
+    Widget subTitleWidget(String? text) {
       if (text != null) {
         return Text(
           text,
@@ -252,7 +252,7 @@ class CardInfo extends StatelessWidget {
               style:
                   const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SubTitle(subTitle),
+            subTitleWidget(subTitle),
             content
           ],
         ),
@@ -433,8 +433,8 @@ class NotiCard extends StatelessWidget {
 }
 
 class NotSupportInPlatform extends StatelessWidget {
-  String _platform;
-  NotSupportInPlatform(
+  final String _platform;
+  const NotSupportInPlatform(
     String platform, {
     Key? key,
   })  : _platform = platform,
@@ -446,7 +446,7 @@ class NotSupportInPlatform extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline),
+          const Icon(Icons.error_outline),
           Text('$_platform 플랫폼에서는 지원되지 않습니다.')
         ],
       ),

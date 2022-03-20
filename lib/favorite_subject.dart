@@ -85,7 +85,7 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     if (!kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.windows ||
             defaultTargetPlatform == TargetPlatform.linux)) {
-      return NotSupportInPlatform('Windows나 Linux');
+      return const NotSupportInPlatform('Windows나 Linux');
     }
     return FutureBuilder(
         future: getData(),

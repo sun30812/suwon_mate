@@ -50,15 +50,7 @@ class SchedulePage extends StatelessWidget {
                 ),
               );
             } else if (snapshot.hasError) {
-              return Card(
-                child: Row(
-                  children: const [
-                    Icon(Icons.announcement),
-                    Text("오류가 발생했습니다."),
-                  ],
-                ),
-                color: Colors.amber,
-              );
+              return const DataLoadingError();
             } else {
               var doc = parse((snapshot.data as http.Response).body);
               var rows = doc

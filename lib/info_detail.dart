@@ -6,6 +6,8 @@ import 'package:suwon_mate/style_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InfoDetailPage extends StatelessWidget {
+  const InfoDetailPage({Key? key}) : super(key: key);
+
   Future getData(String siteCode) async {
     return await http.get(Uri.parse(
         'https://www.suwon.ac.kr/index.html?menuno=674&bbsno=$siteCode&boardno=$siteCode&siteno=37&act=view'));
@@ -31,7 +33,7 @@ class InfoDetailPage extends StatelessWidget {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator.adaptive());
           } else if (snapshot.hasError) {
-            return const Text('ERR');
+            return const DataLoadingError();
           } else {
             var body = parse((snapshot.data as http.Response).body);
             return SingleChildScrollView(

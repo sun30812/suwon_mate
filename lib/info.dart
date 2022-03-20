@@ -30,7 +30,7 @@ class InfoPage extends StatelessWidget {
 
   Widget mainScreen() {
     if (kIsWeb) {
-      return NotSupportInPlatform('Web');
+      return const NotSupportInPlatform('Web');
     }
     return Center(
       child: FutureBuilder(
@@ -44,6 +44,8 @@ class InfoPage extends StatelessWidget {
                 Text('공지사항 불러오는 중..')
               ],
             );
+          } else if (snapshot.hasError) {
+            return const DataLoadingError();
           } else {
             var rows = parse((snapshot.data as http.Response).body)
                 .getElementsByClassName('board_basic_list')[0];
