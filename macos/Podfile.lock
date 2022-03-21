@@ -344,14 +344,11 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.7):
     - BoringSSL-GRPC/Interface (= 0.0.7)
   - BoringSSL-GRPC/Interface (0.0.7)
-  - cloud_firestore (3.1.7):
+  - cloud_firestore (3.1.10):
     - Firebase/CoreOnly (~> 8.11.0)
     - Firebase/Firestore (~> 8.11.0)
     - firebase_core
     - FlutterMacOS
-  - connectivity_plus_macos (0.0.1):
-    - FlutterMacOS
-    - ReachabilitySwift
   - Firebase/CoreOnly (8.11.0):
     - FirebaseCore (= 8.11.0)
   - Firebase/Database (8.11.0):
@@ -360,10 +357,10 @@ PODS:
   - Firebase/Firestore (8.11.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 8.11.0)
-  - firebase_core (1.12.0):
+  - firebase_core (1.13.1):
     - Firebase/CoreOnly (~> 8.11.0)
     - FlutterMacOS
-  - firebase_database (9.0.6):
+  - firebase_database (9.0.8):
     - Firebase/CoreOnly (~> 8.11.0)
     - Firebase/Database (~> 8.11.0)
     - firebase_core
@@ -435,7 +432,6 @@ PODS:
   - package_info_plus_macos (0.0.1):
     - FlutterMacOS
   - PromisesObjC (2.0.0)
-  - ReachabilitySwift (5.0.0)
   - shared_preferences_macos (0.0.1):
     - FlutterMacOS
   - url_launcher_macos (0.0.1):
@@ -445,7 +441,6 @@ PODS:
 
 DEPENDENCIES:
   - cloud_firestore (from `Flutter/ephemeral/.symlinks/plugins/cloud_firestore/macos`)
-  - connectivity_plus_macos (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus_macos/macos`)
   - firebase_core (from `Flutter/ephemeral/.symlinks/plugins/firebase_core/macos`)
   - firebase_database (from `Flutter/ephemeral/.symlinks/plugins/firebase_database/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
@@ -470,13 +465,10 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - PromisesObjC
-    - ReachabilitySwift
 
 EXTERNAL SOURCES:
   cloud_firestore:
     :path: Flutter/ephemeral/.symlinks/plugins/cloud_firestore/macos
-  connectivity_plus_macos:
-    :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus_macos/macos
   firebase_core:
     :path: Flutter/ephemeral/.symlinks/plugins/firebase_core/macos
   firebase_database:
@@ -495,11 +487,10 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
-  cloud_firestore: 4ea34c77aa868273ec7726b56412f0f97103485a
-  connectivity_plus_macos: f6e86fd000e971d361e54b5afcadc8c8fa773308
+  cloud_firestore: aaecbaa2643ca4de74935d30d0eab5201268c44f
   Firebase: 44dd9724c84df18b486639e874f31436eaa9a20c
-  firebase_core: 76a7538b389ae1231102dbbdd4f3772eec9abbf8
-  firebase_database: a51435c31990136489797ef2bda8e4eb5c1a0717
+  firebase_core: 11d0b4e9fa6120706c015fbfe5f4b409758dae5d
+  firebase_database: 9a3bfb643e1f556df04b6c7c5771dc18ab32f032
   FirebaseCore: 2f4f85b453cc8fea4bb2b37e370007d2bcafe3f0
   FirebaseCoreDiagnostics: 64d9709d804a6c25bd77841371c1fcfd909d5601
   FirebaseDatabase: ff9b4c7bee14d9f561f26c64a28ac083989f03d5
@@ -513,9 +504,8 @@ SPEC CHECKSUMS:
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   package_info_plus_macos: f010621b07802a241d96d01876d6705f15e77c1c
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
-  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  shared_preferences_macos: 480ce071d0666e37cef23fe6c702293a3d21799e
-  url_launcher_macos: 45af3d61de06997666568a7149c1be98b41c95d4
+  shared_preferences_macos: a64dc611287ed6cbe28fd1297898db1336975727
+  url_launcher_macos: 597e05b8e514239626bcf4a850fcf9ef5c856ec3
   wakelock_macos: bc3f2a9bd8d2e6c89fee1e1822e7ddac3bd004a9
 
 PODFILE CHECKSUM: 0d3963a09fc94f580682bd88480486da345dc3f0
