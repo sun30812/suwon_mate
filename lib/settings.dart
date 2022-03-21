@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/style_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -24,29 +21,14 @@ class _SettingPageState extends State<SettingPage> {
   bool _isSynced = false;
   final isDebug = false;
   late PackageInfo packageInfo;
-  late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
   List<DropdownMenuItem<String>> gradeDropdownList = [];
   Map<String, dynamic> functionSetting = {'offline': false};
 
   Future<SharedPreferences> getSettings() async {
-    try {
-      packageInfo = await PackageInfo.fromPlatform();
-    } catch (_) {
-      packageInfo = packageInfo = PackageInfo(
-          appName: 'Suwon Mate',
-          packageName: 'suwon_mate',
-          version: '1.3.5',
-          buildNumber: '1');
-    }
     SharedPreferences _pref = await SharedPreferences.getInstance();
+    packageInfo = await PackageInfo.fromPlatform();
     return _pref;
-  }
-
-  Future getVersionData() async {
-    DatabaseReference appVer = FirebaseDatabase.instance.ref('version');
-    Map versionInfo = (await appVer.once()).snapshot.value as Map;
-    return versionInfo['app_ver'];
   }
 
   @override
@@ -83,69 +65,6 @@ class _SettingPageState extends State<SettingPage> {
         icon: Icons.warning_amber,
         color: Colors.amber,
         message: '아직 개설 강좌 조회를 들어가지 않은 경우 기본 전공을 지정할 수 있는 범위가 좁습니다.');
-  }
-
-  Widget debugWidget() {
-    if (isDebug) {
-      return CardInfo(
-          icon: Icons.adb_outlined,
-          title: '디버그 설정',
-          detail: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const NotiCard(
-                color: Colors.amber,
-                icon: Icons.warning_amber_outlined,
-                message: '이 설정을 숨기려면 settings.dart의 isDebug변수를 false로 지정합니다.',
-              ),
-              TextButton(
-                  onPressed: () async {
-                    showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (BuildContext context) => SuwonDialog(
-                              icon: Icons.error_outline,
-                              title: '경고',
-                              content: const Text('즐겨찾는 과목의 데이터를 모두 지웁니까?'),
-                              onPressed: () async {
-                                SharedPreferences _pref =
-                                    await SharedPreferences.getInstance();
-                                _pref.remove('favorites');
-                                Navigator.of(context).pop();
-                              },
-                            ));
-                  },
-                  child: const Text('디버그: 즐겨찾기 항목 모두 제거')),
-              TextButton(
-                  onPressed: () async {
-                    showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (BuildContext context) => SuwonDialog(
-                              icon: Icons.error_outline,
-                              title: '경고',
-                              content: const Text('앱의 데이터를 모두 지웁니까?'),
-                              onPressed: () async {
-                                SharedPreferences _pref =
-                                    await SharedPreferences.getInstance();
-                                _pref.remove('favorites');
-                                Navigator.of(context).pop();
-                              },
-                            ));
-                  },
-                  style: ButtonStyle(
-                      overlayColor: MaterialStateProperty.all(
-                          Colors.redAccent.withAlpha(30)),
-                      foregroundColor:
-                          MaterialStateProperty.all(Colors.redAccent)),
-                  child: const Text(
-                    '디버그: 앱의 모든 설정 데이터 지우기',
-                  )),
-            ],
-          ));
-    } else {
-      return Container();
-    }
   }
 
   @override
@@ -295,7 +214,8 @@ class _SettingPageState extends State<SettingPage> {
                     detail: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('DB데이터를 다운받다가 문제가 생겨서 개설 강좌 목록이 정상 출력되지 않는 경우 DB데이터 다시 받기가 도움이 됩니다.'),
+                        const Text(
+                            'DB데이터를 다운받다가 문제가 생겨서 개설 강좌 목록이 정상 출력되지 않는 경우 DB데이터 다시 받기가 도움이 됩니다.'),
                         TextButton(
                             onPressed: () async {
                               showDialog(
@@ -355,113 +275,17 @@ class _SettingPageState extends State<SettingPage> {
                       ],
                     ),
                   ),
-                  debugWidget(),
-                  versionInfo(snapshot)
+                  CardInfo(
+                    icon: Icons.info_outline,
+                    title: '버전 정보',
+                    detail: Text(
+                        '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
+                        '로컬 앱 버전: ${packageInfo.version}'),
+                  )
                 ],
               );
             }
           }),
     );
-  }
-
-  Widget updater(bool equalVersion) {
-    if (equalVersion) {
-      return Container();
-    } else {
-      return Column(
-        children: [
-          Row(
-            children: const [
-              Icon(Icons.system_update_alt),
-              Padding(padding: EdgeInsets.only(right: 10.0)),
-              Text(
-                '업데이트 사용가능',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-          downloadUpdate(),
-        ],
-      );
-    }
-  }
-
-  Widget versionInfo(AsyncSnapshot<dynamic> snapshot) {
-    if (kIsWeb) {
-      return CardInfo(
-        icon: Icons.info_outline,
-        title: '버전 정보',
-        detail: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Web 플랫폼에서는 앱 버전이 항상 최신 버전으로 유지됩니다.',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(
-                '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
-                '앱 버전: ${packageInfo.version}'),
-          ],
-        ),
-      );
-    } else if (Platform.isWindows || Platform.isLinux) {
-      return CardInfo(
-        icon: Icons.info_outline,
-        title: '버전 정보',
-        detail: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-                '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
-                '로컬 앱 버전: ${packageInfo.version}\n'
-                '최신 앱 버전: 해당 플랫폼에서 확인 불가'),
-            downloadUpdate()
-          ],
-        ),
-      );
-    }
-    return FutureBuilder(
-        future: getVersionData(),
-        builder: (context, _snapshot) {
-          if (!_snapshot.hasData) {
-            return const CardInfo(
-              icon: Icons.info_outline,
-              title: '버전 정보',
-              detail: Center(child: CircularProgressIndicator.adaptive()),
-            );
-          } else if (_snapshot.hasError) {
-            return CardInfo(
-              icon: Icons.info_outline,
-              title: '버전 정보',
-              detail: Text(
-                  '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
-                  '로컬 앱 버전: ${packageInfo.version}\n'
-                  '최신 앱 버전: 정보를 가져오는데 오류가 발생했습니다.'),
-            );
-          } else {
-            return CardInfo(
-              icon: Icons.info_outline,
-              title: '버전 정보',
-              detail: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  updater(_snapshot.data == packageInfo.version),
-                  Text(
-                      '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
-                      '로컬 앱 버전: ${packageInfo.version}\n'
-                      '최신 앱 버전: ${_snapshot.data}'),
-                ],
-              ),
-            );
-          }
-        });
-  }
-
-  Widget downloadUpdate() {
-    return TextButton(
-        onPressed: (() async {
-          await launch('https://github.com/sun30812/suwon_mate/releases');
-        }),
-        child: const Text('업데이트 확인 및 다운받기(사이트 이동)'));
   }
 }

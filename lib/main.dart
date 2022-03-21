@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/donation.dart';
 import 'package:suwon_mate/info_detail.dart';
@@ -18,16 +16,10 @@ import 'package:suwon_mate/schedule.dart';
 import 'style_widget.dart';
 import 'open_class.dart';
 
-bool isSupportPlatform = kIsWeb || (!Platform.isWindows && !Platform.isLinux);
 void main() async {
-  if (!isSupportPlatform) {
-    runApp(const App());
-  } else {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-    runApp(const App());
-  }
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
@@ -114,9 +106,7 @@ class _MainMenuState extends State<MainMenu> {
     return Center(
       child: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: isSupportPlatform
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const NotSupportPlatformMessage(),
             Column(
@@ -129,11 +119,10 @@ class _MainMenuState extends State<MainMenu> {
                 SuwonButton(
                   icon: Icons.schedule_outlined,
                   buttonName: '학사 일정',
-                  isActivate: isActivated && !kIsWeb,
+                  isActivate: isActivated,
                   onPressed: () => Navigator.of(context).pushNamed('/schedule'),
                 ),
                 SuwonButton(
-                  isActivate: isSupportPlatform,
                   icon: Icons.date_range,
                   buttonName: '개설 강좌 조회',
                   onPressed: () => Navigator.of(context).pushNamed('/oclass'),
@@ -141,17 +130,15 @@ class _MainMenuState extends State<MainMenu> {
                 SuwonButton(
                   icon: Icons.notifications_none,
                   buttonName: '공지사항',
-                  isActivate: isActivated && !kIsWeb,
+                  isActivate: isActivated,
                   onPressed: () => Navigator.of(context).pushNamed('/info'),
                 ),
                 SuwonButton(
-                    isActivate: isSupportPlatform,
                     icon: Icons.star_outline,
                     buttonName: '즐겨찾는 과목',
                     onPressed: () =>
                         Navigator.of(context).pushNamed('/favorite')),
                 SuwonButton(
-                    isActivate: isSupportPlatform,
                     icon: Icons.favorite_border_outlined,
                     buttonName: '기부하기',
                     onPressed: () =>

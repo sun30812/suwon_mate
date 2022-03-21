@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:suwon_mate/api/keys.dart';
 
 class DonationPage extends StatefulWidget {
   const DonationPage({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class _DonationPageState extends State<DonationPage> {
     }
     final BannerAd bannerAd = BannerAd(
         size: size,
-        adUnitId: "",
+        adUnitId: adUintId,
         listener: BannerAdListener(
           onAdLoaded: ((ad) {
             setState(() {
@@ -31,7 +32,7 @@ class _DonationPageState extends State<DonationPage> {
             ad.dispose();
           }),
         ),
-        request: AdRequest());
+        request: const AdRequest());
     return bannerAd.load();
   }
 
