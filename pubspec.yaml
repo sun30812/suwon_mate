@@ -43,6 +43,7 @@ dependencies:
   url_launcher: ^6.0.18
   package_info_plus: ^1.4.0
   flutter_html: ^2.2.1
+  flutter_launcher_icons: ^0.9.2
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +66,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+flutter_icons:
+  android: "ic_launcher"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/app-icon.png"
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -79,7 +79,7 @@ jobs:
         run: flutter build macos
 
       - name: Zip .app file
-        run:  cd build/macos/Build/Products/Release/suwon_mate.app && zip -rD suwon_mate.app.zip .
+        run:  cd build/macos/Build/Products/Release && zip -rD suwon_mate.app.zip suwon_mate.app
 
       - name: Upload files
         uses: actions/upload-artifact@v2
@@ -114,7 +114,7 @@ jobs:
         run: flutter build linux
 
       - name: Zip output files
-        run: cd build/linux/x64/release/bundle && zip -rD suwon_mate_linux.zip .
+        run: cd build/linux/x64/release && zip -rD suwon_mate_linux.zip bundle
 
       - name: Upload files
         uses: actions/upload-artifact@v2
