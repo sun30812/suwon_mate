@@ -173,6 +173,13 @@ class _SuwonButtonState extends State<SuwonButton> {
     return widget.onPressed;
   }
 
+  Color smartColor() {
+    if ((widget.isActivate ?? true) && (widget.onPressed != null)) {
+      return Colors.black;
+    }
+    return Colors.grey;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -180,13 +187,17 @@ class _SuwonButtonState extends State<SuwonButton> {
         _isClicked = false;
       }),
       onTapDown: (_) => setState(() {
-        _isClicked = !_isClicked;
+        if (widget.isActivate ?? true) {
+          _isClicked = !_isClicked;
+        }
       }),
       onTapUp: (_) => setState(() {
-        _isClicked = !_isClicked;
+        if (widget.isActivate ?? true) {
+          _isClicked = !_isClicked;
+        }
       }),
       onTap: () {
-        if (widget.onPressed != null) {
+        if ((widget.onPressed != null) && (widget.isActivate ?? true)) {
           widget.onPressed!();
         }
       },
@@ -196,7 +207,7 @@ class _SuwonButtonState extends State<SuwonButton> {
           decoration: BoxDecoration(
               color: Colors.grey[300],
               borderRadius: BorderRadius.circular(20.0),
-              boxShadow: !_isClicked
+              boxShadow: !_isClicked && (widget.isActivate ?? true)
                   ? [
                       BoxShadow(
                           offset: const Offset(3, 3),
@@ -214,11 +225,11 @@ class _SuwonButtonState extends State<SuwonButton> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(widget.icon),
+              Icon(widget.icon, color: smartColor(),),
               const Padding(padding: EdgeInsets.only(right: 3.0)),
               Text(
                 widget.btnName,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(color: smartColor(),fontWeight: FontWeight.bold),
               )
             ]),
           ),
