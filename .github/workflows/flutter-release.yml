@@ -150,4 +150,4 @@ jobs:
           credentials: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SUWON_MATE }}
           databaseUrl: https://suwon-mate-default-rtdb.firebaseio.com/
           path: version/app_ver
-          value: v1.3.5
+          value: v2.0.0
