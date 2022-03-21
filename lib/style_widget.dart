@@ -20,35 +20,21 @@ class ClassDetailInfoCard extends StatelessWidget {
       guestDept;
   const ClassDetailInfoCard(
       {Key? key,
-      required String subjectCode,
-      required String openYear,
-      required String subjectKind,
-      required String hostName,
-      required String hostGrade,
-      required String classLocation,
-      required String region,
-      required String classLang,
-      required String promise,
-      required String point,
-      required String extra,
-      required String sex,
-      required String guestGrade,
-      required String guestDept})
-      : subjectCode = subjectCode,
-        openYear = openYear,
-        subjectKind = subjectKind,
-        hostName = hostName,
-        hostGrade = hostGrade,
-        classLocation = classLocation,
-        region = region,
-        classLang = classLang,
-        promise = promise,
-        extra = extra,
-        sex = sex,
-        point = point,
-        guestGrade = guestGrade,
-        guestDept = guestDept,
-        super(key: key);
+      required this.subjectCode,
+      required this.openYear,
+      required this.subjectKind,
+      required this.hostName,
+      required this.hostGrade,
+      required this.classLocation,
+      required this.region,
+      required this.classLang,
+      required this.promise,
+      required this.point,
+      required this.extra,
+      required this.sex,
+      required this.guestGrade,
+      required this.guestDept})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -159,20 +145,17 @@ class DataLoadingError extends StatelessWidget {
 }
 
 class SuwonButton extends StatelessWidget {
-  bool? isActivate;
-  IconData icon;
-  String btnName;
-  void Function()? onPressed;
-  SuwonButton({
+  final bool? isActivate;
+  final IconData icon;
+  final String btnName;
+  final void Function()? onPressed;
+  const SuwonButton({
     Key? key,
-    bool? isActivate,
-    required IconData icon,
+    this.isActivate,
+    required this.icon,
     required String buttonName,
-    required void Function()? onPressed,
-  })  : isActivate = isActivate,
-        icon = icon,
-        btnName = buttonName,
-        onPressed = onPressed,
+    required this.onPressed,
+  })  : btnName = buttonName,
         super(key: key);
   void Function()? buttonAction() {
     if (isActivate != null) {
@@ -215,18 +198,12 @@ class SuwonButton extends StatelessWidget {
 }
 
 class CardInfo extends StatelessWidget {
-  IconData icon;
-  String title;
-  Widget detail;
-  CardInfo(
-      {Key? key,
-      required IconData icon,
-      required String title,
-      required Widget detail})
-      : icon = icon,
-        title = title,
-        detail = detail,
-        super(key: key);
+  final IconData icon;
+  final String title;
+  final Widget detail;
+  const CardInfo(
+      {Key? key, required this.icon, required this.title, required this.detail})
+      : super(key: key);
 
   static Widget simplified(
       {required String title, String? subTitle, required Widget content}) {
@@ -401,30 +378,27 @@ class SuwonDialog extends StatelessWidget {
 }
 
 class NotiCard extends StatelessWidget {
-  IconData? _icon = Icons.warning_amber_outlined;
-  Color? _color = Colors.white;
-  final String _mesage;
-  NotiCard({
-    IconData? icon,
-    Color? color,
-    required String message,
+  final IconData? icon;
+  final Color? color;
+  final String message;
+  const NotiCard({
+    this.icon,
+    this.color,
+    required this.message,
     Key? key,
-  })  : _mesage = message,
-        _icon = icon,
-        _color = color,
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: _color,
+      color: color ?? Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            Icon(_icon),
+            Icon(icon ?? Icons.warning_amber_outlined),
             const Padding(padding: EdgeInsets.only(right: 10.0)),
-            Flexible(child: Text(_mesage)),
+            Flexible(child: Text(message)),
           ],
         ),
       ),
