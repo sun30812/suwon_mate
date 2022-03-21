@@ -124,44 +124,21 @@ class _FavoriteListViewState extends State<FavoriteListView> {
               return ListView.builder(
                   itemCount: _favorites.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context)
+                    return SimpleCardButton(
+                        onPressed: () => Navigator.of(context)
                             .pushNamed('/oclass/info',
                                 arguments: _favoriteClassList[index])
-                            .then(onGoBack);
-                      },
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _favoriteClassList[index]["subjtNm"],
-                                style: const TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                _favoriteClassList[index]["ltrPrfsNm"] ??
-                                    "이름 공개 안됨",
-                                style: const TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text((_favoriteClassList[index]["deptNm"] ??
-                                      "학부 전체 대상(전공 없음)") +
-                                  ", " +
-                                  _favoriteClassList[index]["facDvnm"] +
-                                  ', ' +
-                                  (_favoriteClassList[index]["timtSmryCn"] ??
-                                      "공개 안됨")),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
+                            .then(onGoBack),
+                        title: _favoriteClassList[index]["subjtNm"],
+                        subTitle: _favoriteClassList[index]["ltrPrfsNm"] ??
+                            "이름 공개 안됨",
+                        content: Text((_favoriteClassList[index]["deptNm"] ??
+                                "학부 전체 대상(전공 없음)") +
+                            ", " +
+                            _favoriteClassList[index]["facDvnm"] +
+                            ', ' +
+                            (_favoriteClassList[index]["timtSmryCn"] ??
+                                "공개 안됨")));
                   });
             }
           }

@@ -109,7 +109,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
       future: getData(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
-          return SuwonButton(
+          return const SuwonButton(
             icon: Icons.star_outline,
             buttonName: '즐겨찾기 추가',
             onPressed: null,

@@ -20,35 +20,21 @@ class ClassDetailInfoCard extends StatelessWidget {
       guestDept;
   const ClassDetailInfoCard(
       {Key? key,
-      required String subjectCode,
-      required String openYear,
-      required String subjectKind,
-      required String hostName,
-      required String hostGrade,
-      required String classLocation,
-      required String region,
-      required String classLang,
-      required String promise,
-      required String point,
-      required String extra,
-      required String sex,
-      required String guestGrade,
-      required String guestDept})
-      : subjectCode = subjectCode,
-        openYear = openYear,
-        subjectKind = subjectKind,
-        hostName = hostName,
-        hostGrade = hostGrade,
-        classLocation = classLocation,
-        region = region,
-        classLang = classLang,
-        promise = promise,
-        extra = extra,
-        sex = sex,
-        point = point,
-        guestGrade = guestGrade,
-        guestDept = guestDept,
-        super(key: key);
+      required this.subjectCode,
+      required this.openYear,
+      required this.subjectKind,
+      required this.hostName,
+      required this.hostGrade,
+      required this.classLocation,
+      required this.region,
+      required this.classLang,
+      required this.promise,
+      required this.point,
+      required this.extra,
+      required this.sex,
+      required this.guestGrade,
+      required this.guestDept})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -158,78 +144,112 @@ class DataLoadingError extends StatelessWidget {
   }
 }
 
-class SuwonButton extends StatelessWidget {
-  bool? isActivate;
-  IconData icon;
-  String btnName;
-  void Function()? onPressed;
-  SuwonButton({
+class SuwonButton extends StatefulWidget {
+  final bool? isActivate;
+  final IconData icon;
+  final String btnName;
+  final void Function()? onPressed;
+  const SuwonButton({
     Key? key,
-    bool? isActivate,
-    required IconData icon,
+    this.isActivate,
+    required this.icon,
     required String buttonName,
-    required void Function()? onPressed,
-  })  : isActivate = isActivate,
-        icon = icon,
-        btnName = buttonName,
-        onPressed = onPressed,
+    required this.onPressed,
+  })  : btnName = buttonName,
         super(key: key);
+
+  @override
+  State<SuwonButton> createState() => _SuwonButtonState();
+}
+
+class _SuwonButtonState extends State<SuwonButton> {
+  bool _isClicked = false;
   void Function()? buttonAction() {
-    if (isActivate != null) {
-      if (isActivate == false) {
+    if (widget.isActivate != null) {
+      if (widget.isActivate == false) {
         return null;
       }
     }
-    return onPressed;
+    return widget.onPressed;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextButton(
-          onPressed: buttonAction(),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon),
-              const Padding(
-                padding: EdgeInsets.all(2),
-              ),
+    return GestureDetector(
+      onTapCancel: () => setState(() {
+        _isClicked = false;
+      }),
+      onTapDown: (_) => setState(() {
+        _isClicked = !_isClicked;
+      }),
+      onTapUp: (_) => setState(() {
+        _isClicked = !_isClicked;
+      }),
+      onTap: () {
+        if (widget.onPressed != null) {
+          widget.onPressed!();
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: AnimatedContainer(
+          decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: !_isClicked
+                  ? [
+                      BoxShadow(
+                          offset: const Offset(3, 3),
+                          blurRadius: 15,
+                          spreadRadius: 1,
+                          color: Colors.grey[500]!),
+                      const BoxShadow(
+                          offset: Offset(-3, -3),
+                          blurRadius: 15,
+                          spreadRadius: 1,
+                          color: Colors.white)
+                    ]
+                  : null),
+          duration: const Duration(milliseconds: 200),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(widget.icon),
+              const Padding(padding: EdgeInsets.only(right: 3.0)),
               Text(
-                btnName,
-                style: const TextStyle(fontSize: 18.0),
-              ),
-            ],
+                widget.btnName,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              )
+            ]),
           ),
-          style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.white),
-              minimumSize: MaterialStateProperty.all(const Size(90, 40)),
-              elevation: MaterialStateProperty.all(2.0),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50.0),
-              )))),
+        ),
+      ),
     );
   }
 }
 
-class CardInfo extends StatelessWidget {
-  IconData icon;
-  String title;
-  Widget detail;
-  CardInfo(
-      {Key? key,
-      required IconData icon,
-      required String title,
-      required Widget detail})
-      : icon = icon,
-        title = title,
-        detail = detail,
-        super(key: key);
+class SimpleCardButton extends StatefulWidget {
+  final String title;
+  final String? subTitle;
+  final Widget content;
+  final Function()? onPressed;
 
-  static Widget simplified(
-      {required String title, String? subTitle, required Widget content}) {
+  const SimpleCardButton(
+      {required this.title,
+      this.subTitle,
+      required this.content,
+      Key? key,
+      this.onPressed})
+      : super(key: key);
+
+  @override
+  State<SimpleCardButton> createState() => _SimpleCardButtonState();
+}
+
+class _SimpleCardButtonState extends State<SimpleCardButton> {
+  bool _isClicked = false;
+  @override
+  Widget build(BuildContext context) {
     Widget subTitleWidget(String? text) {
       if (text != null) {
         return Text(
@@ -241,48 +261,126 @@ class CardInfo extends StatelessWidget {
       }
     }
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style:
-                  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GestureDetector(
+        onTapCancel: () => setState(() {
+          if (widget.onPressed == null) {
+            return;
+          }
+          _isClicked = false;
+        }),
+        onTapDown: (_) => setState(() {
+          if (widget.onPressed == null) {
+            return;
+          }
+          _isClicked = !_isClicked;
+        }),
+        onTapUp: (_) => setState(() {
+          if (widget.onPressed == null) {
+            return;
+          }
+          _isClicked = !_isClicked;
+        }),
+        onTap: () {
+          if (widget.onPressed != null) {
+            widget.onPressed!();
+          }
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 100),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3.0),
+              color: Colors.grey[300],
+              boxShadow: !_isClicked
+                  ? [
+                      BoxShadow(
+                          offset: const Offset(3, 3),
+                          blurRadius: 15,
+                          spreadRadius: 1,
+                          color: Colors.grey[500]!),
+                      const BoxShadow(
+                          offset: Offset(-3, -3),
+                          blurRadius: 15,
+                          spreadRadius: 1,
+                          color: Colors.white)
+                    ]
+                  : null),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.title,
+                  style: const TextStyle(
+                      fontSize: 18.0, fontWeight: FontWeight.bold),
+                ),
+                subTitleWidget(widget.subTitle),
+                widget.content
+              ],
             ),
-            subTitleWidget(subTitle),
-            content
-          ],
+          ),
         ),
       ),
     );
   }
+}
+
+class CardInfo extends StatefulWidget {
+  final IconData icon;
+  final String title;
+  final Widget detail;
+  const CardInfo(
+      {Key? key, required this.icon, required this.title, required this.detail})
+      : super(key: key);
 
   @override
+  State<CardInfo> createState() => _CardInfoState();
+}
+
+class _CardInfoState extends State<CardInfo> {
+  @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon),
-                const Padding(padding: EdgeInsets.only(right: 10.0)),
-                Text(
-                  title,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18.0),
-                ),
-              ],
-            ),
-            const Divider(),
-            detail
-          ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(3.0),
+            color: Colors.grey[300],
+            boxShadow: [
+              BoxShadow(
+                  offset: const Offset(3, 3),
+                  blurRadius: 15,
+                  spreadRadius: 1,
+                  color: Colors.grey[500]!),
+              const BoxShadow(
+                  offset: Offset(-3, -3),
+                  blurRadius: 15,
+                  spreadRadius: 1,
+                  color: Colors.white)
+            ]),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(widget.icon),
+                  const Padding(padding: EdgeInsets.only(right: 10.0)),
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18.0),
+                  ),
+                ],
+              ),
+              const Divider(),
+              widget.detail
+            ],
+          ),
         ),
       ),
     );
@@ -401,30 +499,27 @@ class SuwonDialog extends StatelessWidget {
 }
 
 class NotiCard extends StatelessWidget {
-  IconData? _icon = Icons.warning_amber_outlined;
-  Color? _color = Colors.white;
-  final String _mesage;
-  NotiCard({
-    IconData? icon,
-    Color? color,
-    required String message,
+  final IconData? icon;
+  final Color? color;
+  final String message;
+  const NotiCard({
+    this.icon,
+    this.color,
+    required this.message,
     Key? key,
-  })  : _mesage = message,
-        _icon = icon,
-        _color = color,
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: _color,
+      color: color ?? Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            Icon(_icon),
+            Icon(icon ?? Icons.warning_amber_outlined),
             const Padding(padding: EdgeInsets.only(right: 10.0)),
-            Flexible(child: Text(_mesage)),
+            Flexible(child: Text(message)),
           ],
         ),
       ),

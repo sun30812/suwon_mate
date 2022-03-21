@@ -60,27 +60,25 @@ class InfoPage extends StatelessWidget {
                       .innerHtml
                       .split(',')[2]
                       .split(')')[0];
-                  return GestureDetector(
-                    onTap: () => Navigator.of(context)
-                        .pushNamed('/info/detail', arguments: dat),
-                    child: CardInfo.simplified(
-                        title: dat['title']!,
-                        content: Text(
-                          rows
-                                  .getElementsByClassName('info')[index]
-                                  .getElementsByClassName('date')[0]
-                                  .text
-                                  .trim() +
-                              '/' +
-                              rows
-                                  .getElementsByClassName('info')[index]
-                                  .getElementsByClassName('hit')[0]
-                                  .text
-                                  .trim(),
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(fontSize: 16.0),
-                        )),
-                  );
+                  return SimpleCardButton(
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed('/info/detail', arguments: dat),
+                      title: dat['title']!,
+                      content: Text(
+                        rows
+                                .getElementsByClassName('info')[index]
+                                .getElementsByClassName('date')[0]
+                                .text
+                                .trim() +
+                            '/' +
+                            rows
+                                .getElementsByClassName('info')[index]
+                                .getElementsByClassName('hit')[0]
+                                .text
+                                .trim(),
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(fontSize: 16.0),
+                      ));
                 });
           }
         },
