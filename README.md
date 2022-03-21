@@ -11,7 +11,6 @@
 	- [간단 기능 소개](#간단-기능-소개)
 	- [사용해보기](#사용해보기)
 		- [사전 빌드된 파일 사용하기](#사전-빌드된-파일-사용하기)
-		- [Web 플랫폼에서 사용해보기](#web-플랫폼에서-사용해보기)
 	- [앱 사용 도움말](#앱-사용-도움말)
 	- [DB안내](#db안내)
 	- [빌드해보기](#빌드해보기)
@@ -22,8 +21,8 @@
 		- [Windows/Linux에서는 왜 일부 기능이 안되나요?](#windowslinux에서는-왜-일부-기능이-안되나요)
 
 ## 분기(브랜치) 소개
-해당 분기는 `main` 입니다. 항상 새로운 기능이 적용됩니다.
-이전 버전을 보고 싶으신 경우 [legacy](https://github.com/sun30812/suwon_mate/tree/legacy) 분기에서 확인할 수 있습니다.
+해당 분기는 `release` 입니다. Google Play에 공개된 버전이라고 보시면 됩니다.
+가장 빠른 최신 버전을 보고 싶으신 경우 [main](https://github.com/sun30812/suwon_mate/tree/main) 분기에서 확인할 수 있습니다.
 
 ## 지원되는 플랫폼
 현재 확인된 기능 별 지원되는 플랫폼 목록입니다.
@@ -45,30 +44,11 @@
 * 강의자의 이름, 과목명, 과목코드로 검색하기
 * 개설강좌를 탭하면 자세한 정보가 나오고, 해당 강의자의 다른 과목들도 볼 수 있음
 ## 사용해보기
-macOS, Windows, Android, Linux용으로 빌드된 파일을 쓰거나 Web 사이트 상에서 바로 사용이 가능합니다.
+현재 사용이 불가능 합니다.
+
 ### 사전 빌드된 파일 사용하기
-> ⚠️ 태그를 지정한 커밋만 빌드됩니다. 모든 커밋의 변경사항을 바로 추척하려면 Web 플랫폼을 사용하세요.
+> ⚠️ 사전 빌드된 버전을 제공하지 않습니다. Google Play에 앱이 게시되면 해당 링크로 교체할 예정입니다.
 
-아래 사이트에 접속하셔서 파일을 받으시면 됩니다.
-
-[Github Release](https://github.com/sun30812/suwon_mate/releases)
-
-* suwon_mate_android.apk: Android 기기에서 동작하는 파일입니다.
-* suwon_mate_win.zip: windows 환경에서 동작하는 파일입니다.
-  * 압축을 푼 후 폴더안에 내용물은 **전부** 유지시켜야 합니다.
-  * [Visual C++ 재배포 가능 패키지](https://docs.microsoft.com/ko-kr/cpp/windows/latest-supported-vc-redist?view=msvc-170)가 필요합니다. 본인의 아키텍쳐에 맞게 설치하시면 됩니다.(가장 최신 버전 설치하면 됨)
-* suwon_mate.app.zip: macOS환경에서 동작하는 파일입니다.
-  * 압축을 푼 후 나오는 파일을 Application 폴더에 넣으시면 됩니다.(Finder에서 Cmd+Shift+A누르면 나옴)
-  * 만일 실행이 불가능 하다고 나오면 Application 폴더에 들어가서 해당 앱을 우클릭해서 열기를 누르면 이후에 실행이 계속 가능해집니다.
-* suwon_mate_linux.zip: Linux(Ubuntu)환경에서 동작하는 파일입니다.
-
-### Web 플랫폼에서 사용해보기
-아래 링크에 접속하시면 다운로드 및 실행 없이 바로 이 앱을 체험할 수 있습니다.  
-다만, 아래 링크는 Web플랫폼이기 때문에 상단에 있는 [지원되는 플랫폼](#지원되는-플랫폼)에 명시된 것 처럼 일부 기능이 동작하지 않습니다.
-
-- [Firebase hosting](https://suwon-mate.web.app)
-- [Firebase hosting-legacy](https://suwon-mate-legacy.web.app)
-- [Azure Web App](https://orange-moss-005eb8300.1.azurestaticapps.net)
 
 ## 앱 사용 도움말
 앱의 도움말 메뉴를 참고하면 대부분의 설명을 보실 수 있습니다.  
@@ -80,6 +60,9 @@ macOS, Windows, Android, Linux용으로 빌드된 파일을 쓰거나 Web 사이
 DB가 언제 업데이트 되었는지는 앱 내 설정에서 로컬 DB 버전에서 확인할 수 있습니다.
 
 ## 빌드해보기
+> ⚠️ 해당 분기의 소스코드는 빌드하기에 적합하지 않습니다. main이나 legacy 분기로 전환하세요.
+ 
+
 해당 소스코드를 다운받아서 iOS, Android, Web앱 등으로 빌드할 수 있습니다.
 어느 플랫폼이든 Flutter SDK가 기본적으로 필요합니다.
 

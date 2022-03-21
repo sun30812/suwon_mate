@@ -295,6 +295,7 @@ class _SettingPageState extends State<SettingPage> {
                     detail: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const Text('DB데이터를 다운받다가 문제가 생겨서 개설 강좌 목록이 정상 출력되지 않는 경우 DB데이터 다시 받기가 도움이 됩니다.'),
                         TextButton(
                             onPressed: () async {
                               showDialog(

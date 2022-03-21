@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:suwon_mate/donation.dart';
 import 'package:suwon_mate/info_detail.dart';
 import 'package:suwon_mate/search.dart';
 import 'package:suwon_mate/settings.dart';
@@ -50,6 +51,7 @@ class App extends StatelessWidget {
         '/info': (context) => const InfoPage(),
         '/info/detail': (context) => const InfoDetailPage(),
         '/favorite': (context) => const FavoriteSubjectPage(),
+        '/donation': (context) => const DonationPage(),
         '/settings': (context) => const SettingPage(),
         '/help': (context) => const HelpPage()
       },
@@ -148,6 +150,12 @@ class _MainMenuState extends State<MainMenu> {
                     buttonName: '즐겨찾는 과목',
                     onPressed: () =>
                         Navigator.of(context).pushNamed('/favorite')),
+                SuwonButton(
+                    isActivate: isSupportPlatform,
+                    icon: Icons.favorite_border_outlined,
+                    buttonName: '기부하기',
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed('/donation')),
                 SuwonButton(
                     icon: Icons.settings,
                     buttonName: '설정',

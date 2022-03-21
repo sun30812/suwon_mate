@@ -26,8 +26,9 @@ class HelpPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Text(
-                    '본인 전공을 고르시면 그에 맞는 과목이 나옵니다. 과목을 누르면 더욱 자세히 볼 수 있습니다.\n'
-                    '아이콘으로 된 버튼은 누르고 있으면 설명이 나옵니다.\n'
+                    '개설 강좌 목록을 가져오지만 학교 서버가 아닌 자체 서버에서 받아오기 때문에 항상 최신이 아닙니다.\n'
+                        '설정 메뉴에서 언제 업데이트된 DB인지 확인 가능합니다.\n'
+                    '강좌목록은 클릭이 가능하며, 아이콘으로 된 버튼은 누르고 있으면 설명이 나옵니다.\n'
                     '교양 영역의 경우 과를 교양으로 선택하면 고를 수 있습니다.\n',
                     style: TextStyle(fontSize: 16.0),
                   ),
@@ -48,11 +49,23 @@ class HelpPage extends StatelessWidget {
               )),
           CardInfo(
               icon: Icons.star_outline,
-              title: '즐겨찾는 과목',
+              title: '즐겨찾는 과목(베타)',
               detail: Column(
                 children: const [
                   Text(
-                    '개설 강좌 조회에서 즐겨찾기에 추가한 과목들만 확인할 수 있습니다.',
+                    '개설 강좌 조회에서 즐겨찾기에 추가한 과목들만 확인할 수 있습니다.\n'
+                        '현재 즐겨찾기 삭제 시 앱 메인화면으로 나갔다가 들어와야 정상적으로 반영됩니다.',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ],
+              )),
+          CardInfo(
+              icon: Icons.favorite_outline_outlined,
+              title: '기부하기',
+              detail: Column(
+                children: const [
+                  Text(
+                    '광고배너가 달린 페이지 입니다. 광고 빼고는 아무 기능 없습니다.',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],
