@@ -145,7 +145,7 @@ jobs:
     needs: Release
     steps:
       - name: Firebase Trigger
-      - uses: w9jds/firebase-trigger@v1.0.1
+        uses: w9jds/firebase-trigger@v1.0.1
         with:
           credentials: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SUWON_MATE }}
           databaseUrl: https://suwon-mate-default-rtdb.firebaseio.com/
