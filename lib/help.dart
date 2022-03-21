@@ -12,10 +12,10 @@ class HelpPage extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          CardInfo(
+          const CardInfo(
               icon: Icons.schedule_outlined,
               title: '학사 일정',
-              detail: const Text(
+              detail: Text(
                 '학교의 일정을 확인할 수 있습니다.',
                 style: TextStyle(fontSize: 16.0),
               )),
@@ -38,10 +38,10 @@ class HelpPage extends StatelessWidget {
                   )
                 ],
               )),
-          CardInfo(
+          const CardInfo(
               icon: Icons.notifications_none,
               title: '공지사항',
-              detail: const Text(
+              detail: Text(
                 '학교의 공지사항을 볼 수 있습니다.\n제목을 클릭하면 세부정보가 나오며 '
                 '첨부파일을 받기 위해 브라우저로 이동이 필요한 경우 브라우저로 이동 버튼을 누르면 됩니다.',
                 style: TextStyle(fontSize: 16.0),
@@ -57,10 +57,10 @@ class HelpPage extends StatelessWidget {
                   ),
                 ],
               )),
-          CardInfo(
+          const CardInfo(
               icon: Icons.settings,
               title: '설정',
-              detail: const Text(
+              detail: Text(
                 '개설 강좌 조회시 처음에 표시할 학년이나 전공을 설정할 수 있습니다.\n'
                 '다양한 설정들이 계속 추가될 예정입니다.\n'
                 '\n데이터 절약 모드: 인터넷 연결이 필요한 대부분의 기능을 차단합니다.(DB업데이트, 공지사항, 학사일정)\n'

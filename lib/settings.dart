@@ -79,7 +79,7 @@ class _SettingPageState extends State<SettingPage> {
     if (_isSynced) {
       return Container();
     }
-    return NotiCard(
+    return const NotiCard(
         icon: Icons.warning_amber,
         color: Colors.amber,
         message: '아직 개설 강좌 조회를 들어가지 않은 경우 기본 전공을 지정할 수 있는 범위가 좁습니다.');
@@ -93,7 +93,7 @@ class _SettingPageState extends State<SettingPage> {
           detail: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              NotiCard(
+              const NotiCard(
                 color: Colors.amber,
                 icon: Icons.warning_amber_outlined,
                 message: '이 설정을 숨기려면 settings.dart의 isDebug변수를 false로 지정합니다.',
@@ -423,10 +423,10 @@ class _SettingPageState extends State<SettingPage> {
         future: getVersionData(),
         builder: (context, _snapshot) {
           if (!_snapshot.hasData) {
-            return CardInfo(
+            return const CardInfo(
               icon: Icons.info_outline,
               title: '버전 정보',
-              detail: const Center(child: CircularProgressIndicator.adaptive()),
+              detail: Center(child: CircularProgressIndicator.adaptive()),
             );
           } else if (_snapshot.hasError) {
             return CardInfo(

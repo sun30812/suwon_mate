@@ -126,21 +126,19 @@ class _SearchPageState extends State<SearchPage> {
                           classList[index]["subjtNm"]
                               .toString()
                               .contains(_controller.text))) {
-                    return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pushNamed('/oclass/info',
-                              arguments: classList[index]);
-                        },
-                        child: CardInfo.simplified(
-                          title: classList[index]["subjtNm"],
-                          subTitle: classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
-                          content: Text((classList[index]["deptNm"] ??
-                                  "학부 전체 대상(전공 없음)") +
+                    return SimpleCardButton(
+                      onPressed: () => Navigator.of(context).pushNamed(
+                          '/oclass/info',
+                          arguments: classList[index]),
+                      title: classList[index]["subjtNm"],
+                      subTitle: classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
+                      content: Text(
+                          (classList[index]["deptNm"] ?? "학부 전체 대상(전공 없음)") +
                               ", " +
                               classList[index]["facDvnm"] +
                               ', ' +
                               (classList[index]["timtSmryCn"] ?? "공개 안됨")),
-                        ));
+                    );
                   }
                   return Container();
                 }),
