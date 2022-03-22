@@ -91,7 +91,13 @@ class _FavoriteListViewState extends State<FavoriteListView> {
         future: getData(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator.adaptive());
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Center(child: CircularProgressIndicator.adaptive()),
+                Text('DB 버전 확인 및 갱신 중')
+              ],
+            );
           } else if (snapshot.hasError) {
             return const DataLoadingError();
           } else {
