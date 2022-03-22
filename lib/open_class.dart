@@ -14,6 +14,7 @@ class OpenClass extends StatefulWidget {
 class _OpenClassState extends State<OpenClass> {
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
   List<DropdownMenuItem<String>> dropdownList = [];
+  final List<String> _tempList = [];
   List<DropdownMenuItem<String>> gradeDownList = [];
   List<DropdownMenuItem<String>> regionList = const [
     DropdownMenuItem(
@@ -21,31 +22,31 @@ class _OpenClassState extends State<OpenClass> {
       value: '전체',
     ),
     DropdownMenuItem(
-      child: Text('1영역(언어와 소통)'),
+      child: Text('1영역'),
       value: '언어와 소통',
     ),
     DropdownMenuItem(
-      child: Text('2영역(세계와 문명)'),
+      child: Text('2영역'),
       value: '세계와 문명',
     ),
     DropdownMenuItem(
-      child: Text('3영역(역사와 사회)'),
+      child: Text('3영역'),
       value: '역사와 사회',
     ),
     DropdownMenuItem(
-      child: Text('4영역(문화와 철학)'),
+      child: Text('4영역'),
       value: '문화와 철학',
     ),
     DropdownMenuItem(
-      child: Text('5영역(기술과 정보)'),
+      child: Text('5영역'),
       value: '기술과 정보',
     ),
     DropdownMenuItem(
-      child: Text('6영역(건강과 예술)'),
+      child: Text('6영역'),
       value: '건강과 예술',
     ),
     DropdownMenuItem(
-      child: Text('7영역(자연과 과학)'),
+      child: Text('7영역'),
       value: '자연과 과학',
     )
   ];
@@ -152,16 +153,29 @@ class _OpenClassState extends State<OpenClass> {
               }
               List classList = [];
               for (var dat in orgClassList) {
-                dpSet.add(dat['estbDpmjNm'].toString());
+                if ((dat['estbDpmjNm'] != '교양') && (dat['estbDpmjNm'] != '교양(야)')) {
+                  dpSet.add(dat['estbDpmjNm'].toString());
+                }
               }
               if (_isFirstDp) {
+                dropdownList.add(const DropdownMenuItem(
+                  child: Text('교양'),
+                  value: '교양',
+                ));
+                dropdownList.add(const DropdownMenuItem(
+                  child: Text('교양(야)'),
+                  value: '교양(야)',
+                ));
                 for (String depart in dpSet) {
+                  _tempList.add(depart);
+                }
+                _tempList.sort((a, b) => a.compareTo(b));
+                for (String depart in _tempList) {
                   dropdownList.add(DropdownMenuItem(
                     child: Text(depart),
                     value: depart,
                   ));
                 }
-                dropdownList.sort((a, b) => a.value!.compareTo(b.value!));
                 _isFirstDp = false;
               }
               for (var classData in orgClassList) {

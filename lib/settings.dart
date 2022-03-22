@@ -304,7 +304,7 @@ class _SettingPageState extends State<SettingPage> {
                                             SystemNavigator.pop(animated: true);
                                           }), child: const Text('앱 종료')),
                                           TextButton(onPressed: (()  {
-                                            ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                                            ScaffoldMessenger.of(context).clearMaterialBanners();
                                           }), child: const Text('메세지 닫기')),
                                         ])
                                       );
