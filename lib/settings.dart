@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -193,8 +194,9 @@ class _SettingPageState extends State<SettingPage> {
                 children: [
                   CardInfo(
                       icon: Icons.school_outlined,
-                      title: '기본 정보 설정',
+                      title: '학생 정보',
                       detail: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           const Padding(
                             padding: EdgeInsets.all(8.0),
@@ -221,19 +223,22 @@ class _SettingPageState extends State<SettingPage> {
                               ],
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text('기본 학년: '),
-                              DropdownButton<String>(
-                                  items: gradeDropdownList,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      _grade = value!;
-                                    });
-                                  },
-                                  value: _grade),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('기본 학년: '),
+                                DropdownButton<String>(
+                                    items: gradeDropdownList,
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _grade = value!;
+                                      });
+                                    },
+                                    value: _grade),
+                              ],
+                            ),
                           ),
                         ],
                       )),
@@ -283,6 +288,26 @@ class _SettingPageState extends State<SettingPage> {
                                       setState(() {
                                         functionSetting['offline'] = newValue;
                                       });
+                                      ScaffoldMessenger.of(context).showMaterialBanner(
+                                        MaterialBanner(content: Row(
+                                          children: const [
+                                            Icon(Icons.warning_amber_rounded),
+                                            Text('앱을 재시작 해야 변경사항이 적용됩니다.')
+                                          ],
+                                        ), actions:  [
+                                          TextButton(style: ButtonStyle(
+                                              overlayColor: MaterialStateProperty.all(
+                                                  Colors.redAccent.withAlpha(30)),
+                                            foregroundColor: MaterialStateProperty.all(Colors.redAccent)
+                                          ),onPressed: (()  {
+                                            dispose();
+                                            SystemNavigator.pop(animated: true);
+                                          }), child: const Text('앱 종료')),
+                                          TextButton(onPressed: (()  {
+                                            ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                                          }), child: const Text('메세지 닫기')),
+                                        ])
+                                      );
                                     }),
                               ],
                             ),
