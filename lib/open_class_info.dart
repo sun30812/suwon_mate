@@ -52,6 +52,7 @@ class _OpenClassInfoPageState extends State<OpenClassInfoPage> {
             hostName: widget.classData["ltrPrfsNm"] ?? '공개 안됨',
             extra: widget.classData["capprTypeNm"] ?? '공개 안됨',
             guestDept: widget.classData["estbDpmjNm"] ?? '공개 안됨',
+            guestMjor: widget.classData["estbMjorNm"] ?? '학부 전체',
             guestGrade: (widget.classData["trgtGrdeCd"] ?? 0).toString() + '학년',
           ),
         ],

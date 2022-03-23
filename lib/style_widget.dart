@@ -17,7 +17,8 @@ class ClassDetailInfoCard extends StatelessWidget {
       point,
       sex,
       guestGrade,
-      guestDept;
+      guestDept,
+  guestMjor;
   const ClassDetailInfoCard(
       {Key? key,
       required this.subjectCode,
@@ -33,7 +34,9 @@ class ClassDetailInfoCard extends StatelessWidget {
       required this.extra,
       required this.sex,
       required this.guestGrade,
-      required this.guestDept})
+      required this.guestDept,
+        required this.guestMjor,
+      })
       : super(key: key);
 
   @override
@@ -45,7 +48,8 @@ class ClassDetailInfoCard extends StatelessWidget {
               icon: Icons.account_circle_outlined,
               title: '수업 대상자',
               detail: Text(
-                '대상 학년: $guestGrade\n대상 학부/전공: $guestDept',
+                '대상 학년: $guestGrade\n대상 학부: $guestDept\n'
+                    '대상 학과: $guestMjor',
                 style: const TextStyle(fontSize: 17.0),
               )),
           CardInfo(
@@ -122,7 +126,7 @@ class ClassDetailInfoCard extends StatelessWidget {
               icon: Icons.info_outline,
               title: '추가 정보',
               detail: Text(
-                '강의자 계약 정보: $promise\n수업 방식: $extra\n수업 언어: $classLang',
+                '강의자 계약 정보: $promise\n수업 방식: $extra',
                 style: const TextStyle(fontSize: 17.0),
               ))
         ],

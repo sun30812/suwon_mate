@@ -13,8 +13,8 @@ class OpenClass extends StatefulWidget {
 
 class _OpenClassState extends State<OpenClass> {
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
-  List<DropdownMenuItem<String>> dropdownList = [];
-  final List<String> _tempList = [];
+  List<DropdownMenuItem<String>> dpDropdownList = [];
+  List<DropdownMenuItem<String>> subjectDropdownList = [];
   List<DropdownMenuItem<String>> gradeDownList = [];
   List<DropdownMenuItem<String>> regionList = const [
     DropdownMenuItem(
@@ -54,7 +54,7 @@ class _OpenClassState extends State<OpenClass> {
   bool _offline = false;
   bool isSaved = false;
   String _myDept = '컴퓨터학부';
-  final String _mySub = '전체';
+  String _mySub = '학부 공통';
   String _myGrade = '1학년';
   String _region = '전체';
   Set<String> dpSet = {};
@@ -81,7 +81,7 @@ class _OpenClassState extends State<OpenClass> {
       isSaved = true;
       return _pref.getString('class');
     }
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
+    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_test');
     _pref.setString('db_ver', versionInfo["db_ver"]);
     return await ref.once();
   }
@@ -152,17 +152,23 @@ class _OpenClassState extends State<OpenClass> {
                 orgClassList = _event.snapshot.value as List;
               }
               List classList = [];
-              for (var dat in orgClassList) {
-                if ((dat['estbDpmjNm'] != '교양') && (dat['estbDpmjNm'] != '교양(야)')) {
-                  dpSet.add(dat['estbDpmjNm'].toString());
+              Set tempSet = {};
+              dpSet = {};
+              for (var dat in orgClassList[0].keys) {
+                if ((dat != '교양') && (dat != '교양(야)')) {
+                  dpSet.add(dat.toString());
                 }
               }
+              for (var dat in orgClassList[0][_myDept]) {
+                  tempSet.add(dat['estbMjorNm'] ?? '학부 공통');
+              }
               if (_isFirstDp) {
-                dropdownList.add(const DropdownMenuItem(
+                List<String> _tempList = [];
+                dpDropdownList.add(const DropdownMenuItem(
                   child: Text('교양'),
                   value: '교양',
                 ));
-                dropdownList.add(const DropdownMenuItem(
+                dpDropdownList.add(const DropdownMenuItem(
                   child: Text('교양(야)'),
                   value: '교양(야)',
                 ));
@@ -171,21 +177,36 @@ class _OpenClassState extends State<OpenClass> {
                 }
                 _tempList.sort((a, b) => a.compareTo(b));
                 for (String depart in _tempList) {
-                  dropdownList.add(DropdownMenuItem(
+                  dpDropdownList.add(DropdownMenuItem(
                     child: Text(depart),
                     value: depart,
                   ));
                 }
+
+
                 _isFirstDp = false;
               }
-              for (var classData in orgClassList) {
-                if ((classData['estbDpmjNm'] == _myDept) &&
-                    ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
-                  if (_mySub == '전체' &&
-                      (_region == '전체' ||
-                          _region == (classData["cltTerrNm"] ?? 'none'))) {
+              List _tempList = [];
+              for(String subject in tempSet) {
+                _tempList.add(subject);
+              }
+              _tempList.sort((a,b) => a.compareTo(b));
+              subjectDropdownList.clear();
+              for (String subject in _tempList) {
+                subjectDropdownList.add(DropdownMenuItem(
+                  child: Text(subject),
+                  value: subject,
+                ));
+              }
+              for (var classData in orgClassList[0][_myDept]) {
+                if (_myDept == '교양') {
+                  if ((classData['trgtGrdeCd'].toString() + '학년'== _myGrade) && ((_region == '전체' || _region == (classData["cltTerrNm"] ?? 'none')))) {
                     classList.add(classData);
                   }
+                }
+                else if ((_mySub == '학부 공통'||(classData['estbMjorNm'] == _mySub)) && ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
+                classList.add(classData);
+
                 }
               }
               classList.sort((a, b) => ((a["subjtNm"] as String)
@@ -204,13 +225,26 @@ class _OpenClassState extends State<OpenClass> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: DropdownButton(
-                            items: dropdownList,
+                            items: dpDropdownList,
                             onChanged: (String? value) {
                               setState(() {
                                 _myDept = value!;
+                                _mySub = '학부 공통';
                               });
                             },
                             value: _myDept,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DropdownButton(
+                            items: subjectDropdownList,
+                            onChanged: (String? value) {
+                              setState(() {
+                                _mySub = value!;
+                              });
+                            },
+                            value: _mySub,
                           ),
                         ),
                         Padding(
@@ -239,8 +273,8 @@ class _OpenClassState extends State<OpenClass> {
                             title: classList[index]["subjtNm"],
                             subTitle:
                                 classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
-                            content: Text((classList[index]["deptNm"] ??
-                                    "학부 전체 대상(전공 없음)") +
+                            content: Text((classList[index]["estbMjorNm"] ??
+                                    "학부 전체 대상") +
                                 ", " +
                                 classList[index]["facDvnm"] +
                                 ', ' +

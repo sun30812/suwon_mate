@@ -11,6 +11,8 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
+  List classList = [];
+  bool _isFirst = true;
 
   @override
   void initState() {
@@ -29,7 +31,16 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context)!.settings.arguments;
-    List classList = args;
+    Map rawClassList = args[0];
+    if (_isFirst) {
+      for(var _dat in rawClassList.values.toList()) {
+        for(var _dat2 in _dat) {
+          classList.add(_dat2);
+
+        }
+      }
+      _isFirst = false;
+    }
 
     return Scaffold(
       appBar: AppBar(
