@@ -111,26 +111,28 @@ class _MainMenuState extends State<MainMenu> {
     }
 
     if (widget._preferences.containsKey('mySub')) {
-      AlertDialog(
-        title: Row(
-          children: [
-            Icon(Icons.warning_amber_rounded),
-            Text('경고')
+      showDialog(context: context, builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.warning_amber_rounded),
+              Text('경고')
+            ],
+          ),
+          content: Text('DB의 구조가 새롭게 변경되었습니다. 따라서 즐겨찾기 항목을 제외한 나머지 데이터들의 초기화가 필요합니다.\n'
+              '계속하시겠습니까?'),
+          actions: [
+            TextButton(onPressed: () => SystemNavigator.pop(animated: true), child: Text('무시(앱 종료)')),
+            TextButton(onPressed: (() async {
+              SharedPreferences _pref = await SharedPreferences.getInstance();
+              _pref.remove('mySub');
+              _pref.remove('myDp');
+              _pref.remove('class');
+              Navigator.pop(context);
+            }), child: Text('확인')),
           ],
-        ),
-        content: Text('DB의 구조가 새롭게 변경되었습니다. 따라서 즐겨찾기 항목을 제외한 나머지 데이터들의 초기화가 필요합니다.\n'
-            '계속하시겠습니까?'),
-        actions: [
-          TextButton(onPressed: () => SystemNavigator.pop(animated: true), child: Text('무시(앱 종료)')),
-          TextButton(onPressed: (() async {
-            SharedPreferences _pref = await SharedPreferences.getInstance();
-            _pref.remove('mySub');
-            _pref.remove('myDp');
-            _pref.remove('class');
-            Navigator.pop(context);
-          }), child: Text('확인')),
-        ],
-      );
+        );
+      });
     }
 
     return Center(
