@@ -50,6 +50,7 @@ class ClassDetailInfoCard extends StatelessWidget {
               detail: Text(
                 '대상 학년: $guestGrade\n대상 학부: $guestDept\n'
                     '대상 학과: $guestMjor',
+                semanticsLabel: '대상 학년은 $guestGrade 이고 대상 학부는 $guestDept 이며 대상 학과는 $guestMjor 입니다.',
                 style: const TextStyle(fontSize: 17.0),
               )),
           CardInfo(
@@ -62,6 +63,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('과목 코드: $subjectCode',
+                          semanticsLabel: '과목 코드는 $subjectCode 입니다.',
                           style: const TextStyle(fontSize: 17.0)),
                       IconButton(
                           tooltip: '과목 코드 복사',
@@ -80,6 +82,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                   ),
                   Text(
                     '개설년도: $openYear\n교과 종류: $subjectKind\n학점: $point',
+                    semanticsLabel: '개설 년도는 $openYear년 이고 교과 종류는 $subjectKind이며 학점은 $point점 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
@@ -92,6 +95,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                 children: [
                   Text(
                     '성별: $sex',
+                    semanticsLabel: '성별은 $sex성 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                   Row(
@@ -99,6 +103,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                     children: [
                       Text(
                         '성함: $hostName',
+                        semanticsLabel: '성함은 $hostName 입니다.',
                         style: const TextStyle(fontSize: 17.0),
                       ),
                       IconButton(
@@ -111,6 +116,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                   ),
                   Text(
                     '직책: $hostGrade',
+                    semanticsLabel: '직책은 $hostGrade 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
@@ -121,6 +127,7 @@ class ClassDetailInfoCard extends StatelessWidget {
               detail: Text(
                 '수업 장소 및 요일: $classLocation\n교양 영역: $region\n수업 언어: $classLang',
                 style: const TextStyle(fontSize: 17.0),
+                semanticsLabel: '수업 장소 및 요일은 $classLocation 이며, 교양 영역은 $region 이며, 수업 언어는 $classLang 입니다.',
               )),
           CardInfo(
               icon: Icons.info_outline,
@@ -128,6 +135,7 @@ class ClassDetailInfoCard extends StatelessWidget {
               detail: Text(
                 '강의자 계약 정보: $promise\n수업 방식: $extra',
                 style: const TextStyle(fontSize: 17.0),
+                semanticsLabel: '강의자는 계약 종류는 $promise 이며 $extra 의 수업 방식을 따릅니다.',
               ))
         ],
       ),
@@ -142,7 +150,7 @@ class DataLoadingError extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        children: const [Icon(Icons.error_outline), Text('데이터를 불러올 수 없습니다.')],
+        children: const [Icon(Icons.error_outline), Text('데이터를 불러올 수 없습니다.', semanticsLabel: '데이터를 불러올 수 없습니다.',)],
       ),
     );
   }
@@ -233,6 +241,7 @@ class _SuwonButtonState extends State<SuwonButton> {
               const Padding(padding: EdgeInsets.only(right: 3.0)),
               Text(
                 widget.btnName,
+                semanticsLabel: widget.btnName,
                 style: TextStyle(color: smartColor(),fontWeight: FontWeight.bold),
               )
             ]),
@@ -269,6 +278,7 @@ class _SimpleCardButtonState extends State<SimpleCardButton> {
       if (text != null) {
         return Text(
           text,
+          semanticsLabel: text,
           style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         );
       } else {
@@ -328,6 +338,7 @@ class _SimpleCardButtonState extends State<SimpleCardButton> {
               children: [
                 Text(
                   widget.title,
+                  semanticsLabel: widget.title,
                   style: const TextStyle(
                       fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
@@ -387,6 +398,7 @@ class _CardInfoState extends State<CardInfo> {
                   const Padding(padding: EdgeInsets.only(right: 10.0)),
                   Text(
                     widget.title,
+                    semanticsLabel: widget.title,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 18.0),
                   ),
@@ -557,7 +569,7 @@ class NotSupportInPlatform extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(Icons.error_outline),
-          Text('$_platform 플랫폼에서는 지원되지 않습니다.')
+          Text('$_platform 플랫폼에서는 지원되지 않습니다.', semanticsLabel: '$_platform 플랫폼에서는 지원되지 않습니다.',)
         ],
       ),
     );
@@ -573,7 +585,7 @@ class NotSupportPlatformMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (kIsWeb) {
       return MaterialBanner(
-          content: const Text('Web 플랫폼의 경우 일부 기능이 동작하지 않습니다.'),
+          content: const Text('Web 플랫폼의 경우 일부 기능이 동작하지 않습니다.', semanticsLabel: 'Web 플랫폼의 경우 일부 기능이 동작하지 않습니다.',),
           actions: [
             TextButton(
                 onPressed: () => showDialog(
@@ -583,12 +595,12 @@ class NotSupportPlatformMessage extends StatelessWidget {
                         icon: Icons.help_outline,
                         title: '안내',
                         content: const Text(
-                            'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.'))),
-                child: const Text('설명 보기'))
+                            'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.', semanticsLabel: 'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.',))),
+                child: const Text('설명 보기', semanticsLabel: '설명 보기',))
           ]);
     } else if (Platform.isWindows || Platform.isLinux) {
       return MaterialBanner(
-          content: const Text('Windows/Linux 플랫폼의 경우 일부 기능이 동작하지 않습니다.'),
+          content: const Text('Windows/Linux 플랫폼의 경우 일부 기능이 동작하지 않습니다.', semanticsLabel: 'Windows/Linux 플랫폼의 경우 일부 기능이 동작하지 않습니다.',),
           actions: [
             TextButton(
                 onPressed: () => showDialog(
@@ -598,8 +610,8 @@ class NotSupportPlatformMessage extends StatelessWidget {
                         icon: Icons.help_outline,
                         title: '안내',
                         content: const Text(
-                            'Windows/Linux 플랫폼에서는 [개설 강좌 조회]나 [즐겨찾는 과목] 기능을 아직 사용할 수 없습니다.'))),
-                child: const Text('설명 보기'))
+                            'Windows/Linux 플랫폼에서는 [개설 강좌 조회]나 [즐겨찾는 과목] 기능을 아직 사용할 수 없습니다.', semanticsLabel: 'Windows/Linux 플랫폼에서는 [개설 강좌 조회]나 [즐겨찾는 과목] 기능을 아직 사용할 수 없습니다.',))),
+                child: const Text('설명 보기', semanticsLabel: '설명 보기',))
           ]);
     }
     return Container();
