@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sn30.suwonuniv.info.suwon_mate">
    <application
-        android:label="suwon_mate"
+        android:label="수원 메이트"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
