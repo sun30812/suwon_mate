@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/info_detail.dart';
 import 'package:suwon_mate/search.dart';
@@ -95,6 +96,34 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
+
+  void migrationCheck() {
+    if (widget._preferences.containsKey('mySub')) {
+      showDialog(context: context, builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: const [
+              Icon(Icons.warning_amber_rounded),
+              Text('경고')
+            ],
+          ),
+          content: const Text('DB의 구조가 새롭게 변경되었습니다. 따라서 즐겨찾기 항목을 제외한 나머지 데이터들의 초기화가 필요합니다.\n'
+              '계속하시겠습니까?'),
+          actions: [
+            TextButton(onPressed: () => SystemNavigator.pop(animated: true), child: const Text('무시(앱 종료)')),
+            TextButton(onPressed: (() async {
+              SharedPreferences _pref = await SharedPreferences.getInstance();
+              _pref.remove('mySub');
+              _pref.remove('myDp');
+              _pref.remove('class');
+              _pref.remove('version');
+              Navigator.pop(context);
+            }), child: const Text('확인')),
+          ],
+        );
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     bool isActivated = true;
@@ -130,7 +159,10 @@ class _MainMenuState extends State<MainMenu> {
                   isActivate: isSupportPlatform,
                   icon: Icons.date_range,
                   buttonName: '개설 강좌 조회',
-                  onPressed: () => Navigator.of(context).pushNamed('/oclass'),
+                  onPressed: () {
+                    migrationCheck();
+                    Navigator.of(context).pushNamed('/oclass');
+                  },
                 ),
                 SuwonButton(
                   icon: Icons.notifications_none,

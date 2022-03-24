@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +19,8 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   List<String> subList = ['컴퓨터학부', '경영학부'];
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
-  String _mySub = '컴퓨터학부';
+  String _myDp = '컴퓨터학부';
+  String _mySub = '컴퓨터SW';
   String _grade = '1학년';
   bool _isFirst = true;
   bool _isSynced = false;
@@ -70,7 +72,8 @@ class _SettingPageState extends State<SettingPage> {
   void dispose() async {
     super.dispose();
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setString('mySub', _mySub);
+    _pref.setString('myDept', _myDp);
+    _pref.setString('mySubject', _mySub);
     _pref.setString('myGrade', _grade);
     _pref.setString('settings', jsonEncode(functionSetting));
   }
@@ -170,6 +173,23 @@ class _SettingPageState extends State<SettingPage> {
                         .getString('settings')!);
               }
               if ((snapshot.data as SharedPreferences).containsKey('dp_set')) {
+                AlertDialog(
+                  title: Row(children: [
+                    Icon(Icons.warning_amber_outlined),
+                    Text('경고'),
+                  ],),
+                  content: Text('최신버전과 호환되지 않는 데이터가 존재합니다.\n'
+                      '해결을 위해 기본 설정된 전공과목을 초기화하고 DB를 다시 받습니다.'),
+                  actions: [
+                    TextButton(onPressed: () => SystemNavigator.pop(animated: true), child: Text('무시(앱 종료)')),
+                    TextButton(onPressed: (() async {
+                     SharedPreferences _pref = await SharedPreferences.getInstance();
+                     _pref.remove('dp_set');
+                    }), child: Text('확인'))
+                  ],
+                );
+              }
+              if ((snapshot.data as SharedPreferences).containsKey('myDept')) {
                 subDropdownList = (snapshot.data as SharedPreferences)
                     .getStringList('dp_set')!
                     .map((dat) => DropdownMenuItem(
@@ -184,21 +204,24 @@ class _SettingPageState extends State<SettingPage> {
                 _grade =
                     (snapshot.data as SharedPreferences).getString('myGrade') ??
                         '1학년';
-                _mySub =
-                    (snapshot.data as SharedPreferences).getString('mySub') ??
+                _myDp =
+                    (snapshot.data as SharedPreferences).getString('myDept') ??
                         '컴퓨터학부';
+                _mySub = (snapshot.data as SharedPreferences).getString('mySubject') ??
+                    '컴퓨터SW';
                 _isFirst = false;
               }
               return ListView(
                 children: [
                   CardInfo(
                       icon: Icons.school_outlined,
-                      title: '기본 정보 설정',
+                      title: '학생 정보',
                       detail: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           const Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text('개설 강좌메뉴에서 기본으로 보여질 전공과 학년을 선택합니다.'),
+                            child: Text('개설 강좌메뉴에서 기본으로 보여질 학부 및 학년을 선택합니다.'),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -209,31 +232,34 @@ class _SettingPageState extends State<SettingPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text('기본 전공: '),
+                                const Text('기본 학부: '),
                                 DropdownButton<String>(
                                     items: subDropdownList,
                                     onChanged: (String? value) {
                                       setState(() {
-                                        _mySub = value!;
+                                        _myDp = value!;
                                       });
                                     },
-                                    value: _mySub),
+                                    value: _myDp),
                               ],
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text('기본 학년: '),
-                              DropdownButton<String>(
-                                  items: gradeDropdownList,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      _grade = value!;
-                                    });
-                                  },
-                                  value: _grade),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('기본 학년: '),
+                                DropdownButton<String>(
+                                    items: gradeDropdownList,
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _grade = value!;
+                                      });
+                                    },
+                                    value: _grade),
+                              ],
+                            ),
                           ),
                         ],
                       )),
@@ -283,6 +309,26 @@ class _SettingPageState extends State<SettingPage> {
                                       setState(() {
                                         functionSetting['offline'] = newValue;
                                       });
+                                      ScaffoldMessenger.of(context).showMaterialBanner(
+                                        MaterialBanner(content: Row(
+                                          children: const [
+                                            Icon(Icons.warning_amber_rounded),
+                                            Text('앱을 재시작 해야 변경사항이 적용됩니다.')
+                                          ],
+                                        ), actions:  [
+                                          TextButton(style: ButtonStyle(
+                                              overlayColor: MaterialStateProperty.all(
+                                                  Colors.redAccent.withAlpha(30)),
+                                            foregroundColor: MaterialStateProperty.all(Colors.redAccent)
+                                          ),onPressed: (()  {
+                                            dispose();
+                                            SystemNavigator.pop(animated: true);
+                                          }), child: const Text('앱 종료')),
+                                          TextButton(onPressed: (()  {
+                                            ScaffoldMessenger.of(context).clearMaterialBanners();
+                                          }), child: const Text('메세지 닫기')),
+                                        ])
+                                      );
                                     }),
                               ],
                             ),
