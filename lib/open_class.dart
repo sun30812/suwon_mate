@@ -193,6 +193,7 @@ class _OpenClassState extends State<OpenClass> {
               for(String subject in tempSet) {
                 _tempList.add(subject);
               }
+              _tempList.add('전체');
               _tempList.sort((a,b) => a.compareTo(b));
               subjectDropdownList.clear();
               for (String subject in _tempList) {
@@ -207,7 +208,12 @@ class _OpenClassState extends State<OpenClass> {
                     classList.add(classData);
                   }
                 }
-                else if ((_mySub == '학부 공통'||(classData['estbMjorNm'] == _mySub)) && ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
+                else if (_mySub == '학부 공통') {
+                  if ((classData['estbMjorNm'] == null) && ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
+                    classList.add(classData);
+                  }
+                }
+                else if ((_mySub == '전체'||(classData['estbMjorNm'] == _mySub)) && ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
                 classList.add(classData);
 
                 }
