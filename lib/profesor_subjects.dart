@@ -18,6 +18,9 @@ class _ProfessorSubjectsPageState extends State<ProfessorSubjectsPage> {
   List<DropdownMenuItem<String>> dropdownList = [];
   List<DropdownMenuItem<String>> gradeDownList = [];
   List orgClassList = [];
+  List classList = [];
+
+  bool _isFirst = true;
 
   Future getClass() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
@@ -51,18 +54,29 @@ class _ProfessorSubjectsPageState extends State<ProfessorSubjectsPage> {
             return const DataLoadingError();
           } else {
             orgClassList = jsonDecode(snapshot.data as String);
-            List classList = [];
-            for (var classData in orgClassList) {
+
+            Map rawClassList = orgClassList[0];
+            if (_isFirst) {
+              for(var _dat in rawClassList.values.toList()) {
+                for(var _dat2 in _dat) {
+                  classList.add(_dat2);
+                }
+              }
+              _isFirst = false;
+            }
+
+            List tempList = [];
+            for (var classData in classList) {
               if ((classData['ltrPrfsNm'] == professorName)) {
                 if (_myGrade == '전체') {
-                  classList.add(classData);
+                  tempList.add(classData);
                 } else if (((classData['trgtGrdeCd'].toString() + '학년') ==
                     _myGrade)) {
-                  classList.add(classData);
+                  tempList.add(classData);
                 }
               }
             }
-            classList.sort((a, b) =>
+            tempList.sort((a, b) =>
                 ((a["subjtNm"] as String).compareTo((b["subjtNm"] as String))));
             return Column(
               children: [
@@ -85,22 +99,22 @@ class _ProfessorSubjectsPageState extends State<ProfessorSubjectsPage> {
                 ),
                 Flexible(
                   child: ListView.builder(
-                      itemCount: classList.length,
+                      itemCount: tempList.length,
                       itemBuilder: (BuildContext context, int index) {
                         return SimpleCardButton(
                           onPressed: () => Navigator.of(context).pushNamed(
                               '/oclass/info',
-                              arguments: classList[index]),
-                          title: classList[index]["subjtNm"],
-                          subTitle: classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
-                          content: Text((classList[index]["deptNm"] ??
+                              arguments: tempList[index]),
+                          title: tempList[index]["subjtNm"],
+                          subTitle: tempList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
+                          content: Text((tempList[index]["deptNm"] ??
                                   "학부 전체 대상(전공 없음)") +
                               ", " +
-                              classList[index]["facDvnm"] +
+                              tempList[index]["facDvnm"] +
                               ', ' +
-                              (classList[index]["timtSmryCn"] ?? "공개 안됨") +
+                              (tempList[index]["timtSmryCn"] ?? "공개 안됨") +
                               ', ' +
-                              (classList[index]['estbDpmjNm'])),
+                              (tempList[index]['estbDpmjNm'])),
                         );
                       }),
                 ),

@@ -64,7 +64,14 @@ class _DonationPageState extends State<DonationPage> {
                 child: AdWidget(ad: _bannerAd!),
               )
             else
-              const Text('상황에 따라 이 페이지에 광고가 보이지 않을 수 있습니다.'),
+              Center(
+                child: Row(
+                  children: [
+                    CircularProgressIndicator.adaptive(),
+                    const Text('광고 불러오는 중...'),
+                  ],
+                ),
+              ),
           ],
         ),
       ),

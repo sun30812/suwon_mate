@@ -29,13 +29,18 @@ class FavoriteListView extends StatefulWidget {
 
 class _FavoriteListViewState extends State<FavoriteListView> {
   bool _isSaved = false;
+  late Map _rawClassList;
+  late List _orgClassList;
   late List _classList;
   late List<String> _favorites;
   late List _favoriteClassList;
+  bool _isFirst = true;
 
   @override
   void initState() {
     super.initState();
+    _rawClassList = {};
+    _orgClassList = [];
     _classList = [];
     _favorites = [];
     _favoriteClassList = [];
@@ -64,16 +69,16 @@ class _FavoriteListViewState extends State<FavoriteListView> {
       _isSaved = true;
       return _pref.getString('class');
     }
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
+    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_test');
     _pref.setString('db_ver', versionInfo["db_ver"]);
-    return await ref.once();
+    return ref.once();
   }
 
   @override
   void dispose() async {
     super.dispose();
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setString('class', jsonEncode(_classList));
+    _pref.setString('class', jsonEncode(_orgClassList));
   }
 
   @override
@@ -91,15 +96,32 @@ class _FavoriteListViewState extends State<FavoriteListView> {
         future: getData(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator.adaptive());
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Center(child: CircularProgressIndicator.adaptive()),
+                Text('DB 버전 확인 및 갱신 중')
+              ],
+            );
           } else if (snapshot.hasError) {
             return const DataLoadingError();
           } else {
             if (_isSaved) {
-              _classList = jsonDecode(snapshot.data);
+              _orgClassList = jsonDecode(snapshot.data);
+              _rawClassList = _orgClassList[0];
             } else {
               DatabaseEvent _event = snapshot.data;
-              _classList = _event.snapshot.value as List;
+              _orgClassList = (_event.snapshot.value as List);
+              _rawClassList = _orgClassList[0];
+            }
+            if (_isFirst) {
+              for(var _dat in _rawClassList.values.toList()) {
+                for(var _dat2 in _dat) {
+                  _classList.add(_dat2);
+
+                }
+              }
+              _isFirst = false;
             }
             for (var favorite in _favorites) {
               for (var dat in _classList) {
