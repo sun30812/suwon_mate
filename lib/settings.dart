@@ -221,46 +221,46 @@ class _SettingPageState extends State<SettingPage> {
                         children: [
                           const Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text('개설 강좌메뉴에서 기본으로 보여질 학부 및 전공과 학년을 선택합니다.'),
+                            child: Text('개설 강좌메뉴에서 기본으로 보여질 학부 및 학년을 선택합니다.'),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: noSyncWarning(),
                           ),
-                          // Padding(
-                          //   padding: const EdgeInsets.all(8.0),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.center,
-                          //     children: [
-                          //       const Text('기본 학부: '),
-                          //       DropdownButton<String>(
-                          //           items: subDropdownList,
-                          //           onChanged: (String? value) {
-                          //             setState(() {
-                          //               _myDp = value!;
-                          //             });
-                          //           },
-                          //           value: _myDp),
-                          //     ],
-                          //   ),
-                          // ),
-                          // Padding(
-                          //   padding: const EdgeInsets.all(8.0),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.center,
-                          //     children: [
-                          //       const Text('기본 학년: '),
-                          //       DropdownButton<String>(
-                          //           items: gradeDropdownList,
-                          //           onChanged: (String? value) {
-                          //             setState(() {
-                          //               _grade = value!;
-                          //             });
-                          //           },
-                          //           value: _grade),
-                          //     ],
-                          //   ),
-                          // ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('기본 학부: '),
+                                DropdownButton<String>(
+                                    items: subDropdownList,
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _myDp = value!;
+                                      });
+                                    },
+                                    value: _myDp),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('기본 학년: '),
+                                DropdownButton<String>(
+                                    items: gradeDropdownList,
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _grade = value!;
+                                      });
+                                    },
+                                    value: _grade),
+                              ],
+                            ),
+                          ),
                         ],
                       )),
                   CardInfo(

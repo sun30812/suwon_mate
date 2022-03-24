@@ -30,6 +30,7 @@ class FavoriteListView extends StatefulWidget {
 class _FavoriteListViewState extends State<FavoriteListView> {
   bool _isSaved = false;
   late Map _rawClassList;
+  late List _orgClassList;
   late List _classList;
   late List<String> _favorites;
   late List _favoriteClassList;
@@ -39,6 +40,7 @@ class _FavoriteListViewState extends State<FavoriteListView> {
   void initState() {
     super.initState();
     _rawClassList = {};
+    _orgClassList = [];
     _classList = [];
     _favorites = [];
     _favoriteClassList = [];
@@ -69,14 +71,14 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     }
     DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_test');
     _pref.setString('db_ver', versionInfo["db_ver"]);
-    return await ref.once();
+    return ref.once();
   }
 
   @override
   void dispose() async {
     super.dispose();
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setString('class', jsonEncode(_rawClassList));
+    _pref.setString('class', jsonEncode(_orgClassList));
   }
 
   @override
@@ -105,10 +107,12 @@ class _FavoriteListViewState extends State<FavoriteListView> {
             return const DataLoadingError();
           } else {
             if (_isSaved) {
-              _rawClassList = jsonDecode(snapshot.data)[0];
+              _orgClassList = jsonDecode(snapshot.data);
+              _rawClassList = _orgClassList[0];
             } else {
               DatabaseEvent _event = snapshot.data;
-              _rawClassList = (_event.snapshot.value as List)[0];
+              _orgClassList = (_event.snapshot.value as List);
+              _rawClassList = _orgClassList[0];
             }
             if (_isFirst) {
               for(var _dat in _rawClassList.values.toList()) {

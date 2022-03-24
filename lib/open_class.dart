@@ -52,19 +52,21 @@ class _OpenClassState extends State<OpenClass> {
   ];
   List orgClassList = [];
   bool _offline = false;
-  bool isSaved = false;
+  bool _isSaved = false;
   String _myDept = '컴퓨터학부';
   String _mySub = '학부 공통';
   String _myGrade = '1학년';
   String _region = '전체';
   Set<String> dpSet = {};
+  Map subjects = {};
   bool _isFirst = true;
   bool _isFirstDp = true;
 
-  Future getClass() async {
+  Future getData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     if (_isFirst) {
-      _myDept = _pref.getString('mySub') ?? '컴퓨터학부';
+      _myDept = _pref.getString('myDept') ?? '컴퓨터학부';
+      _mySub = _pref.getString('mySubject') ?? '학부 공통';
       _myGrade = _pref.getString('myGrade') ?? '1학년';
       _isFirst = false;
       if (_pref.containsKey('settings')) {
@@ -72,18 +74,18 @@ class _OpenClassState extends State<OpenClass> {
       }
     }
     if ((_pref.containsKey('db_ver')) && _offline) {
-      isSaved = true;
+      _isSaved = true;
       return _pref.getString('class');
     }
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
     if ((_pref.getString('db_ver')) == versionInfo["db_ver"]) {
-      isSaved = true;
+      _isSaved = true;
       return _pref.getString('class');
     }
     DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_test');
     _pref.setString('db_ver', versionInfo["db_ver"]);
-    return await ref.once();
+    return ref.once();
   }
 
   Widget regionSelector(String dept) {
@@ -119,6 +121,7 @@ class _OpenClassState extends State<OpenClass> {
     String _saveData = jsonEncode(orgClassList);
     _pref.setString('class', _saveData);
     _pref.setStringList('dp_set', dpSet.toList());
+    _pref.setString('subjects', jsonEncode(subjects));
   }
 
   @override
@@ -132,7 +135,7 @@ class _OpenClassState extends State<OpenClass> {
             onPressed: () => Navigator.of(context)
                 .pushNamed('/oclass/search', arguments: orgClassList)),
         body: FutureBuilder(
-          future: getClass(),
+          future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return Column(
@@ -145,7 +148,7 @@ class _OpenClassState extends State<OpenClass> {
             } else if (snapshot.hasError) {
               return const DataLoadingError();
             } else {
-              if (isSaved) {
+              if (_isSaved) {
                 orgClassList = jsonDecode(snapshot.data as String);
               } else {
                 DatabaseEvent _event = snapshot.data;
