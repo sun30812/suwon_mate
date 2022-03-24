@@ -26,46 +26,70 @@ class HelpPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Text(
-                    '본인 전공을 고르시면 그에 맞는 과목이 나옵니다. 과목을 누르면 더욱 자세히 볼 수 있습니다.\n'
-                    '아이콘으로 된 버튼은 누르고 있으면 설명이 나옵니다.\n'
-                    '교양 영역의 경우 과를 교양으로 선택하면 고를 수 있습니다.\n',
+                    '학부와 전공을 선택하여 과목들을 확인할 수 있습니다.\n'
+                    '과목을 클릭하면 해당 과목의 상세정보도 확인할 수 있습니다.\n교양 영역의 경우 학부를 교양으로 선택하면 고를 수 있습니다.\n',
                     style: TextStyle(fontSize: 16.0),
                   ),
-                  Text(
-                    '주의사항: 학부 공용 과목은 학부를 선택해야 나옵니다.',
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                  )
                 ],
               )),
           const CardInfo(
               icon: Icons.notifications_none,
               title: '공지사항',
               detail: Text(
-                '학교의 공지사항을 볼 수 있습니다.\n제목을 클릭하면 세부정보가 나오며 '
-                '첨부파일을 받기 위해 브라우저로 이동이 필요한 경우 브라우저로 이동 버튼을 누르면 됩니다.',
+                '학교의 공지사항을 볼 수 있습니다.\n제목을 클릭하면 세부정보를 확인할 수 있습니다.',
                 style: TextStyle(fontSize: 16.0),
               )),
           CardInfo(
               icon: Icons.star_outline,
-              title: '즐겨찾는 과목',
+              title: '즐겨찾는 과목(베타)',
               detail: Column(
                 children: const [
                   Text(
-                    '개설 강좌 조회에서 즐겨찾기에 추가한 과목들만 확인할 수 있습니다.',
+                    '개설 강좌 조회에서 즐겨찾기에 추가한 과목들만 확인할 수 있습니다.\n'
+                    '현재 즐겨찾는 과목 페이지에서 즐겨찾기 제거 시 앱 메인화면으로 나갔다가 들어와야 정상적으로 반영됩니다.',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],
               )),
-          const CardInfo(
+          CardInfo(
               icon: Icons.settings,
               title: '설정',
-              detail: Text(
-                '개설 강좌 조회시 처음에 표시할 학년이나 전공을 설정할 수 있습니다.\n'
-                '다양한 설정들이 계속 추가될 예정입니다.\n'
-                '\n데이터 절약 모드: 인터넷 연결이 필요한 대부분의 기능을 차단합니다.(DB업데이트, 공지사항, 학사일정)\n'
-                'DB가 없는 경우에만 다운로드 하고 존재하는 경우 버전 확인도 진행하지 않습니다. 이 설정은 앱을 재시작 해야 완전히 적용됩니다.',
-                style: TextStyle(fontSize: 16.0),
+              detail: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '앱과 관련된 설정들을 할 수 있습니다.',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: const [
+                            Icon(Icons.offline_bolt_outlined),
+                            Padding(padding: EdgeInsets.only(right: 3.0)),
+                            Text(
+                              '데이터 절약모드',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                             Text(
+                                '데이터를 절약하기 위해 DB 업데이트 확인이나 네트워크 연결이 필요한 공지사항, 학사 일정등의 기능을'
+                                ' 비활성화 합니다.'),
+                             Text('주의: Web 플랫폼에서는 설정이 제한됩니다.', style: TextStyle(fontWeight: FontWeight.bold),)
+                          ],
+                        )
+                      ],
+                    ),
+                  )
+                ],
               )),
         ],
       ),
