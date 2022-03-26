@@ -189,7 +189,9 @@ class _SettingPageState extends State<SettingPage> {
                   ],
                 );
               }
-              if ((snapshot.data as SharedPreferences).containsKey('myDept')) {
+              if ((snapshot.data as SharedPreferences).containsKey('myDept') &&
+                  (snapshot.data as SharedPreferences).containsKey('dp_set')
+              ) {
                 subDropdownList = (snapshot.data as SharedPreferences)
                     .getStringList('dp_set')!
                     .map((dat) => DropdownMenuItem(
