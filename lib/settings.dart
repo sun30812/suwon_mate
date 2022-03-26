@@ -17,7 +17,7 @@ class _SettingPageState extends State<SettingPage> {
   List<String> subList = ['컴퓨터학부', '경영학부'];
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
   String _myDp = '컴퓨터학부';
-  String _mySub = '컴퓨터SW';
+  String _mySub = '전체';
   String _grade = '1학년';
   bool _isFirst = true;
   bool _isSynced = false;
