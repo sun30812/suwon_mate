@@ -174,18 +174,18 @@ class _SettingPageState extends State<SettingPage> {
               }
               if ((snapshot.data as SharedPreferences).containsKey('dp_set')) {
                 AlertDialog(
-                  title: Row(children: [
+                  title: Row(children: const [
                     Icon(Icons.warning_amber_outlined),
                     Text('경고'),
                   ],),
-                  content: Text('최신버전과 호환되지 않는 데이터가 존재합니다.\n'
+                  content: const Text('최신버전과 호환되지 않는 데이터가 존재합니다.\n'
                       '해결을 위해 기본 설정된 전공과목을 초기화하고 DB를 다시 받습니다.'),
                   actions: [
-                    TextButton(onPressed: () => SystemNavigator.pop(animated: true), child: Text('무시(앱 종료)')),
+                    TextButton(onPressed: () => SystemNavigator.pop(animated: true), child: const Text('무시(앱 종료)')),
                     TextButton(onPressed: (() async {
                      SharedPreferences _pref = await SharedPreferences.getInstance();
                      _pref.remove('dp_set');
-                    }), child: Text('확인'))
+                    }), child: const Text('확인'))
                   ],
                 );
               }
@@ -299,6 +299,8 @@ class _SettingPageState extends State<SettingPage> {
                                       ],
                                     )),
                                 Switch(
+                                  activeTrackColor: const Color.fromARGB(255, 0, 54, 112),
+                                    activeColor: const Color.fromARGB(200, 0, 54, 112),
                                     value: functionSetting['offline']!,
                                     onChanged: (newValue) {
                                       if (kIsWeb) {

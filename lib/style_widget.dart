@@ -187,7 +187,7 @@ class _SuwonButtonState extends State<SuwonButton> {
 
   Color smartColor() {
     if ((widget.isActivate ?? true) && (widget.onPressed != null)) {
-      return Colors.black;
+      return Colors.grey[800]!;
     }
     return Colors.grey;
   }
