@@ -36,9 +36,14 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
+      theme: ThemeData().copyWith(
         scaffoldBackgroundColor: Colors.grey[300]!,
         appBarTheme: const AppBarTheme(color: Color.fromARGB(255, 0, 54, 112)),
+        colorScheme: ThemeData().colorScheme.copyWith(
+            secondary: const Color.fromARGB(255, 0, 54, 112),
+          onSecondary: const Color.fromARGB(255, 0, 54, 112),
+          primary: const Color.fromARGB(255, 0, 54, 112)
+        )
       ),
       title: '수원 메이트',
       home: const MainPage(),
