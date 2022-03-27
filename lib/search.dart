@@ -27,6 +27,17 @@ class _SearchPageState extends State<SearchPage> {
     }
     return 'none';
   }
+  
+  int getSubjectIndex(String code, List listData) {
+    int _index = 0;
+    for (var dat in listData) {
+      if (code == '${dat['subjtCd']}-${dat['diclNo']}') {
+        return _index;
+      }
+      _index++;
+    }
+    return -1;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +68,7 @@ class _SearchPageState extends State<SearchPage> {
                     children: [
                       const Text('과목코드를 입력하여 검색할 수 있습니다.'),
                       TextField(
+                        key: const Key('subject_code_field'),
                         controller: _controller2,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -72,23 +84,14 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    int _count = 0;
-                    bool _isFound = false;
                     if (_controller2.text.contains('-')) {
-                      for (var dat in classList) {
-                        if (_controller2.text ==
-                            '${dat['subjtCd']}-${dat['diclNo']}') {
-                          _isFound = true;
-                          Navigator.of(context).pushNamed('/oclass/info',
-                              arguments: classList[_count]);
-                          break;
-                        }
-                        _count++;
-                      }
-                      if (!_isFound) {
+                      int _searchResult = getSubjectIndex(_controller2.text, classList);
+                      if (_searchResult == -1) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('해당 과목은 존재하지 않습니다.')));
+                        return;
                       }
+                      Navigator.of(context).pushNamed('/oclass/info', arguments: classList[_searchResult]);
                     } else {
                       String subjectName =
                           searchSubjectName(_controller2.text, classList);
