@@ -1,29 +1,32 @@
-# Suwon Mate
+# 수원 메이트
 
 수원대학교의 개설 강좌 목록이나 학사 일정, 공지사항 등을 볼 수 있는 앱 입니다.  
+해당 분기를 통해 새로운 기능을 가장 먼저 체험할 수 있습니다.  
 사용해보기에 있는 링크로 들어가시면 웹 버전으로 또는 빌드된 파일로 사용해보실 수 있습니다.
-
+a
 ## 목차
-- [Suwon Mate](#suwon-mate)
-	- [목차](#목차)
-	- [분기(브랜치) 소개](#분기브랜치-소개)
-	- [지원되는 플랫폼](#지원되는-플랫폼)
-	- [간단 기능 소개](#간단-기능-소개)
-	- [사용해보기](#사용해보기)
-		- [사전 빌드된 파일 사용하기](#사전-빌드된-파일-사용하기)
-		- [Web 플랫폼에서 사용해보기](#web-플랫폼에서-사용해보기)
-	- [앱 사용 도움말](#앱-사용-도움말)
-	- [DB안내](#db안내)
-	- [빌드해보기](#빌드해보기)
-	- [개발 참고 사항](#개발-참고-사항)
-		- [설정 내 디버그 설정 표시하기](#설정-내-디버그-설정-표시하기)
-		- [디자인 요소 수정하기](#디자인-요소-수정하기)
-		- [Web버전에서는 왜 일부 기능이 안되나요?](#web버전에서는-왜-일부-기능이-안되나요)
-		- [Windows/Linux에서는 왜 일부 기능이 안되나요?](#windowslinux에서는-왜-일부-기능이-안되나요)
+- [수원 메이트](#수원-메이트)
+    - [목차](#목차)
+    - [분기(브랜치) 소개](#분기(브랜치)-소개)
+    - [지원되는 플랫폼](#지원되는-플랫폼)
+    - [간단 기능 소개](#간단-기능-소개)
+    - [사용해보기](#사용해보기)
+        - [사전 빌드된 파일 사용하기](#사전-빌드된-파일-사용하기)
+        - [Web 플랫폼에서 사용해보기](#web-플랫폼에서-사용해보기)
+    - [앱 테스트 해보기](#앱-테스트-해보기)
+    - [앱 사용 도움말](#앱-사용-도움말)
+    - [DB안내](#DB안내)
+    - [빌드해보기](#빌드해보기)
+    - [개발 참고 사항](#개발-참고-사항)
+        - [설정 내 디버그 설정 표시하기](#설정-내-디버그-설정-표시하기)
+        - [디자인 요소 수정하기](#디자인-요소-수정하기)
+        - [Web버전에서는 왜 일부 기능이 안되나요?](#Web버전에서는-왜-일부-기능이-안되나요?)
+        - [Windows/Linux에서는 왜 일부 기능이 안되나요?](#Windows/Linux에서는-왜-일부-기능이-안되나요?)
 
 ## 분기(브랜치) 소개
 해당 분기는 `main` 입니다. 항상 새로운 기능이 적용됩니다.
-이전 버전을 보고 싶으신 경우 [legacy](https://github.com/sun30812/suwon_mate/tree/legacy) 분기에서 확인할 수 있습니다.
+v1.x 버전대를 보고 싶으신 경우 [legacy](https://github.com/sun30812/suwon_mate/tree/legacy) 분기에서 확인할 수 있습니다.  
+[Google Play](https://play.google.com/store/apps/details?id=com.sn30.suwonuniv.info.suwon_mate) 에 게시된 버전의 코드를 보고 싶으신 경우 [release](https://github.com/sun30812/suwon_mate/tree/release) 분기에서 확인할 수 있습니다.
 
 ## 지원되는 플랫폼
 현재 확인된 기능 별 지원되는 플랫폼 목록입니다.
@@ -45,7 +48,8 @@
 * 강의자의 이름, 과목명, 과목코드로 검색하기
 * 개설강좌를 탭하면 자세한 정보가 나오고, 해당 강의자의 다른 과목들도 볼 수 있음
 ## 사용해보기
-macOS, Windows, Android, Linux용으로 빌드된 파일을 쓰거나 Web 사이트 상에서 바로 사용이 가능합니다.
+macOS, Windows, Android, Linux용으로 빌드된 파일을 사용하거나 Web 사이트 상에서 바로 사용이 가능합니다.
+
 ### 사전 빌드된 파일 사용하기
 > ⚠️ 태그를 지정한 커밋만 빌드됩니다. 모든 커밋의 변경사항을 바로 추척하려면 Web 플랫폼을 사용하세요.
 
@@ -56,11 +60,11 @@ macOS, Windows, Android, Linux용으로 빌드된 파일을 쓰거나 Web 사이
 * suwon_mate_android.apk: Android 기기에서 동작하는 파일입니다.
 * suwon_mate_win.zip: windows 환경에서 동작하는 파일입니다.
   * 압축을 푼 후 폴더안에 내용물은 **전부** 유지시켜야 합니다.
-  * [Visual C++ 재배포 가능 패키지](https://docs.microsoft.com/ko-kr/cpp/windows/latest-supported-vc-redist?view=msvc-170)가 필요합니다. 본인의 아키텍쳐에 맞게 설치하시면 됩니다.(가장 최신 버전 설치하면 됨)
+  * [Visual C++ 재배포 가능 패키지](https://docs.microsoft.com/ko-kr/cpp/windows/latest-supported-vc-redist?view=msvc-170) 가 필요합니다. 본인의 아키텍쳐에 맞게 설치하시면 됩니다.(가장 최신 버전 설치하면 됨)
 * suwon_mate.app.zip: macOS환경에서 동작하는 파일입니다.
   * 압축을 푼 후 나오는 파일을 Application 폴더에 넣으시면 됩니다.(Finder에서 Cmd+Shift+A누르면 나옴)
   * 만일 실행이 불가능 하다고 나오면 Application 폴더에 들어가서 해당 앱을 우클릭해서 열기를 누르면 이후에 실행이 계속 가능해집니다.
-* suwon_mate_linux.zip: Linux(Ubuntu)환경에서 동작하는 파일입니다.
+* suwon_mate_linux.zip: Linux(Ubuntu 20.04LTS, CentOS7에서 작동 확인 됨)환경에서 동작하는 파일입니다.
 
 ### Web 플랫폼에서 사용해보기
 아래 링크에 접속하시면 다운로드 및 실행 없이 바로 이 앱을 체험할 수 있습니다.  
@@ -69,6 +73,14 @@ macOS, Windows, Android, Linux용으로 빌드된 파일을 쓰거나 Web 사이
 - [Firebase hosting](https://suwon-mate.web.app)
 - [Firebase hosting-legacy](https://suwon-mate-legacy.web.app)
 - [Azure Web App](https://orange-moss-005eb8300.1.azurestaticapps.net)
+
+## 앱 테스트 해보기
+만일 해당 앱을 자유롭게 수정해보시는 경우 정상 동작 여부가 궁금하다면 `flutter test` 를 실행해보세요.  
+아래 항목들을 검사해줍니다.
+* 메인 화면의 버튼 개수가 일치하는지
+* 도움말 항목의 개수가 올바른지
+* 개설 강좌 조회가 정상적으로 이루어지고, 검색이 정상적으로 수행되는지
+* 즐겨찾는 과목에 정상적으로 추가 및 제거 되는지
 
 ## 앱 사용 도움말
 앱의 도움말 메뉴를 참고하면 대부분의 설명을 보실 수 있습니다.  
@@ -83,7 +95,7 @@ DB가 언제 업데이트 되었는지는 앱 내 설정에서 로컬 DB 버전�
 해당 소스코드를 다운받아서 iOS, Android, Web앱 등으로 빌드할 수 있습니다.
 어느 플랫폼이든 Flutter SDK가 기본적으로 필요합니다.
 
-* iOS나 macOS용으로 빌드하려면 Xcode가 설치 된 macOS가 필요합니다.
+* iOS나 macOS용으로 빌드하려면 **Xcode가 설치 된 macOS**가 필요합니다.
 * 일부 플랫폼의 경우 활성화가 필요할 수 있습니다.
 * Android용으로 빌드를 위해서는 Android SDK설치가 되어 있어야 합니다.
 ```bash
@@ -120,7 +132,7 @@ flutter build web
 해결이 불가능 합니다.  
 만일 해결에 성공한다면 기능 제한을 풀 것입니다.
 
-세부적인 내용은 [여기](https://developer.mozilla.org/ko/docs/Web/HTTP/CORS)를 참고하세요.
+세부적인 내용은 [여기](https://developer.mozilla.org/ko/docs/Web/HTTP/CORS) 를 참고하세요.
 
 ### Windows/Linux에서는 왜 일부 기능이 안되나요?
 현재 지원되지 않는 기능은 Firebase와의 연결을 필요로 하는 기능입니다. 
