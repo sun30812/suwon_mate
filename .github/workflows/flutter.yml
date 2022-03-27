@@ -19,9 +19,6 @@ jobs:
       - name: Install dependency
         run: flutter pub get
 
-      - name: Test App
-        run: flutter test
-
       - name: Build Web App
         run: flutter build web
 
