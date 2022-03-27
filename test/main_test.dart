@@ -58,6 +58,18 @@ void main() {
       expect(find.byType(CardInfo, skipOffstage: false), findsNWidgets(5));
       expect(find.text('자유로운 Flutter 개발(비대면)'), findsOneWidget);
     });
+    testWidgets('View associate professor', ((tester) async{
+      await tester.pumpWidget(const App());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('개설 강좌 조회'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(SimpleCardButton));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pumpAndSettle();
+      expect(find.text('자유로운 Flutter 개발(비대면)'), findsWidgets);
+      expect(find.byType(SimpleCardButton), findsOneWidget);
+    }));
     testWidgets('Search subject', (tester) async {
       await tester.pumpWidget(const App());
       await tester.pumpAndSettle();
