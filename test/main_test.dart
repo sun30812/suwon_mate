@@ -24,7 +24,7 @@ void main() {
       await tester.pumpWidget(const App());
       expect(find.text('수원 메이트'), findsOneWidget);
       await tester.pumpAndSettle();
-      expect(find.byType(SuwonButton), findsNWidgets(6));
+      expect(find.byType(SuwonButton), findsNWidgets(7));
     });
   });
   group('Help Page Test', () {
@@ -33,7 +33,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('도움말'));
       await tester.pumpAndSettle();
-      expect(find.byType(CardInfo), findsNWidgets(5));
+      expect(find.byType(CardInfo), findsNWidgets(6));
     });
   });
   group('Open Class Page Test', () {
