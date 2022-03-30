@@ -174,24 +174,30 @@ class _SettingPageState extends State<SettingPage> {
               }
               if ((snapshot.data as SharedPreferences).containsKey('dp_set')) {
                 AlertDialog(
-                  title: Row(children: const [
-                    Icon(Icons.warning_amber_outlined),
-                    Text('경고'),
-                  ],),
+                  title: Row(
+                    children: const [
+                      Icon(Icons.warning_amber_outlined),
+                      Text('경고'),
+                    ],
+                  ),
                   content: const Text('최신버전과 호환되지 않는 데이터가 존재합니다.\n'
                       '해결을 위해 기본 설정된 전공과목을 초기화하고 DB를 다시 받습니다.'),
                   actions: [
-                    TextButton(onPressed: () => SystemNavigator.pop(animated: true), child: const Text('무시(앱 종료)')),
-                    TextButton(onPressed: (() async {
-                     SharedPreferences _pref = await SharedPreferences.getInstance();
-                     _pref.remove('dp_set');
-                    }), child: const Text('확인'))
+                    TextButton(
+                        onPressed: () => SystemNavigator.pop(animated: true),
+                        child: const Text('무시(앱 종료)')),
+                    TextButton(
+                        onPressed: (() async {
+                          SharedPreferences _pref =
+                              await SharedPreferences.getInstance();
+                          _pref.remove('dp_set');
+                        }),
+                        child: const Text('확인'))
                   ],
                 );
               }
               if ((snapshot.data as SharedPreferences).containsKey('myDept') &&
-                  (snapshot.data as SharedPreferences).containsKey('dp_set')
-              ) {
+                  (snapshot.data as SharedPreferences).containsKey('dp_set')) {
                 subDropdownList = (snapshot.data as SharedPreferences)
                     .getStringList('dp_set')!
                     .map((dat) => DropdownMenuItem(
@@ -209,8 +215,9 @@ class _SettingPageState extends State<SettingPage> {
                 _myDp =
                     (snapshot.data as SharedPreferences).getString('myDept') ??
                         '컴퓨터학부';
-                _mySub = (snapshot.data as SharedPreferences).getString('mySubject') ??
-                    '컴퓨터SW';
+                _mySub = (snapshot.data as SharedPreferences)
+                        .getString('mySubject') ??
+                    '학부 공통';
                 _isFirst = false;
               }
               return ListView(
@@ -299,8 +306,10 @@ class _SettingPageState extends State<SettingPage> {
                                       ],
                                     )),
                                 Switch(
-                                  activeTrackColor: const Color.fromARGB(255, 0, 54, 112),
-                                    activeColor: const Color.fromARGB(200, 0, 54, 112),
+                                    activeTrackColor:
+                                        const Color.fromARGB(255, 0, 54, 112),
+                                    activeColor:
+                                        const Color.fromARGB(200, 0, 54, 112),
                                     value: functionSetting['offline']!,
                                     onChanged: (newValue) {
                                       if (kIsWeb) {
@@ -313,26 +322,40 @@ class _SettingPageState extends State<SettingPage> {
                                       setState(() {
                                         functionSetting['offline'] = newValue;
                                       });
-                                      ScaffoldMessenger.of(context).showMaterialBanner(
-                                        MaterialBanner(content: Row(
-                                          children: const [
-                                            Icon(Icons.warning_amber_rounded),
-                                            Text('앱을 재시작 해야 변경사항이 적용됩니다.')
-                                          ],
-                                        ), actions:  [
-                                          TextButton(style: ButtonStyle(
-                                              overlayColor: MaterialStateProperty.all(
-                                                  Colors.redAccent.withAlpha(30)),
-                                            foregroundColor: MaterialStateProperty.all(Colors.redAccent)
-                                          ),onPressed: (()  {
-                                            dispose();
-                                            SystemNavigator.pop(animated: true);
-                                          }), child: const Text('앱 종료')),
-                                          TextButton(onPressed: (()  {
-                                            ScaffoldMessenger.of(context).clearMaterialBanners();
-                                          }), child: const Text('메세지 닫기')),
-                                        ])
-                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showMaterialBanner(MaterialBanner(
+                                              content: Row(
+                                                children: const [
+                                                  Icon(Icons
+                                                      .warning_amber_rounded),
+                                                  Text('앱을 재시작 해야 변경사항이 적용됩니다.')
+                                                ],
+                                              ),
+                                              actions: [
+                                            TextButton(
+                                                style: ButtonStyle(
+                                                    overlayColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors
+                                                                .redAccent
+                                                                .withAlpha(30)),
+                                                    foregroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors
+                                                                .redAccent)),
+                                                onPressed: (() {
+                                                  dispose();
+                                                  SystemNavigator.pop(
+                                                      animated: true);
+                                                }),
+                                                child: const Text('앱 종료')),
+                                            TextButton(
+                                                onPressed: (() {
+                                                  ScaffoldMessenger.of(context)
+                                                      .clearMaterialBanners();
+                                                }),
+                                                child: const Text('메세지 닫기')),
+                                          ]));
                                     }),
                               ],
                             ),
