@@ -83,7 +83,8 @@ class _OpenClassState extends State<OpenClass> {
       _isSaved = true;
       return _pref.getString('class');
     }
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_test');
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref('estbLectDtaiList_test');
     _pref.setString('db_ver', versionInfo["db_ver"]);
     return ref.once();
   }
@@ -163,7 +164,7 @@ class _OpenClassState extends State<OpenClass> {
                 }
               }
               for (var dat in orgClassList[0][_myDept]) {
-                  tempSet.add(dat['estbMjorNm'] ?? '학부 공통');
+                tempSet.add(dat['estbMjorNm'] ?? '학부 공통');
               }
               if (_isFirstDp) {
                 List<String> _tempList = [];
@@ -186,15 +187,14 @@ class _OpenClassState extends State<OpenClass> {
                   ));
                 }
 
-
                 _isFirstDp = false;
               }
               List _tempList = [];
-              for(String subject in tempSet) {
+              for (String subject in tempSet) {
                 _tempList.add(subject);
               }
               _tempList.add('전체');
-              _tempList.sort((a,b) => a.compareTo(b));
+              _tempList.sort((a, b) => a.compareTo(b));
               subjectDropdownList.clear();
               for (String subject in _tempList) {
                 subjectDropdownList.add(DropdownMenuItem(
@@ -204,18 +204,21 @@ class _OpenClassState extends State<OpenClass> {
               }
               for (var classData in orgClassList[0][_myDept]) {
                 if (_myDept == '교양') {
-                  if ((classData['trgtGrdeCd'].toString() + '학년'== _myGrade) && ((_region == '전체' || _region == (classData["cltTerrNm"] ?? 'none')))) {
+                  if ((classData['trgtGrdeCd'].toString() + '학년' == _myGrade) &&
+                      ((_region == '전체' ||
+                          _region == (classData["cltTerrNm"] ?? 'none')))) {
                     classList.add(classData);
                   }
-                }
-                else if (_mySub == '학부 공통') {
-                  if ((classData['estbMjorNm'] == null) && ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
+                } else if (_mySub == '학부 공통') {
+                  if ((classData['estbMjorNm'] == null) &&
+                      ((classData['trgtGrdeCd'].toString() + '학년') ==
+                          _myGrade)) {
                     classList.add(classData);
                   }
-                }
-                else if ((_mySub == '전체'||(classData['estbMjorNm'] == _mySub)) && ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
-                classList.add(classData);
-
+                } else if ((_mySub == '전체' ||
+                        (classData['estbMjorNm'] == _mySub)) &&
+                    ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
+                  classList.add(classData);
                 }
               }
               classList.sort((a, b) => ((a["subjtNm"] as String)
@@ -283,9 +286,9 @@ class _OpenClassState extends State<OpenClass> {
                               child: CardInfo.simplified(
                                 title: classList[index]["subjtNm"],
                                 subTitle:
-                                classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
+                                    classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
                                 content: Text((classList[index]["deptNm"] ??
-                                    "학부 전체 대상(전공 없음)") +
+                                        "학부 전체 대상(전공 없음)") +
                                     ", " +
                                     classList[index]["facDvnm"] +
                                     ', ' +
