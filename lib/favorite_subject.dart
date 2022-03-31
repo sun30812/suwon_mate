@@ -29,19 +29,17 @@ class FavoriteListView extends StatefulWidget {
 
 class _FavoriteListViewState extends State<FavoriteListView> {
   bool _isSaved = false;
-  late Map _rawClassList;
   late List _orgClassList;
-  late List _classList;
-  late List<String> _favorites;
+  late Map _classList;
+  late List _favorites;
   late List _favoriteClassList;
-  bool _isFirst = true;
+  List<String> _migrateFavorites = [];
 
   @override
   void initState() {
     super.initState();
-    _rawClassList = {};
     _orgClassList = [];
-    _classList = [];
+    _classList = {};
     _favorites = [];
     _favoriteClassList = [];
   }
@@ -53,7 +51,13 @@ class _FavoriteListViewState extends State<FavoriteListView> {
   Future getData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
 
-    _favorites = _pref.getStringList('favorites') ?? [];
+    if (_pref.containsKey('favoritesMap')) {
+      _favorites = jsonDecode(_pref.getString('favoritesMap')!);
+    }
+
+    if (_pref.containsKey('favorites')) {
+      _migrateFavorites = _pref.getStringList('favorites')!;
+    }
 
     if (_pref.containsKey('settings')) {
       if (_pref.containsKey('class') &&
@@ -69,7 +73,8 @@ class _FavoriteListViewState extends State<FavoriteListView> {
       _isSaved = true;
       return _pref.getString('class');
     }
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList_test');
+    DatabaseReference ref =
+        FirebaseDatabase.instance.ref('estbLectDtaiList_test');
     _pref.setString('db_ver', versionInfo["db_ver"]);
     return ref.once();
   }
@@ -79,6 +84,7 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     super.dispose();
     SharedPreferences _pref = await SharedPreferences.getInstance();
     _pref.setString('class', jsonEncode(_orgClassList));
+    _pref.remove('favorites');
   }
 
   @override
@@ -107,42 +113,50 @@ class _FavoriteListViewState extends State<FavoriteListView> {
             return const DataLoadingError();
           } else {
             if (_isSaved) {
-              _orgClassList = jsonDecode(snapshot.data);
-              _rawClassList = _orgClassList[0];
+              _orgClassList = jsonDecode(snapshot.data) as List;
+              _classList = _orgClassList[0];
             } else {
               DatabaseEvent _event = snapshot.data;
               _orgClassList = (_event.snapshot.value as List);
-              _rawClassList = _orgClassList[0];
+              _classList = _orgClassList[0];
             }
-            if (_isFirst) {
-              for(var _dat in _rawClassList.values.toList()) {
-                for(var _dat2 in _dat) {
-                  _classList.add(_dat2);
 
-                }
-              }
-              _isFirst = false;
-            }
-            for (var favorite in _favorites) {
-              for (var dat in _classList) {
-                if ('${dat['subjtCd']}-${dat['diclNo']}' == favorite) {
-                  _favoriteClassList.add(dat);
+            if (_migrateFavorites.isNotEmpty) {
+              for (Map dat in _classList.values.first) {
+                for (String _code in _migrateFavorites) {
+                  if ('${dat['subjtCd']}-${dat['diclNo']}' == _code) {
+                    _favorites.add({dat['estbDpmjNm']: _code});
+                  }
                 }
               }
             }
+
             if (_favorites.isEmpty) {
               return Center(
                   child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
+                children: [
+                  const Icon(
                     Icons.star_border,
                     size: 50.0,
                   ),
-                  Text('아직 즐겨찾기에 등록하신 과목이 없습니다. 추가해보세요'),
+                  const Text('아직 즐겨찾기에 등록하신 과목이 없습니다.\n'
+                      '개설강좌를 조회하여 추가해보세요.'),
+                  SuwonButton(
+                      icon: Icons.date_range,
+                      buttonName: '개설 강좌 조회',
+                      onPressed: () => Navigator.pushNamed(context, '/oclass'))
                 ],
               ));
             } else {
+              for (Map favorite in _favorites) {
+                for (var dat in _classList[favorite.keys.first]) {
+                  if ('${dat['subjtCd']}-${dat['diclNo']}' ==
+                      favorite.values.first) {
+                    _favoriteClassList.add(dat);
+                  }
+                }
+              }
               return ListView.builder(
                   itemCount: _favorites.length,
                   itemBuilder: (BuildContext context, int index) {

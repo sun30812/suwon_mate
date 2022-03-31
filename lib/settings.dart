@@ -24,7 +24,7 @@ class _SettingPageState extends State<SettingPage> {
   String _grade = '1학년';
   bool _isFirst = true;
   bool _isSynced = false;
-  final isDebug = false;
+  final isDebug = true;
   late PackageInfo packageInfo;
   late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
@@ -73,7 +73,8 @@ class _SettingPageState extends State<SettingPage> {
     super.dispose();
     SharedPreferences _pref = await SharedPreferences.getInstance();
     _pref.setString('myDept', _myDp);
-    _pref.setString('mySubject', _mySub);
+    // _pref.setString('mySubject', _mySub);
+    _pref.remove('mySubject');
     _pref.setString('myGrade', _grade);
     _pref.setString('settings', jsonEncode(functionSetting));
   }
@@ -102,6 +103,16 @@ class _SettingPageState extends State<SettingPage> {
                 message: '이 설정을 숨기려면 settings.dart의 isDebug변수를 false로 지정합니다.',
               ),
               TextButton(
+                  onPressed: (() async {
+                    SharedPreferences _pref =
+                        await SharedPreferences.getInstance();
+                    _pref.remove('favoritesMap');
+                    List<String> _list = ['06993-001'];
+                    await _pref.setStringList('favorite', _list);
+                    Navigator.of(context).pop();
+                  }),
+                  child: Text('디버그: 이전 즐겨찾기 항목으로 설정')),
+              TextButton(
                   onPressed: () async {
                     showDialog(
                         barrierDismissible: false,
@@ -113,7 +124,7 @@ class _SettingPageState extends State<SettingPage> {
                               onPressed: () async {
                                 SharedPreferences _pref =
                                     await SharedPreferences.getInstance();
-                                _pref.remove('favorites');
+                                _pref.remove('favoritesMap');
                                 Navigator.of(context).pop();
                               },
                             ));
@@ -131,7 +142,7 @@ class _SettingPageState extends State<SettingPage> {
                               onPressed: () async {
                                 SharedPreferences _pref =
                                     await SharedPreferences.getInstance();
-                                _pref.remove('favorites');
+                                _pref.remove('favoritesMap');
                                 Navigator.of(context).pop();
                               },
                             ));
