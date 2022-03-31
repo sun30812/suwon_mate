@@ -29,10 +29,14 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.grey[300]!,
-        appBarTheme: const AppBarTheme(color: Color.fromARGB(255, 0, 54, 112)),
-      ),
+      theme: ThemeData().copyWith(
+          scaffoldBackgroundColor: Colors.grey[300]!,
+          appBarTheme:
+              const AppBarTheme(color: Color.fromARGB(255, 0, 54, 112)),
+          colorScheme: ThemeData().colorScheme.copyWith(
+              secondary: const Color.fromARGB(255, 0, 54, 112),
+              onSecondary: const Color.fromARGB(255, 0, 54, 112),
+              primary: const Color.fromARGB(255, 0, 54, 112))),
       title: '수원 메이트',
       home: const MainPage(),
       routes: {
@@ -94,34 +98,39 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-
   void migrationCheck() {
     if (widget._preferences.containsKey('mySub')) {
-      showDialog(context: context, builder: (context) {
-        return AlertDialog(
-          title: Row(
-            children: const [
-              Icon(Icons.warning_amber_rounded),
-              Text('경고')
-            ],
-          ),
-          content: const Text('DB의 구조가 새롭게 변경되었습니다. 따라서 즐겨찾기 항목을 제외한 나머지 데이터들의 초기화가 필요합니다.\n'
-              '계속하시겠습니까?'),
-          actions: [
-            TextButton(onPressed: () => SystemNavigator.pop(animated: true), child: const Text('무시(앱 종료)')),
-            TextButton(onPressed: (() async {
-              SharedPreferences _pref = await SharedPreferences.getInstance();
-              _pref.remove('mySub');
-              _pref.remove('myDp');
-              _pref.remove('class');
-              _pref.remove('version');
-              Navigator.pop(context);
-            }), child: const Text('확인')),
-          ],
-        );
-      });
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                children: const [Icon(Icons.warning_amber_rounded), Text('경고')],
+              ),
+              content: const Text(
+                  'DB의 구조가 새롭게 변경되었습니다. 따라서 즐겨찾기 항목을 제외한 나머지 데이터들의 초기화가 필요합니다.\n'
+                  '계속하시겠습니까?'),
+              actions: [
+                TextButton(
+                    onPressed: () => SystemNavigator.pop(animated: true),
+                    child: const Text('무시(앱 종료)')),
+                TextButton(
+                    onPressed: (() async {
+                      SharedPreferences _pref =
+                          await SharedPreferences.getInstance();
+                      _pref.remove('mySub');
+                      _pref.remove('myDp');
+                      _pref.remove('class');
+                      _pref.remove('version');
+                      Navigator.pop(context);
+                    }),
+                    child: const Text('확인')),
+              ],
+            );
+          });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     bool isActivated = true;
@@ -164,7 +173,7 @@ class _MainMenuState extends State<MainMenu> {
                 ),
                 SuwonButton(
                     icon: Icons.star_outline,
-                    buttonName: '즐겨찾는 과목',
+                    buttonName: '즐겨찾는 과목(베타)',
                     onPressed: () =>
                         Navigator.of(context).pushNamed('/favorite')),
                 SuwonButton(

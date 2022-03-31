@@ -66,9 +66,9 @@ class _DonationPageState extends State<DonationPage> {
             else
               Center(
                 child: Row(
-                  children: [
+                  children: const [
                     CircularProgressIndicator.adaptive(),
-                    const Text('광고 불러오는 중...'),
+                    Text('광고 불러오는 중...'),
                   ],
                 ),
               ),

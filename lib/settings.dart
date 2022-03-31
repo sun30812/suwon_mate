@@ -21,7 +21,6 @@ class _SettingPageState extends State<SettingPage> {
   String _grade = '1학년';
   bool _isFirst = true;
   bool _isSynced = false;
-  final isDebug = false;
   late PackageInfo packageInfo;
   late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
@@ -56,7 +55,8 @@ class _SettingPageState extends State<SettingPage> {
     super.dispose();
     SharedPreferences _pref = await SharedPreferences.getInstance();
     _pref.setString('myDept', _myDp);
-    _pref.setString('mySubject', _mySub);
+    // _pref.setString('mySubject', _mySub);
+    _pref.remove('mySubject');
     _pref.setString('myGrade', _grade);
     _pref.setString('settings', jsonEncode(functionSetting));
   }

@@ -14,7 +14,7 @@ void main() {
       'settings': jsonEncode(functionSetting),
       'db_ver': 'test_db',
       'class': '[{"컴퓨터학부":[{"clsfNm" : "학부생","deptNm" : '
-          '"컴퓨터학부","diclNo" : "000","estbDpmjNm" : "SW개발학과","facDvnm" : "전선",'
+          '"컴퓨터학부","diclNo" : "000","estbDpmjNm" : "컴퓨터학부","facDvnm" : "전선",'
           '"lssnLangNm" : "한국어","ltrPrfsNm" : "sun30812","point" : 10,"subjtCd" :"30812",'
           '"subjtEstbYear" : "2022","subjtNm" : "자유로운 Flutter 개발(비대면)","trgtGrdeCd" : 1}]}]',
     });
@@ -58,6 +58,18 @@ void main() {
       expect(find.byType(CardInfo, skipOffstage: false), findsNWidgets(5));
       expect(find.text('자유로운 Flutter 개발(비대면)'), findsOneWidget);
     });
+    testWidgets('View associate professor', ((tester) async {
+      await tester.pumpWidget(const App());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('개설 강좌 조회'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(SimpleCardButton));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pumpAndSettle();
+      expect(find.text('자유로운 Flutter 개발(비대면)'), findsWidgets);
+      expect(find.byType(SimpleCardButton), findsOneWidget);
+    }));
     testWidgets('Search subject', (tester) async {
       await tester.pumpWidget(const App());
       await tester.pumpAndSettle();
@@ -78,7 +90,8 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.manage_search_outlined));
       await tester.pumpAndSettle();
-      await tester.enterText(find.byKey(const Key('subject_code_field')), '30812');
+      await tester.enterText(
+          find.byKey(const Key('subject_code_field')), '30812');
       await tester.pumpAndSettle();
       await tester.tap(find.text('확인'));
       await tester.pumpAndSettle();
@@ -94,7 +107,8 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.manage_search_outlined));
       await tester.pumpAndSettle();
-      await tester.enterText(find.byKey(const Key('subject_code_field')), '30812-000');
+      await tester.enterText(
+          find.byKey(const Key('subject_code_field')), '30812-000');
       await tester.pumpAndSettle();
       await tester.tap(find.text('확인'));
       await tester.pumpAndSettle();
@@ -114,7 +128,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Back'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('즐겨찾는 과목'));
+      await tester.tap(find.text('즐겨찾는 과목(베타)'));
       await tester.pumpAndSettle();
       expect(find.byType(SimpleCardButton), findsOneWidget);
       expect(find.text('자유로운 Flutter 개발(비대면)'), findsOneWidget);
@@ -125,9 +139,24 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Back'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('즐겨찾는 과목'));
+      await tester.tap(find.text('즐겨찾는 과목(베타)'));
       await tester.pumpAndSettle();
       expect(find.byType(SimpleCardButton), findsNothing);
+    });
+  });
+  group('Favorite Migration', () {
+    setUp(() async {
+      SharedPreferences _pref = await SharedPreferences.getInstance();
+      List<String> _testFavorites = ['30812-000'];
+      _pref.remove('favoritesMap');
+      _pref.setStringList('favorites', _testFavorites);
+    });
+    testWidgets('Add/Remove favorite Test', (tester) async {
+      await tester.pumpWidget(const App());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('즐겨찾는 과목(베타)'));
+      await tester.pumpAndSettle();
+      expect(find.byType(SimpleCardButton), findsOneWidget);
     });
   });
 }
