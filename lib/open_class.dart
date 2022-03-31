@@ -65,6 +65,7 @@ class _OpenClassState extends State<OpenClass> {
   Future getData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     if (_isFirst) {
+      _pref.remove('mySubject');
       _myDept = _pref.getString('myDept') ?? '컴퓨터학부';
       _mySub = _pref.getString('mySubject') ?? '학부 공통';
       _myGrade = _pref.getString('myGrade') ?? '1학년';
