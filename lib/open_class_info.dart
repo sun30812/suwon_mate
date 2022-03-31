@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/style_widget.dart';
@@ -16,6 +18,7 @@ class OpenClassInfo extends StatelessWidget {
         classData: arg,
       ),
       floatingActionButton: FavoriteButton(
+        depart: arg['estbDpmjNm'],
         subjectCode: '${arg['subjtCd']}-${arg['diclNo']}',
       ),
     );
@@ -63,8 +66,11 @@ class _OpenClassInfoPageState extends State<OpenClassInfoPage> {
 
 class FavoriteButton extends StatefulWidget {
   final String _subjectCode;
-  const FavoriteButton({Key? key, required String subjectCode})
-      : _subjectCode = subjectCode,
+  final String _depart;
+  const FavoriteButton(
+      {Key? key, required String depart, required String subjectCode})
+      : _depart = depart,
+        _subjectCode = subjectCode,
         super(key: key);
 
   @override
@@ -75,18 +81,20 @@ class _FavoriteButtonState extends State<FavoriteButton> {
   bool _isAddFavorite = false;
   bool _isFirst = true;
   bool _isGetFirst = true;
-  late List<String> _favorites;
+  List _favorites = [];
 
   Future getData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
 
     if (_isFirst) {
-      _favorites = _pref.getStringList('favorites') ?? [];
+      if (_pref.containsKey('favoritesMap')) {
+        _favorites = jsonDecode(_pref.getString('favoritesMap')!);
+      }
       _isFirst = false;
     }
 
     for (var _favorite in _favorites) {
-      if (_favorite == widget._subjectCode) {
+      if (_favorite.values.first.toString() == widget._subjectCode) {
         return true;
       }
     }
@@ -101,7 +109,18 @@ class _FavoriteButtonState extends State<FavoriteButton> {
 
   void syncFavorite() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setStringList('favorites', _favorites);
+    _pref.setString('favoritesMap', jsonEncode(_favorites));
+  }
+
+  int? getFavoriteRemoveIndex(String code) {
+    int _count = 0;
+    for (Map _favorite in _favorites) {
+      if (_favorite.values.first == code) {
+        return _count;
+      }
+      _count++;
+    }
+    return null;
   }
 
   @override
@@ -127,7 +146,8 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               onPressed: () {
                 setState(() {
                   _isAddFavorite = true;
-                  _favorites.add(widget._subjectCode);
+                  Map _map = {widget._depart: widget._subjectCode};
+                  _favorites.add(_map);
                 });
                 syncFavorite();
               },
@@ -138,8 +158,12 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               buttonName: '즐겨찾기에서 제거',
               onPressed: () {
                 setState(() {
+                  int? _removeIndex =
+                      getFavoriteRemoveIndex(widget._subjectCode);
+                  if (_removeIndex != null) {
+                    _favorites.removeAt(_removeIndex);
+                  }
                   _isAddFavorite = false;
-                  _favorites.remove(widget._subjectCode);
                 });
                 syncFavorite();
               },
