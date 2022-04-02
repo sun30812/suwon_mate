@@ -53,11 +53,11 @@ class HelpPage extends StatelessWidget {
               )),
           CardInfo(
               icon: Icons.favorite_outline_outlined,
-              title: '기부하기',
+              title: '광고 보기',
               detail: Column(
                 children: const [
                   Text(
-                    '광고배너가 달린 페이지 입니다. 광고 빼고는 아무 기능 없습니다.',
+                    '광고배너가 달린 페이지 입니다. 광고 빼고는 아무 기능 없습니다.\n그래도 개발자에게는 도움이 됩니다:)',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],

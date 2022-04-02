@@ -178,7 +178,7 @@ class _MainMenuState extends State<MainMenu> {
                         Navigator.of(context).pushNamed('/favorite')),
                 SuwonButton(
                     icon: Icons.favorite_border_outlined,
-                    buttonName: '기부하기',
+                    buttonName: '광고 보기',
                     onPressed: () =>
                         Navigator.of(context).pushNamed('/donation')),
                 SuwonButton(
