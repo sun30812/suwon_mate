@@ -29,7 +29,7 @@ class _SettingPageState extends State<SettingPage> {
   late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
   List<DropdownMenuItem<String>> gradeDropdownList = [];
-  Map<String, dynamic> functionSetting = {'offline': false};
+  Map<String, dynamic> functionSetting = {'offline': false, 'liveSearch': true};
 
   Future<SharedPreferences> getSettings() async {
     try {
@@ -111,7 +111,7 @@ class _SettingPageState extends State<SettingPage> {
                     await _pref.setStringList('favorite', _list);
                     Navigator.of(context).pop();
                   }),
-                  child: Text('디버그: 이전 즐겨찾기 항목으로 설정')),
+                  child: const Text('디버그: 이전 즐겨찾기 항목으로 설정')),
               TextButton(
                   onPressed: () async {
                     showDialog(
@@ -370,7 +370,50 @@ class _SettingPageState extends State<SettingPage> {
                                     }),
                               ],
                             ),
-                          )
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return const AlertDialog(
+                                              title: Text('입력하여 바로 검색'),
+                                              content: Text(
+                                                  '과목을 검색할 때 입력하는 즉시 검색을 바로 시작합니다. 이 기능을 비활성화 한다면 '
+                                                  '검색 버튼이 표시되며 검색 버튼을 눌러야 검색을 진행합니다.'),
+                                            );
+                                          });
+                                    },
+                                    child: Row(
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 10.0),
+                                          child: Icon(Icons.search),
+                                        ),
+                                        Text('입력하여 바로 검색'),
+                                      ],
+                                    )),
+                                Switch(
+                                    activeTrackColor:
+                                        const Color.fromARGB(255, 0, 54, 112),
+                                    activeColor:
+                                        const Color.fromARGB(200, 0, 54, 112),
+                                    value:
+                                        functionSetting['liveSearch'] ?? true,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        functionSetting['liveSearch'] =
+                                            newValue;
+                                      });
+                                    }),
+                              ],
+                            ),
+                          ),
                         ],
                       )),
                   CardInfo(
