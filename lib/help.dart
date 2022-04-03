@@ -51,46 +51,12 @@ class HelpPage extends StatelessWidget {
                   ),
                 ],
               )),
-          CardInfo(
+          const CardInfo(
               icon: Icons.settings,
               title: '설정',
-              detail: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '앱과 관련된 설정들을 할 수 있습니다.',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: const [
-                            Icon(Icons.offline_bolt_outlined),
-                            Padding(padding: EdgeInsets.only(right: 3.0)),
-                            Text(
-                              '데이터 절약모드',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                             Text(
-                                '데이터를 절약하기 위해 DB 업데이트 확인이나 네트워크 연결이 필요한 공지사항, 학사 일정등의 기능을'
-                                ' 비활성화 합니다.'),
-                             Text('주의: Web 플랫폼에서는 설정이 제한됩니다.', style: TextStyle(fontWeight: FontWeight.bold),)
-                          ],
-                        )
-                      ],
-                    ),
-                  )
-                ],
+              detail: Text(
+                '앱과 관련된 설정들을 할 수 있습니다.',
+                style: TextStyle(fontSize: 16.0),
               )),
         ],
       ),
