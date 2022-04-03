@@ -53,6 +53,7 @@ class _OpenClassState extends State<OpenClass> {
   List orgClassList = [];
   bool _offline = false;
   bool _liveSearch = true;
+  int _liveSearchCount = 0;
   bool _isSaved = false;
   String _myDept = '컴퓨터학부';
   String _mySub = '학부 공통';
@@ -76,6 +77,9 @@ class _OpenClassState extends State<OpenClass> {
         _liveSearch =
             (jsonDecode(_pref.getString('settings')!) as Map)['liveSearch'] ??
                 true;
+        _liveSearchCount = (jsonDecode(_pref.getString('settings')!)
+                as Map)['liveSearchCount'] ??
+            0;
       }
     }
     if ((_pref.containsKey('db_ver')) && _offline) {
@@ -140,7 +144,7 @@ class _OpenClassState extends State<OpenClass> {
             buttonName: '검색',
             onPressed: () => Navigator.of(context).pushNamed(
                   '/oclass/search',
-                  arguments: [orgClassList, _liveSearch],
+                  arguments: [orgClassList, _liveSearch, _liveSearchCount],
                 )),
         body: FutureBuilder(
           future: getData(),
