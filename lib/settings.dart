@@ -328,6 +328,28 @@ class _SettingPageState extends State<SettingPage> {
                               ],
                             ),
                           ),
+                          if (functionSetting['liveSearch'] ?? true)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  const Text('슬라이더를 조절하여 자동으로 검색을 시작할 글자 수 지정'),
+                                  Slider(
+                                    divisions: 3,
+                                    label:
+                                        '${(functionSetting['liveSearchCount'] ?? 0)} 자',
+                                    min: 0,
+                                    max: 3,
+                                    value:
+                                        functionSetting['liveSearchCount'] ?? 0,
+                                    onChanged: (value) => setState(() {
+                                      functionSetting['liveSearchCount'] =
+                                          value;
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            )
                         ],
                       )),
                   CardInfo(
