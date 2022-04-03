@@ -196,7 +196,12 @@ class _SettingPageState extends State<SettingPage> {
                       icon: Icons.settings,
                       title: '기능 설정',
                       detail: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('각 항목을 클릭하면 설명을 볼 수 있습니다.'),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
