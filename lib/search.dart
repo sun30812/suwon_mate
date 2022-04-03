@@ -13,6 +13,7 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controller2 = TextEditingController();
   List classList = [];
   bool _isFirst = true;
+  bool _liveSearch = true;
 
   @override
   void initState() {
@@ -27,7 +28,7 @@ class _SearchPageState extends State<SearchPage> {
     }
     return 'none';
   }
-  
+
   int getSubjectIndex(String code, List listData) {
     int _index = 0;
     for (var dat in listData) {
@@ -42,12 +43,12 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     dynamic args = ModalRoute.of(context)!.settings.arguments;
-    Map rawClassList = args[0];
+    Map rawClassList = args[0][0];
+    _liveSearch = args[1] ?? true;
     if (_isFirst) {
-      for(var _dat in rawClassList.values.toList()) {
-        for(var _dat2 in _dat) {
+      for (var _dat in rawClassList.values.toList()) {
+        for (var _dat2 in _dat) {
           classList.add(_dat2);
-
         }
       }
       _isFirst = false;
@@ -85,13 +86,15 @@ class _SearchPageState extends State<SearchPage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                     if (_controller2.text.contains('-')) {
-                      int _searchResult = getSubjectIndex(_controller2.text, classList);
+                      int _searchResult =
+                          getSubjectIndex(_controller2.text, classList);
                       if (_searchResult == -1) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('해당 과목은 존재하지 않습니다.')));
                         return;
                       }
-                      Navigator.of(context).pushNamed('/oclass/info', arguments: classList[_searchResult]);
+                      Navigator.of(context).pushNamed('/oclass/info',
+                          arguments: classList[_searchResult]);
                     } else {
                       String subjectName =
                           searchSubjectName(_controller2.text, classList);
@@ -119,12 +122,7 @@ class _SearchPageState extends State<SearchPage> {
           Row(
             children: [
               Flexible(
-                child: InputBar(
-                    icon: Icons.search,
-                    controller: _controller,
-                    onChanged: (value) {
-                      setState(() {});
-                    }),
+                child: smartSearchBar(),
               ),
             ],
           ),
@@ -162,20 +160,40 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  SearchBar smartSearchBar() {
+    if (_liveSearch) {
+      return SearchBar(
+          icon: Icons.search,
+          controller: _controller,
+          onChanged: (value) {
+            setState(() {});
+          });
+    } else {
+      return SearchBar(
+          acceptIcon: Icons.search,
+          icon: Icons.search,
+          controller: _controller,
+          onAcceptPressed: () => setState(() {}));
+    }
+  }
+
   Widget searchHint(bool available) {
     if (available) {
       return Container();
     }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        Icon(
+      children: [
+        const Icon(
           Icons.search,
           color: Colors.grey,
           size: 80.0,
         ),
-        Text('강의자의 이름이나 과목명을 입력하면 검색을 시작합니다.\n\n'),
-        Text('과목 코드로 검색을 원하시면 우측 상단에 코드모양 버튼을 누릅니다.')
+        if (_liveSearch)
+          const Text('강의자의 이름이나 과목명을 입력하면 검색을 시작합니다.\n\n')
+        else
+          const Text('강의자의 이름이나 과목명을 입력 후 검색 버튼을 누르면 검색이 시작됩니다.\n\n'),
+        const Text('과목 코드로 검색을 원하시면 우측 상단에 코드모양 버튼을 누릅니다.')
       ],
     );
   }
