@@ -77,7 +77,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('검색'));
       await tester.pumpAndSettle();
-      await tester.enterText(find.byType(InputBar), 'sun30');
+      await tester.enterText(find.byType(SearchBar), 'sun30');
       await tester.pumpAndSettle();
       expect(find.byType(SimpleCardButton), findsWidgets);
     });
