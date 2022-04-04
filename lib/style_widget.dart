@@ -222,28 +222,28 @@ class _SuwonButtonState extends State<SuwonButton> {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(12.0),
         child: AnimatedContainer(
           decoration: BoxDecoration(
               color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(20.0),
+              borderRadius: BorderRadius.circular(10.0),
               boxShadow: !_isClicked && (widget.isActivate ?? true)
                   ? [
                       BoxShadow(
                           offset: const Offset(3, 3),
                           blurRadius: 15,
-                          spreadRadius: 1,
+                          spreadRadius: 0.5,
                           color: Colors.grey[500]!),
                       const BoxShadow(
                           offset: Offset(-3, -3),
                           blurRadius: 15,
-                          spreadRadius: 1,
+                          spreadRadius: 0.5,
                           color: Colors.white)
                     ]
                   : null),
           duration: const Duration(milliseconds: 200),
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(10.0),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Icon(
                 widget.icon,
@@ -327,19 +327,19 @@ class _SimpleCardButtonState extends State<SimpleCardButton> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 100),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3.0),
+              borderRadius: BorderRadius.circular(10.0),
               color: Colors.grey[300],
               boxShadow: !_isClicked
                   ? [
                       BoxShadow(
                           offset: const Offset(3, 3),
                           blurRadius: 15,
-                          spreadRadius: 1,
+                          spreadRadius: 0.5,
                           color: Colors.grey[500]!),
                       const BoxShadow(
                           offset: Offset(-3, -3),
                           blurRadius: 15,
-                          spreadRadius: 1,
+                          spreadRadius: 0.5,
                           color: Colors.white)
                     ]
                   : null),
@@ -384,18 +384,18 @@ class _CardInfoState extends State<CardInfo> {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(3.0),
+            borderRadius: BorderRadius.circular(10.0),
             color: Colors.grey[300],
             boxShadow: [
               BoxShadow(
                   offset: const Offset(3, 3),
                   blurRadius: 15,
-                  spreadRadius: 1,
+                  spreadRadius: 0.5,
                   color: Colors.grey[500]!),
               const BoxShadow(
                   offset: Offset(-3, -3),
-                  blurRadius: 15,
-                  spreadRadius: 1,
+                  blurRadius: 25,
+                  spreadRadius: 0.5,
                   color: Colors.white)
             ]),
         child: Padding(

@@ -25,7 +25,11 @@ class _SettingPageState extends State<SettingPage> {
   late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
   List<DropdownMenuItem<String>> gradeDropdownList = [];
-  Map<String, dynamic> functionSetting = {'offline': false, 'liveSearch': true};
+  Map<String, dynamic> functionSetting = {
+    'offline': false,
+    'liveSearch': true,
+    'liveSearchCount': 0
+  };
 
   Future<SharedPreferences> getSettings() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
@@ -163,6 +167,8 @@ class _SettingPageState extends State<SettingPage> {
                               children: [
                                 const Text('기본 학부: '),
                                 DropdownButton<String>(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10.0)),
                                     items: subDropdownList,
                                     onChanged: (String? value) {
                                       setState(() {
@@ -181,6 +187,8 @@ class _SettingPageState extends State<SettingPage> {
                                 const Text('기본 학년: '),
                                 DropdownButton<String>(
                                     items: gradeDropdownList,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10.0)),
                                     onChanged: (String? value) {
                                       setState(() {
                                         _grade = value!;
@@ -375,7 +383,11 @@ class _SettingPageState extends State<SettingPage> {
                                             SharedPreferences _pref =
                                                 await SharedPreferences
                                                     .getInstance();
-                                            _pref.clear();
+                                            _pref.clear().then((value) =>
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(const SnackBar(
+                                                        content: Text(
+                                                            '앱의 모든 데이터를 초기화 하였습니다.'))));
                                             Navigator.of(context).pop();
                                           }));
                             },
@@ -402,7 +414,11 @@ class _SettingPageState extends State<SettingPage> {
                                         SharedPreferences _pref =
                                             await SharedPreferences
                                                 .getInstance();
-                                        _pref.remove('db_ver');
+                                        _pref.remove('db_ver').then((value) =>
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        'DB 데이터를 지웠습니다.'))));
                                         Navigator.of(context).pop();
                                       },
                                     );
