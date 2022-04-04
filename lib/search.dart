@@ -194,7 +194,8 @@ class _SearchPageState extends State<SearchPage> {
           size: 80.0,
         ),
         if (_liveSearch)
-          const Text('강의자의 이름이나 과목명을 입력하면 검색을 시작합니다.\n\n')
+          Text(
+              '강의자의 이름이나 과목명을 ${_liveSearchCount.round()}자 이상 입력하면 검색을 시작합니다.\n\n')
         else
           const Text('강의자의 이름이나 과목명을 입력 후 검색 버튼을 누르면 검색이 시작됩니다.\n\n'),
         const Text('과목 코드로 검색을 원하시면 우측 상단에 코드모양 버튼을 누릅니다.')

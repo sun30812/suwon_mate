@@ -414,6 +414,8 @@ class _SettingPageState extends State<SettingPage> {
                                           value;
                                     }),
                                   ),
+                                  Text(
+                                      '현재 설정된 글자 수: ${((functionSetting['liveSearchCount'] ?? 0.0) as double).round()}자')
                                 ],
                               ),
                             )
