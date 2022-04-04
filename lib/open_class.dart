@@ -53,7 +53,7 @@ class _OpenClassState extends State<OpenClass> {
   List orgClassList = [];
   bool _offline = false;
   bool _liveSearch = true;
-  int _liveSearchCount = 0;
+  double _liveSearchCount = 0.0;
   bool _isSaved = false;
   String _myDept = '컴퓨터학부';
   String _mySub = '학부 공통';
@@ -79,7 +79,7 @@ class _OpenClassState extends State<OpenClass> {
                 true;
         _liveSearchCount = (jsonDecode(_pref.getString('settings')!)
                 as Map)['liveSearchCount'] ??
-            0;
+            0.0;
       }
     }
     if ((_pref.containsKey('db_ver')) && _offline) {

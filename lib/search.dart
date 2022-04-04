@@ -14,7 +14,7 @@ class _SearchPageState extends State<SearchPage> {
   List classList = [];
   bool _isFirst = true;
   bool _liveSearch = true;
-  int _liveSearchCount = 0;
+  double _liveSearchCount = 0.0;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _SearchPageState extends State<SearchPage> {
     dynamic args = ModalRoute.of(context)!.settings.arguments;
     Map rawClassList = args[0][0];
     _liveSearch = args[1] ?? true;
-    _liveSearchCount = args[2] ?? 0;
+    _liveSearchCount = args[2] ?? 0.0;
     if (_isFirst) {
       for (var _dat in rawClassList.values.toList()) {
         for (var _dat2 in _dat) {
