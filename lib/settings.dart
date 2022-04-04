@@ -32,7 +32,7 @@ class _SettingPageState extends State<SettingPage> {
   Map<String, dynamic> functionSetting = {
     'offline': false,
     'liveSearch': true,
-    'liveSearchCount': 0
+    'liveSearchCount': 0.0
   };
 
   Future<SharedPreferences> getSettings() async {
@@ -436,11 +436,11 @@ class _SettingPageState extends State<SettingPage> {
                                   Slider(
                                     divisions: 3,
                                     label:
-                                        '${(functionSetting['liveSearchCount'] ?? 0)} 자',
+                                        '${(functionSetting['liveSearchCount'] ?? 0.0)} 자',
                                     min: 0,
                                     max: 3,
-                                    value:
-                                        functionSetting['liveSearchCount'] ?? 0,
+                                    value: functionSetting['liveSearchCount'] ??
+                                        0.0,
                                     onChanged: (value) => setState(() {
                                       functionSetting['liveSearchCount'] =
                                           value;
