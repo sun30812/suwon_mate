@@ -436,7 +436,7 @@ class _SettingPageState extends State<SettingPage> {
                                   Slider(
                                     divisions: 3,
                                     label:
-                                        '${(functionSetting['liveSearchCount'] ?? 0.0)} 자',
+                                        '${((functionSetting['liveSearchCount'] ?? 0.0) as double).round()} 자',
                                     min: 0,
                                     max: 3,
                                     value: functionSetting['liveSearchCount'] ??
