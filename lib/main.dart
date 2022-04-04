@@ -62,9 +62,19 @@ class App extends StatelessWidget {
   }
 }
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  List<BottomNavigationBarItem> shortcuts = const [
+    BottomNavigationBarItem(icon: Icon(Icons.apps), label: '앱스'),
+    BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
+  ];
+  int _pageIndex = 0;
   Future<SharedPreferences> getSettings() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref;
@@ -76,18 +86,32 @@ class MainPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('수원 메이트'),
         ),
-        body: FutureBuilder(
-          future: getSettings(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Container();
-            } else if (snapshot.hasError) {
-              return const DataLoadingError();
-            } else {
-              return MainMenu(preferences: snapshot.data as SharedPreferences);
-            }
-          },
-        ));
+        bottomNavigationBar: BottomNavigationBar(
+          items: shortcuts,
+          currentIndex: _pageIndex,
+          onTap: (value) => setState(() {
+            _pageIndex = value;
+          }),
+        ),
+        body: tabPageBody());
+  }
+
+  Widget tabPageBody() {
+    if (_pageIndex == 0) {
+      return FutureBuilder(
+        future: getSettings(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container();
+          } else if (snapshot.hasError) {
+            return const DataLoadingError();
+          } else {
+            return MainMenu(preferences: snapshot.data as SharedPreferences);
+          }
+        },
+      );
+    }
+    return const SettingPage();
   }
 }
 
@@ -189,11 +213,6 @@ class _MainMenuState extends State<MainMenu> {
                     buttonName: '즐겨찾는 과목(베타)',
                     onPressed: () =>
                         Navigator.of(context).pushNamed('/favorite')),
-                SuwonButton(
-                    icon: Icons.settings,
-                    buttonName: '설정',
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed('/settings')),
               ],
             ),
           ],

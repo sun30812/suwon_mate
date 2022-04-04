@@ -169,9 +169,6 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('설정'),
-      ),
       body: FutureBuilder(
           future: getSettings(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -347,39 +344,10 @@ class _SettingPageState extends State<SettingPage> {
                                         functionSetting['offline'] = newValue;
                                       });
                                       ScaffoldMessenger.of(context)
-                                          .showMaterialBanner(MaterialBanner(
-                                              content: Row(
-                                                children: const [
-                                                  Icon(Icons
-                                                      .warning_amber_rounded),
-                                                  Text('앱을 재시작 해야 변경사항이 적용됩니다.')
-                                                ],
-                                              ),
-                                              actions: [
-                                            TextButton(
-                                                style: ButtonStyle(
-                                                    overlayColor:
-                                                        MaterialStateProperty
-                                                            .all(Colors
-                                                                .redAccent
-                                                                .withAlpha(30)),
-                                                    foregroundColor:
-                                                        MaterialStateProperty
-                                                            .all(Colors
-                                                                .redAccent)),
-                                                onPressed: (() {
-                                                  dispose();
-                                                  SystemNavigator.pop(
-                                                      animated: true);
-                                                }),
-                                                child: const Text('앱 종료')),
-                                            TextButton(
-                                                onPressed: (() {
-                                                  ScaffoldMessenger.of(context)
-                                                      .clearMaterialBanners();
-                                                }),
-                                                child: const Text('메세지 닫기')),
-                                          ]));
+                                          .showSnackBar(SnackBar(
+                                        content: Text('설정 되었습니다.'),
+                                        duration: Duration(seconds: 2),
+                                      ));
                                     }),
                               ],
                             ),
