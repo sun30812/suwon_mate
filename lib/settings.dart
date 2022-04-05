@@ -221,6 +221,15 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 );
               }
+              majorDropdownList.clear();
+              majorDropdownList.add(const DropdownMenuItem(
+                child: Text('전체'),
+                value: '전체',
+              ));
+              majorDropdownList.add(const DropdownMenuItem(
+                child: Text('학부 공통'),
+                value: '학부 공통',
+              ));
               if ((snapshot.data as SharedPreferences).containsKey('dpMap')) {
                 Map _subMap = jsonDecode(
                     (snapshot.data as SharedPreferences).getString('dpMap')!);
@@ -231,21 +240,14 @@ class _SettingPageState extends State<SettingPage> {
                         ))
                     .toList();
                 subDropdownList.sort((a, b) => a.value!.compareTo(b.value!));
-                majorDropdownList = (_subMap[_myDp] as List)
+                List _tempList = _subMap[_myDp] as List;
+                _tempList.sort((a, b) => a.compareTo(b));
+                majorDropdownList.addAll((_tempList)
                     .map((dat) => DropdownMenuItem(
                           child: Text(dat.toString()),
                           value: dat.toString(),
                         ))
-                    .toList();
-                majorDropdownList.add(const DropdownMenuItem(
-                  child: Text('학부 공통'),
-                  value: '학부 공통',
-                ));
-                majorDropdownList.add(const DropdownMenuItem(
-                  child: Text('전체'),
-                  value: '전체',
-                ));
-                majorDropdownList.sort((a, b) => a.value!.compareTo(b.value!));
+                    .toList());
                 _isSynced = true;
               }
               if (_isFirst) {
@@ -289,6 +291,7 @@ class _SettingPageState extends State<SettingPage> {
                                     onChanged: (String? value) {
                                       setState(() {
                                         _myDp = value!;
+                                        _mySub = '학부 공통';
                                       });
                                     },
                                     value: _myDp),
@@ -484,7 +487,8 @@ class _SettingPageState extends State<SettingPage> {
                                           icon: Icons.error_outline,
                                           title: '경고',
                                           content: const Text(
-                                              '앱의 모든 데이터를 초기화합니다. 계속하시겠습니까?'),
+                                              '학생 정보를 포함한 앱의 모든 데이터를 초기화합니다. 계속하시겠습니까?(이 작업은 되돌릴 수 없습니다.)'),
+                                          isDestructive: true,
                                           onPressed: () async {
                                             SharedPreferences _pref =
                                                 await SharedPreferences
@@ -530,11 +534,6 @@ class _SettingPageState extends State<SettingPage> {
                                     );
                                   });
                             },
-                            style: ButtonStyle(
-                                overlayColor: MaterialStateProperty.all(
-                                    Colors.redAccent.withAlpha(30)),
-                                foregroundColor: MaterialStateProperty.all(
-                                    Colors.redAccent)),
                             child: const Text(
                               'DB 데이터 다시 받기',
                             )),
