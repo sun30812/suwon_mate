@@ -18,6 +18,7 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   List<String> subList = ['컴퓨터학부', '경영학부'];
+  List<String> majorList = ['학부 공통', '전체'];
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
   String _myDp = '컴퓨터학부';
   String _mySub = '컴퓨터SW';
@@ -28,6 +29,7 @@ class _SettingPageState extends State<SettingPage> {
   late PackageInfo packageInfo;
   late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
+  List<DropdownMenuItem<String>> majorDropdownList = [];
   List<DropdownMenuItem<String>> gradeDropdownList = [];
   Map<String, dynamic> functionSetting = {'offline': false};
 
@@ -73,8 +75,7 @@ class _SettingPageState extends State<SettingPage> {
     super.dispose();
     SharedPreferences _pref = await SharedPreferences.getInstance();
     _pref.setString('myDept', _myDp);
-    // _pref.setString('mySubject', _mySub);
-    _pref.remove('mySubject');
+    _pref.setString('mySubject', _mySub);
     _pref.setString('myGrade', _grade);
     _pref.setString('settings', jsonEncode(functionSetting));
   }
@@ -207,16 +208,43 @@ class _SettingPageState extends State<SettingPage> {
                   ],
                 );
               }
-              if ((snapshot.data as SharedPreferences).containsKey('myDept') &&
-                  (snapshot.data as SharedPreferences).containsKey('dp_set')) {
-                subDropdownList = (snapshot.data as SharedPreferences)
-                    .getStringList('dp_set')!
+              if ((snapshot.data as SharedPreferences).containsKey('dp_set')) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.warning_amber_outlined),
+                      Text(
+                          '일부 구조 개선으로 인해 데이터 갱신이 필요합니다.\n앱스에서 개설 강좌 조회 메뉴에 접속해주세요.'),
+                    ],
+                  ),
+                );
+              }
+              if ((snapshot.data as SharedPreferences).containsKey('dpMap')) {
+                Map _subMap = jsonDecode(
+                    (snapshot.data as SharedPreferences).getString('dpMap')!);
+                subDropdownList = (_subMap.keys.toList() as List<String>)
                     .map((dat) => DropdownMenuItem(
                           child: Text(dat),
                           value: dat,
                         ))
                     .toList();
                 subDropdownList.sort((a, b) => a.value!.compareTo(b.value!));
+                majorDropdownList = (_subMap[_myDp] as List)
+                    .map((dat) => DropdownMenuItem(
+                          child: Text(dat.toString()),
+                          value: dat.toString(),
+                        ))
+                    .toList();
+                majorDropdownList.add(const DropdownMenuItem(
+                  child: Text('학부 공통'),
+                  value: '학부 공통',
+                ));
+                majorDropdownList.add(const DropdownMenuItem(
+                  child: Text('전체'),
+                  value: '전체',
+                ));
+                majorDropdownList.sort((a, b) => a.value!.compareTo(b.value!));
                 _isSynced = true;
               }
               if (_isFirst) {
@@ -261,6 +289,25 @@ class _SettingPageState extends State<SettingPage> {
                                       });
                                     },
                                     value: _myDp),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('기본 전공: '),
+                                DropdownButton<String>(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10.0)),
+                                    items: majorDropdownList,
+                                    onChanged: (String? value) {
+                                      setState(() {
+                                        _mySub = value!;
+                                      });
+                                    },
+                                    value: _mySub),
                               ],
                             ),
                           ),

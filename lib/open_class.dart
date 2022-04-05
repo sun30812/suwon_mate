@@ -58,6 +58,7 @@ class _OpenClassState extends State<OpenClass> {
   String _myGrade = '1학년';
   String _region = '전체';
   Set<String> dpSet = {};
+  Map<String, List> dpMap = {};
   Map subjects = {};
   bool _isFirst = true;
   bool _isFirstDp = true;
@@ -65,7 +66,6 @@ class _OpenClassState extends State<OpenClass> {
   Future getData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     if (_isFirst) {
-      _pref.remove('mySubject');
       _myDept = _pref.getString('myDept') ?? '컴퓨터학부';
       _mySub = _pref.getString('mySubject') ?? '학부 공통';
       _myGrade = _pref.getString('myGrade') ?? '1학년';
@@ -122,8 +122,9 @@ class _OpenClassState extends State<OpenClass> {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     String _saveData = jsonEncode(orgClassList);
     _pref.setString('class', _saveData);
-    _pref.setStringList('dp_set', dpSet.toList());
+    _pref.remove('dp_set');
     _pref.setString('subjects', jsonEncode(subjects));
+    _pref.setString('dpMap', jsonEncode(dpMap));
   }
 
   @override
@@ -159,6 +160,16 @@ class _OpenClassState extends State<OpenClass> {
               List classList = [];
               Set tempSet = {};
               dpSet = {};
+
+              for (var dat in orgClassList[0].keys) {
+                Set _subSet = {};
+                for (var dat2 in orgClassList[0][dat]) {
+                  if (dat2['estbMjorNm'] != null) {
+                    _subSet.add(dat2['estbMjorNm']);
+                  }
+                }
+                dpMap[dat.toString()] = _subSet.toList();
+              }
               for (var dat in orgClassList[0].keys) {
                 if ((dat != '교양') && (dat != '교양(야)')) {
                   dpSet.add(dat.toString());
