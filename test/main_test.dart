@@ -24,7 +24,7 @@ void main() {
       await tester.pumpWidget(const App());
       expect(find.text('수원 메이트'), findsOneWidget);
       await tester.pumpAndSettle();
-      expect(find.byType(SuwonButton), findsNWidgets(6));
+      expect(find.byType(SuwonButton), findsNWidgets(5));
     });
   });
   group('Help Page Test', () {
