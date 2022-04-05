@@ -316,16 +316,19 @@ class SuwonDialog extends StatelessWidget {
   final IconData _icon;
   final String _title;
   final Widget _content;
+  final bool _isDestructive;
   final void Function()? _onPressed;
   const SuwonDialog({
     required IconData icon,
     required String title,
     required Widget content,
+    bool isDestructive = false,
     void Function()? onPressed,
     Key? key,
   })  : _icon = icon,
         _title = title,
         _content = content,
+        _isDestructive = isDestructive,
         _onPressed = onPressed,
         super(key: key);
 
@@ -352,6 +355,16 @@ class SuwonDialog extends StatelessWidget {
     );
   }
 
+  ButtonStyle okButtonStyle() {
+    if (_isDestructive) {
+      return ButtonStyle(
+          overlayColor:
+              MaterialStateProperty.all(Colors.redAccent.withAlpha(30)),
+          foregroundColor: MaterialStateProperty.all(Colors.redAccent));
+    }
+    return const ButtonStyle();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -368,6 +381,7 @@ class SuwonDialog extends StatelessWidget {
         TextButton(
           onPressed: _onPressed,
           child: const Text('확인'),
+          style: okButtonStyle(),
         ),
         TextButton(
             onPressed: () => Navigator.of(context).pop(),

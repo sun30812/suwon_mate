@@ -176,7 +176,9 @@ class _OpenClassState extends State<OpenClass> {
                 }
               }
               for (var dat in orgClassList[0][_myDept]) {
-                tempSet.add(dat['estbMjorNm'] ?? '학부 공통');
+                if (dat['estbMjorNm'] != null) {
+                  tempSet.add(dat['estbMjorNm']);
+                }
               }
               if (_isFirstDp) {
                 List<String> _tempList = [];
@@ -202,12 +204,19 @@ class _OpenClassState extends State<OpenClass> {
                 _isFirstDp = false;
               }
               List _tempList = [];
+              subjectDropdownList.clear();
+              subjectDropdownList.add(const DropdownMenuItem(
+                child: Text('전체'),
+                value: '전체',
+              ));
+              subjectDropdownList.add(const DropdownMenuItem(
+                child: Text('학부 공통'),
+                value: '학부 공통',
+              ));
               for (String subject in tempSet) {
                 _tempList.add(subject);
               }
-              _tempList.add('전체');
               _tempList.sort((a, b) => a.compareTo(b));
-              subjectDropdownList.clear();
               for (String subject in _tempList) {
                 subjectDropdownList.add(DropdownMenuItem(
                   child: Text(subject),
