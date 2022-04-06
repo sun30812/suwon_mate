@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:suwon_mate/style_widget.dart';
+import 'package:suwon_mate/styles/style_widget.dart';
 
 class ProfessorSubjectsPage extends StatefulWidget {
   const ProfessorSubjectsPage({Key? key}) : super(key: key);
@@ -18,6 +18,8 @@ class _ProfessorSubjectsPageState extends State<ProfessorSubjectsPage> {
   List<DropdownMenuItem<String>> dropdownList = [];
   List<DropdownMenuItem<String>> gradeDownList = [];
   List orgClassList = [];
+  Map rawClassList = {};
+  bool _isFirst = true;
 
   Future getClass() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
@@ -50,7 +52,15 @@ class _ProfessorSubjectsPageState extends State<ProfessorSubjectsPage> {
           } else if (snapshot.hasError) {
             return const DataLoadingError();
           } else {
-            orgClassList = jsonDecode(snapshot.data as String);
+            rawClassList = jsonDecode(snapshot.data as String)[0];
+            if (_isFirst) {
+              for (var _dat in rawClassList.values.toList()) {
+                for (var _dat2 in _dat) {
+                  orgClassList.add(_dat2);
+                }
+              }
+              _isFirst = false;
+            }
             List classList = [];
             for (var classData in orgClassList) {
               if ((classData['ltrPrfsNm'] == professorName)) {

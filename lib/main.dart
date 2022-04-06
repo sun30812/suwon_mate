@@ -4,19 +4,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:suwon_mate/info_detail.dart';
-import 'package:suwon_mate/search.dart';
+import 'package:suwon_mate/information/info_detail.dart';
+import 'package:suwon_mate/subjects/search.dart';
 import 'package:suwon_mate/settings.dart';
-import 'package:suwon_mate/favorite_subject.dart';
+import 'package:suwon_mate/subjects/favorite_subject.dart';
 import 'package:suwon_mate/help.dart';
-import 'package:suwon_mate/profesor_subjects.dart';
-import 'open_class_info.dart';
+import 'package:suwon_mate/subjects/profesor_subjects.dart';
+import 'subjects/open_class_info.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
-import 'package:suwon_mate/info.dart';
+import 'package:suwon_mate/information/info.dart';
 import 'package:suwon_mate/schedule.dart';
-import 'style_widget.dart';
-import 'open_class.dart';
+import 'styles/style_widget.dart';
+import 'subjects/open_class.dart';
 
 bool isSupportPlatform = kIsWeb || (!Platform.isWindows && !Platform.isLinux);
 void main() async {
@@ -165,6 +165,11 @@ class _MainMenuState extends State<MainMenu> {
                   isActivate: isActivated && !kIsWeb,
                   onPressed: () => Navigator.of(context).pushNamed('/schedule'),
                 ),
+                // TODO: 전화번호 찾기 기능은 구상중이며 사라질 수 있습니다.
+                // const SuwonButton(
+                //     icon: Icons.call_outlined,
+                //     buttonName: '전화번호 찾기',
+                //     onPressed: null),
                 SuwonButton(
                   isActivate: isSupportPlatform,
                   icon: Icons.date_range,
