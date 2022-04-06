@@ -38,10 +38,10 @@ class _SettingPageState extends State<SettingPage> {
       packageInfo = await PackageInfo.fromPlatform();
     } catch (_) {
       packageInfo = packageInfo = PackageInfo(
-          appName: 'Suwon Mate',
+          appName: '수원 메이트',
           packageName: 'suwon_mate',
-          version: '1.3.5',
-          buildNumber: '1');
+          version: '1.3.9',
+          buildNumber: '6');
     }
     SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref;
