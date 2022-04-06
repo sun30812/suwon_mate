@@ -486,7 +486,33 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ),
                   debugWidget(),
-                  versionInfo(snapshot)
+                  versionInfo(snapshot),
+                  CardInfo(
+                      icon: Icons.help_outline,
+                      title: '문의하기',
+                      detail: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                              '문제가 있는 부분이나 기능 제안은 이메일로 보내셔도 좋고 깃허브에 issue를 열어도 됩니다.'),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.email_outlined),
+                                const Padding(
+                                    padding: EdgeInsets.only(right: 8.0)),
+                                TextButton(
+                                    child: const Text('orgsun30812@gmail.com'),
+                                    onPressed: (() async {
+                                      await launch(
+                                          'mailto:orgsun30812@gmail.com');
+                                    })),
+                              ],
+                            ),
+                          )
+                        ],
+                      ))
                 ],
               );
             }
