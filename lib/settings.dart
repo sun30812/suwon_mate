@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/style_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -489,7 +490,34 @@ class _SettingPageState extends State<SettingPage> {
                     detail: Text(
                         '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
                         '로컬 앱 버전: ${packageInfo.version}'),
-                  )
+                  ),
+                  CardInfo(
+                      icon: Icons.help_outline,
+                      title: '문의하기',
+                      detail: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                              '문제가 있는 부분이나 기능 제안은 이메일로 보내시면 신속한 처리가 가능합니다.'),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.email_outlined),
+                                const Padding(
+                                    padding: EdgeInsets.only(right: 8.0)),
+                                TextButton(
+                                    child: const Text(
+                                        'orgsun30812+suwon_mate@gmail.com'),
+                                    onPressed: (() async {
+                                      await launch(
+                                          'mailto:orgsun30812+suwon_mate@gmail.com');
+                                    })),
+                              ],
+                            ),
+                          )
+                        ],
+                      ))
                 ],
               );
             }
