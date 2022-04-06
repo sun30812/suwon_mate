@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:suwon_mate/main.dart';
-import 'package:suwon_mate/open_class_info.dart';
-import 'package:suwon_mate/style_widget.dart';
+import 'package:suwon_mate/subjects/open_class_info.dart';
+import 'package:suwon_mate/styles/style_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

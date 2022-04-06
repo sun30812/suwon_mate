@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:suwon_mate/style_widget.dart';
+import 'package:suwon_mate/styles/style_widget.dart';
 
 class ProfessorSubjectsPage extends StatefulWidget {
   const ProfessorSubjectsPage({Key? key}) : super(key: key);
@@ -57,8 +57,8 @@ class _ProfessorSubjectsPageState extends State<ProfessorSubjectsPage> {
 
             Map rawClassList = orgClassList[0];
             if (_isFirst) {
-              for(var _dat in rawClassList.values.toList()) {
-                for(var _dat2 in _dat) {
+              for (var _dat in rawClassList.values.toList()) {
+                for (var _dat2 in _dat) {
                   classList.add(_dat2);
                 }
               }
@@ -107,14 +107,14 @@ class _ProfessorSubjectsPageState extends State<ProfessorSubjectsPage> {
                               arguments: tempList[index]),
                           title: tempList[index]["subjtNm"],
                           subTitle: tempList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
-                          content: Text((tempList[index]["deptNm"] ??
-                                  "학부 전체 대상(전공 없음)") +
-                              ", " +
-                              tempList[index]["facDvnm"] +
-                              ', ' +
-                              (tempList[index]["timtSmryCn"] ?? "공개 안됨") +
-                              ', ' +
-                              (tempList[index]['estbDpmjNm'])),
+                          content: Text(
+                              (tempList[index]["deptNm"] ?? "학부 전체 대상(전공 없음)") +
+                                  ", " +
+                                  tempList[index]["facDvnm"] +
+                                  ', ' +
+                                  (tempList[index]["timtSmryCn"] ?? "공개 안됨") +
+                                  ', ' +
+                                  (tempList[index]['estbDpmjNm'])),
                         );
                       }),
                 ),

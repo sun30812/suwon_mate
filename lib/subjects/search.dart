@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:suwon_mate/style_widget.dart';
+import 'package:suwon_mate/styles/style_widget.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
