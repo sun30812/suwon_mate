@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'style_widget.dart';
+import 'styles/style_widget.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({Key? key}) : super(key: key);

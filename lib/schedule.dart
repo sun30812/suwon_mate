@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
-import 'package:suwon_mate/style_widget.dart';
+import 'package:suwon_mate/styles/style_widget.dart';
 
 Future<http.Response> getData() async {
   return await http.get(

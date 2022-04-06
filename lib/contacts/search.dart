@@ -1,5 +1,6 @@
+// 해당 기능은 작동하도록 작업하지 않았으며 사라질 수도 있습니다.
 import 'package:flutter/material.dart';
-import 'package:suwon_mate/style_widget.dart';
+import 'package:suwon_mate/styles/style_widget.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -10,7 +11,6 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controller = TextEditingController();
-  final TextEditingController _controller2 = TextEditingController();
   List classList = [];
   bool _isFirst = true;
   bool _liveSearch = true;
@@ -57,67 +57,7 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('강의자 및 과목명 검색'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => SuwonDialog(
-                  icon: Icons.manage_search_outlined,
-                  title: '과목 코드로 검색',
-                  content: Column(
-                    children: [
-                      const Text('과목코드를 입력하여 검색할 수 있습니다.'),
-                      TextField(
-                        key: const Key('subject_code_field'),
-                        controller: _controller2,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            hintText: '과목 코드 입력',
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () => setState(() {
-                                _controller2.text = '';
-                              }),
-                            )),
-                      )
-                    ],
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    if (_controller2.text.contains('-')) {
-                      int _searchResult =
-                          getSubjectIndex(_controller2.text, classList);
-                      if (_searchResult == -1) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('해당 과목은 존재하지 않습니다.')));
-                        return;
-                      }
-                      Navigator.of(context).pushNamed('/oclass/info',
-                          arguments: classList[_searchResult]);
-                    } else {
-                      String subjectName =
-                          searchSubjectName(_controller2.text, classList);
-                      if (subjectName == 'none') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('해당 과목은 존재하지 않습니다.')));
-                      } else {
-                        setState(() {
-                          _controller.text = subjectName;
-                        });
-                      }
-                    }
-                  },
-                ),
-              );
-            },
-            icon: const Icon(Icons.manage_search_outlined),
-            tooltip: '과목코드 검색',
-          )
-        ],
-      ),
+      appBar: AppBar(title: const Text('전화번호 검색')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(mainAxisSize: MainAxisSize.max, children: [
@@ -194,11 +134,9 @@ class _SearchPageState extends State<SearchPage> {
           size: 80.0,
         ),
         if (_liveSearch)
-          Text(
-              '강의자의 이름이나 과목명을 ${_liveSearchCount.round()}자 이상 입력하면 검색을 시작합니다.\n\n')
+          Text('이름을 ${_liveSearchCount.round()}자 이상 입력하면 검색을 시작합니다.\n\n')
         else
-          const Text('강의자의 이름이나 과목명을 입력 후 검색 버튼을 누르면 검색이 시작됩니다.\n\n'),
-        const Text('과목 코드로 검색을 원하시면 우측 상단에 코드모양 버튼을 누릅니다.')
+          const Text('이름을 입력 후 검색 버튼을 누르면 검색이 시작됩니다.'),
       ],
     );
   }
