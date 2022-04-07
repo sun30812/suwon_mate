@@ -17,6 +17,7 @@ import 'package:suwon_mate/information/info.dart';
 import 'package:suwon_mate/schedule.dart';
 import 'styles/style_widget.dart';
 import 'subjects/open_class.dart';
+import 'contacts/search.dart' as contacts;
 
 bool isSupportPlatform = kIsWeb || (!Platform.isWindows && !Platform.isLinux);
 void main() async {
@@ -48,6 +49,7 @@ class App extends StatelessWidget {
       home: const MainPage(),
       routes: {
         '/schedule': (context) => const SchedulePage(),
+        '/contacts': (context) => const contacts.SearchPage(),
         '/oclass': (context) => const OpenClass(),
         '/oclass/search': (context) => const SearchPage(),
         '/oclass/info': (context) => const OpenClassInfo(),
@@ -87,6 +89,7 @@ class _MainPageState extends State<MainPage> {
           title: const Text('수원 메이트'),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.grey[300],
           items: shortcuts,
           currentIndex: _pageIndex,
           onTap: (value) => setState(() {
@@ -193,10 +196,11 @@ class _MainMenuState extends State<MainMenu> {
                   onPressed: () => Navigator.of(context).pushNamed('/schedule'),
                 ),
                 // TODO: 전화번호 찾기 기능은 구상중이며 사라질 수 있습니다.
-                // const SuwonButton(
-                //     icon: Icons.call_outlined,
-                //     buttonName: '전화번호 찾기',
-                //     onPressed: null),
+                // SuwonButton(
+                //   icon: Icons.call_outlined,
+                //   buttonName: '전화번호 찾기',
+                //   onPressed: () => Navigator.of(context).pushNamed('/contacts'),
+                // ),
                 SuwonButton(
                   isActivate: isSupportPlatform,
                   icon: Icons.date_range,
