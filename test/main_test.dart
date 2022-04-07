@@ -33,7 +33,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('도움말'));
       await tester.pumpAndSettle();
-      expect(find.byType(CardInfo), findsNWidgets(6));
+      expect(find.byType(CardInfo, skipOffstage: false), findsNWidgets(6));
     });
   });
   group('Open Class Page Test', () {

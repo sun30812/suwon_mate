@@ -99,6 +99,7 @@ class _SettingPageState extends State<SettingPage> {
                         .getString('settings')!);
               }
               if ((snapshot.data as SharedPreferences).containsKey('dp_set')) {
+                _mySub = '전체';
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
