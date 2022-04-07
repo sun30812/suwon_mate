@@ -18,6 +18,27 @@ Future<http.Response> getData() async {
 class SchedulePage extends StatelessWidget {
   const SchedulePage({Key? key}) : super(key: key);
 
+  String getNowEvent(List<Map<String, String>> schduleList) {
+    DateTime now = DateTime.now();
+    for (Map dat in schduleList) {
+      String _temp = (dat.keys.first as String)
+          .replaceAll(RegExp(r'\([^)]*\)'), '')
+          .replaceAll('.', '');
+      if (now == DateTime.parse(_temp.substring(0, 8))) {
+        return dat.values.first.toString();
+      } else if (_temp.contains('~')) {
+        if (now.millisecondsSinceEpoch >=
+                DateTime.parse(_temp.substring(0, 8)).millisecondsSinceEpoch &&
+            now.millisecondsSinceEpoch <=
+                DateTime.parse(_temp.substring(11, 19))
+                    .millisecondsSinceEpoch) {
+          return dat.values.first.toString();
+        }
+      }
+    }
+    return '없음';
+  }
+
   @override
   Widget build(BuildContext context) {
     getData();
@@ -56,16 +77,51 @@ class SchedulePage extends StatelessWidget {
               var rows = doc
                   .getElementsByClassName('contents_table')[0]
                   .getElementsByTagName('tr');
-              return ListView.builder(
-                  itemCount: rows.length - 1,
-                  itemBuilder: (BuildContext context, int index) {
-                    return SimpleCardButton(
-                        title: (rows[1 + index].getElementsByTagName('td')[1])
-                            .text,
-                        content: Text(
-                            (rows[1 + index].getElementsByTagName('td')[0])
-                                .text));
-                  });
+              List<Map<String, String>> _scheduleList = [];
+              for (int index = 0; index < rows.length - 1; index++) {
+                Map<String, String> _tempMap = {
+                  (rows[1 + index].getElementsByTagName('td')[0]).text:
+                      (rows[1 + index].getElementsByTagName('td')[1]).text
+                };
+                _scheduleList.add(_tempMap);
+              }
+              return Column(
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(children: [
+                        const Icon(Icons.calendar_month),
+                        const Padding(
+                          padding: EdgeInsets.only(right: 4.0),
+                        ),
+                        Flexible(
+                          child: Text(
+                            '현재 일정: ${getNowEvent(_scheduleList)}',
+                            softWrap: true,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Divider(
+                          height: MediaQuery.of(context).size.height,
+                          color: Colors.black,
+                        )
+                      ]),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 10,
+                    child: ListView.builder(
+                        itemCount: _scheduleList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return SimpleCardButton(
+                              title: _scheduleList[index].values.first,
+                              content: Text(_scheduleList[index].keys.first));
+                        }),
+                  ),
+                ],
+              );
             }
           },
         ),
