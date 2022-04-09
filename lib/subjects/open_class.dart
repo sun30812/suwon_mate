@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:suwon_mate/api/keys.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 
 class OpenClass extends StatefulWidget {
@@ -64,6 +66,33 @@ class _OpenClassState extends State<OpenClass> {
   Map subjects = {};
   bool _isFirst = true;
   bool _isFirstDp = true;
+  BannerAd? _bannerAd;
+  bool _loadBanner = false;
+
+  Future<void> _createBanner(BuildContext context) async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    Map settingData = jsonDecode(_pref.getString('settings')!) as Map;
+    final _bottomBannerAd = settingData['bottomBanner'] ?? true;
+    if (!_bottomBannerAd) {
+      return;
+    }
+    final AnchoredAdaptiveBannerAdSize? size =
+        await AdSize.getAnchoredAdaptiveBannerAdSize(
+            Orientation.portrait, MediaQuery.of(context).size.width.truncate());
+    if (size == null) {
+      return;
+    }
+    final BannerAd bannerAd = BannerAd(
+        size: size,
+        adUnitId: oclassAdUintId,
+        listener: BannerAdListener(
+            onAdLoaded: (ad) => setState(() {
+                  _bannerAd = ad as BannerAd?;
+                }),
+            onAdFailedToLoad: (ad, _) => ad.dispose()),
+        request: const AdRequest());
+    return bannerAd.load();
+  }
 
   Future getData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
@@ -73,13 +102,10 @@ class _OpenClassState extends State<OpenClass> {
       _myGrade = _pref.getString('myGrade') ?? '1학년';
       _isFirst = false;
       if (_pref.containsKey('settings')) {
-        _offline = (jsonDecode(_pref.getString('settings')!) as Map)['offline'];
-        _liveSearch =
-            (jsonDecode(_pref.getString('settings')!) as Map)['liveSearch'] ??
-                true;
-        _liveSearchCount = (jsonDecode(_pref.getString('settings')!)
-                as Map)['liveSearchCount'] ??
-            0.0;
+        Map settingData = jsonDecode(_pref.getString('settings')!) as Map;
+        _offline = settingData['offline'];
+        _liveSearch = settingData['liveSearch'] ?? true;
+        _liveSearchCount = settingData['liveSearchCount'] ?? 0.0;
       }
     }
     if ((_pref.containsKey('db_ver')) && _offline) {
@@ -133,20 +159,29 @@ class _OpenClassState extends State<OpenClass> {
     _pref.remove('dp_set');
     _pref.setString('subjects', jsonEncode(subjects));
     _pref.setString('dpMap', jsonEncode(dpMap));
+    _bannerAd?.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_loadBanner) {
+      _createBanner(context);
+      _loadBanner = true;
+    }
     return Scaffold(
-        appBar: AppBar(title: const Text('개설 강좌 조회')),
-        floatingActionButton: SuwonButton(
-            isActivate: true,
-            icon: Icons.search,
-            buttonName: '검색',
-            onPressed: () => Navigator.of(context).pushNamed(
-                  '/oclass/search',
-                  arguments: [orgClassList, _liveSearch, _liveSearchCount],
-                )),
+        appBar: AppBar(
+          title: const Text('개설 강좌 조회'),
+          actions: [
+            IconButton(
+              onPressed: () => Navigator.of(context).pushNamed(
+                '/oclass/search',
+                arguments: [orgClassList, _liveSearch, _liveSearchCount],
+              ),
+              icon: const Icon(Icons.search),
+              tooltip: '검색',
+            )
+          ],
+        ),
         body: FutureBuilder(
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -306,6 +341,7 @@ class _OpenClassState extends State<OpenClass> {
                     ),
                   ),
                   Flexible(
+                    flex: 10,
                     child: ListView.builder(
                         itemCount: classList.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -325,6 +361,8 @@ class _OpenClassState extends State<OpenClass> {
                           );
                         }),
                   ),
+                  if (_bannerAd != null)
+                    Flexible(flex: 1, child: AdWidget(ad: _bannerAd!))
                 ],
               );
             }

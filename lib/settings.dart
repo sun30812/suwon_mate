@@ -31,7 +31,8 @@ class _SettingPageState extends State<SettingPage> {
   Map<String, dynamic> functionSetting = {
     'offline': false,
     'liveSearch': true,
-    'liveSearchCount': 0.0
+    'liveSearchCount': 0.0,
+    'bottomBanner': true,
   };
 
   Future<SharedPreferences> getSettings() async {
@@ -391,6 +392,56 @@ class _SettingPageState extends State<SettingPage> {
                         ],
                       )),
                   CardInfo(
+                      icon: Icons.favorite_outline,
+                      title: '광고 설정',
+                      detail: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return const AlertDialog(
+                                              title: Text('하단 배너에 광고 표시'),
+                                              content: Text(
+                                                  '개설강좌 목록에 들어가면 하단에 배너를 표시합니다.'),
+                                            );
+                                          });
+                                    },
+                                    child: Row(
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 10.0),
+                                          child: Icon(Icons
+                                              .vertical_align_bottom_rounded),
+                                        ),
+                                        Text('하단 배너에 광고 표시'),
+                                      ],
+                                    )),
+                                Switch(
+                                    activeTrackColor:
+                                        const Color.fromARGB(255, 0, 54, 112),
+                                    activeColor:
+                                        const Color.fromARGB(200, 0, 54, 112),
+                                    value:
+                                        functionSetting['bottomBanner'] ?? true,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        functionSetting['bottomBanner'] =
+                                            newValue;
+                                      });
+                                    }),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )),
+                  CardInfo(
                     icon: Icons.restore,
                     title: '초기화 메뉴',
                     detail: Column(
@@ -500,5 +551,18 @@ class _SettingPageState extends State<SettingPage> {
             }
           }),
     );
+  }
+
+  Text advertiseLevelText() {
+    switch ((functionSetting['advertiseLevel'] ?? 1.0).round()) {
+      case 1:
+        return const Text('1단계: 광고 보기 페이지에서만 배너광고가 나타납니다.');
+      case 2:
+        return const Text('2단계: 메인화면에서만 배너광고가 나타납니다.');
+      case 3:
+        return const Text('3단계: 모든 화면에서 배너 광고가 나타납니다.');
+      default:
+        return const Text('오류: 지정되지 않은 배너 광고입니다.');
+    }
   }
 }

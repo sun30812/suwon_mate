@@ -100,7 +100,7 @@ class SchedulePage extends StatelessWidget {
                           child: Text(
                             '현재 일정: ${getNowEvent(_scheduleList)}',
                             softWrap: true,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         Divider(

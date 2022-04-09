@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:suwon_mate/donation.dart';
+import 'package:suwon_mate/donation/donation_page.dart';
 import 'package:suwon_mate/information/info_detail.dart';
 import 'package:suwon_mate/subjects/search.dart';
 import 'package:suwon_mate/settings.dart';
@@ -160,11 +160,6 @@ class _MainMenuState extends State<MainMenu> {
                   isActivate: isActivated,
                   onPressed: () => Navigator.of(context).pushNamed('/schedule'),
                 ),
-                // TODO: 전화번호 찾기 기능은 구상중이며 사라질 수 있습니다.
-                // const SuwonButton(
-                //     icon: Icons.call_outlined,
-                //     buttonName: '전화번호 찾기',
-                //     onPressed: null),
                 SuwonButton(
                   icon: Icons.date_range,
                   buttonName: '개설 강좌 조회',
