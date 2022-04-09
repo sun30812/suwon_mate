@@ -99,37 +99,13 @@ class _SettingPageState extends State<SettingPage> {
                         .getString('settings')!);
               }
               if ((snapshot.data as SharedPreferences).containsKey('dp_set')) {
-                AlertDialog(
-                  title: Row(
-                    children: const [
-                      Icon(Icons.warning_amber_outlined),
-                      Text('경고'),
-                    ],
-                  ),
-                  content: const Text('최신버전과 호환되지 않는 데이터가 존재합니다.\n'
-                      '해결을 위해 기본 설정된 전공과목을 초기화하고 DB를 다시 받습니다.'),
-                  actions: [
-                    TextButton(
-                        onPressed: () => SystemNavigator.pop(animated: true),
-                        child: const Text('무시(앱 종료)')),
-                    TextButton(
-                        onPressed: (() async {
-                          SharedPreferences _pref =
-                              await SharedPreferences.getInstance();
-                          _pref.remove('dp_set');
-                        }),
-                        child: const Text('확인'))
-                  ],
-                );
-              }
-              if ((snapshot.data as SharedPreferences).containsKey('dp_set')) {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
                       Icon(Icons.warning_amber_outlined),
                       Text(
-                          '일부 구조 개선으로 인해 데이터 갱신이 필요합니다.\n앱스에서 개설 강좌 조회 메뉴에 접속해주세요.'),
+                          '일부 구조 개선으로 인해 데이터 갱신이 필요합니다.\n개설 강좌 조회 메뉴에 접속해주세요.'),
                     ],
                   ),
                 );

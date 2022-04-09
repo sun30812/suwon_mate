@@ -50,7 +50,7 @@ class _DonationPageState extends State<DonationPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('기부하기'),
+        title: const Text('광고보기'),
       ),
       body: Center(
         child: Stack(
