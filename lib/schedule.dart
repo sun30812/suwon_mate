@@ -18,9 +18,9 @@ Future<http.Response> getData() async {
 class SchedulePage extends StatelessWidget {
   const SchedulePage({Key? key}) : super(key: key);
 
-  String getNowEvent(List<Map<String, String>> schduleList) {
+  String getNowEvent(List<Map<String, String>> scheduleList) {
     DateTime now = DateTime.now();
-    for (Map dat in schduleList) {
+    for (Map dat in scheduleList) {
       String _temp = (dat.keys.first as String)
           .replaceAll(RegExp(r'\([^)]*\)'), '')
           .replaceAll('.', '');
@@ -43,9 +43,6 @@ class SchedulePage extends StatelessWidget {
   Widget build(BuildContext context) {
     getData();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('학사 일정'),
-      ),
       body: Center(
         child: FutureBuilder(
           future: getData(),
@@ -100,7 +97,7 @@ class SchedulePage extends StatelessWidget {
                           child: Text(
                             '현재 일정: ${getNowEvent(_scheduleList)}',
                             softWrap: true,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         Divider(

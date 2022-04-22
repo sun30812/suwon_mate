@@ -23,7 +23,6 @@ class InfoPage extends StatelessWidget {
             await launch('https://www.suwon.ac.kr/index.html?menuno=674',
                 forceSafariVC: false, forceWebView: false);
           }),
-      appBar: AppBar(title: const Text('공지사항')),
       body: mainScreen(),
     );
   }
