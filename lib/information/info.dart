@@ -2,8 +2,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-import '../styles/style_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../styles/style_widget.dart';
 
 class InfoPage extends StatelessWidget {
   const InfoPage({Key? key}) : super(key: key);
@@ -23,7 +24,6 @@ class InfoPage extends StatelessWidget {
             await launch('https://www.suwon.ac.kr/index.html?menuno=674',
                 forceSafariVC: false, forceWebView: false);
           }),
-      appBar: AppBar(title: const Text('공지사항')),
       body: mainScreen(),
     );
   }

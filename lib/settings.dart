@@ -1,8 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -81,9 +81,6 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('설정'),
-      ),
       body: FutureBuilder(
           future: getSettings(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -107,7 +104,7 @@ class _SettingPageState extends State<SettingPage> {
                     children: const [
                       Icon(Icons.warning_amber_outlined),
                       Text(
-                          '일부 구조 개선으로 인해 데이터 갱신이 필요합니다.\n개설 강좌 조회 메뉴에 접속해주세요.'),
+                          '일부 구조 개선으로 인해 데이터 갱신이 필요합니다.\n메인에서 개설 강좌 조회 메뉴에 접속해주세요.'),
                     ],
                   ),
                 );
@@ -230,7 +227,7 @@ class _SettingPageState extends State<SettingPage> {
                         ],
                       )),
                   CardInfo(
-                      icon: Icons.settings,
+                      icon: Icons.settings_outlined,
                       title: '기능 설정',
                       detail: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,29 +241,33 @@ class _SettingPageState extends State<SettingPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return const AlertDialog(
-                                              title: Text('데이터 절약 모드'),
-                                              content: Text(
-                                                  '데이터 사용량을 줄이기 위해 일부 기능의 사용을 제한하고, DB 업데이트를 '
-                                                  '자동으로 하지 않습니다. \nWeb 플랫폼에서는 지원하지 않습니다.'),
-                                            );
-                                          });
-                                    },
-                                    child: Row(
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 10.0),
-                                          child:
-                                              Icon(Icons.offline_bolt_outlined),
-                                        ),
-                                        Text('데이터 절약 모드'),
-                                      ],
-                                    )),
+                                Material(
+                                  color: Colors.grey[300],
+                                  child: InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return const AlertDialog(
+                                                title: Text('데이터 절약 모드'),
+                                                content: Text(
+                                                    '데이터 사용량을 줄이기 위해 일부 기능의 사용을 제한하고, DB 업데이트를 '
+                                                    '자동으로 하지 않습니다. \nWeb 플랫폼에서는 지원하지 않습니다.'),
+                                              );
+                                            });
+                                      },
+                                      child: Row(
+                                        children: const [
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 10.0),
+                                            child: Icon(
+                                                Icons.offline_bolt_outlined),
+                                          ),
+                                          Text('데이터 절약 모드'),
+                                        ],
+                                      )),
+                                ),
                                 Switch(
                                     activeTrackColor:
                                         const Color.fromARGB(255, 0, 54, 112),
@@ -285,39 +286,10 @@ class _SettingPageState extends State<SettingPage> {
                                         functionSetting['offline'] = newValue;
                                       });
                                       ScaffoldMessenger.of(context)
-                                          .showMaterialBanner(MaterialBanner(
-                                              content: Row(
-                                                children: const [
-                                                  Icon(Icons
-                                                      .warning_amber_rounded),
-                                                  Text('앱을 재시작 해야 변경사항이 적용됩니다.')
-                                                ],
-                                              ),
-                                              actions: [
-                                            TextButton(
-                                                style: ButtonStyle(
-                                                    overlayColor:
-                                                        MaterialStateProperty
-                                                            .all(Colors
-                                                                .redAccent
-                                                                .withAlpha(30)),
-                                                    foregroundColor:
-                                                        MaterialStateProperty
-                                                            .all(Colors
-                                                                .redAccent)),
-                                                onPressed: (() {
-                                                  dispose();
-                                                  SystemNavigator.pop(
-                                                      animated: true);
-                                                }),
-                                                child: const Text('앱 종료')),
-                                            TextButton(
-                                                onPressed: (() {
-                                                  ScaffoldMessenger.of(context)
-                                                      .clearMaterialBanners();
-                                                }),
-                                                child: const Text('메세지 닫기')),
-                                          ]));
+                                          .showSnackBar(const SnackBar(
+                                        content: Text('설정 되었습니다.'),
+                                        duration: Duration(seconds: 2),
+                                      ));
                                     }),
                               ],
                             ),
@@ -327,28 +299,32 @@ class _SettingPageState extends State<SettingPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return const AlertDialog(
-                                              title: Text('입력하여 바로 검색'),
-                                              content: Text(
-                                                  '과목을 검색할 때 입력하는 즉시 검색을 바로 시작합니다. 이 기능을 비활성화 한다면 '
-                                                  '검색 버튼이 표시되며 검색 버튼을 눌러야 검색을 진행합니다.'),
-                                            );
-                                          });
-                                    },
-                                    child: Row(
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 10.0),
-                                          child: Icon(Icons.search),
-                                        ),
-                                        Text('입력하여 바로 검색'),
-                                      ],
-                                    )),
+                                Material(
+                                  color: Colors.grey[300],
+                                  child: InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return const AlertDialog(
+                                                title: Text('입력하여 바로 검색'),
+                                                content: Text(
+                                                    '과목을 검색할 때 입력하는 즉시 검색을 바로 시작합니다.\n'
+                                                        '검색 시 동작이 많이 끊기는 경우 해당 설정을 조절하여 개선할 수 있습니다.'),
+                                              );
+                                            });
+                                      },
+                                      child: Row(
+                                        children: const [
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 10.0),
+                                            child: Icon(Icons.search),
+                                          ),
+                                          Text('입력하여 바로 검색'),
+                                        ],
+                                      )),
+                                ),
                                 Switch(
                                     activeTrackColor:
                                         const Color.fromARGB(255, 0, 54, 112),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +12,8 @@ class FavoriteSubjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('즐겨찾는 과목'),
-      ),
-      body: const FavoriteListView(),
+    return const Scaffold(
+      body: FavoriteListView(),
     );
   }
 }

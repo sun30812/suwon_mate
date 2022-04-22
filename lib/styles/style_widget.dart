@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -157,6 +158,110 @@ class DataLoadingError extends StatelessWidget {
           Text(
             '데이터를 불러올 수 없습니다.',
             semanticsLabel: '데이터를 불러올 수 없습니다.',
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class SuwonSquareButton extends StatefulWidget {
+  final bool? isActivate;
+  final IconData icon;
+  final String btnName;
+  final void Function()? onPressed;
+  const SuwonSquareButton({
+    Key? key,
+    this.isActivate,
+    required this.icon,
+    required String buttonName,
+    required this.onPressed,
+  })  : btnName = buttonName,
+        super(key: key);
+
+  @override
+  State<SuwonSquareButton> createState() => _SuwonSquareButtonState();
+}
+
+class _SuwonSquareButtonState extends State<SuwonSquareButton> {
+  bool _isClicked = false;
+  void Function()? buttonAction() {
+    if (widget.isActivate != null) {
+      if (widget.isActivate == false) {
+        return null;
+      }
+    }
+    return widget.onPressed;
+  }
+
+  Color smartColor() {
+    if ((widget.isActivate ?? true) && (widget.onPressed != null)) {
+      return Colors.grey[700]!;
+    }
+    return Colors.grey;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapCancel: () => setState(() {
+        _isClicked = false;
+      }),
+      onTapDown: (_) => setState(() {
+        if (widget.isActivate ?? true) {
+          _isClicked = !_isClicked;
+        }
+      }),
+      onTapUp: (_) => setState(() {
+        if (widget.isActivate ?? true) {
+          _isClicked = !_isClicked;
+        }
+      }),
+      onTap: () {
+        if ((widget.onPressed != null) && (widget.isActivate ?? true)) {
+          widget.onPressed!();
+        }
+      },
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: AnimatedContainer(
+              decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(10.0),
+                  boxShadow: !_isClicked && (widget.isActivate ?? true)
+                      ? [
+                    BoxShadow(
+                        offset: const Offset(3, 3),
+                        blurRadius: 15,
+                        spreadRadius: 0.5,
+                        color: Colors.grey[500]!),
+                    const BoxShadow(
+                        offset: Offset(-3, -3),
+                        blurRadius: 15,
+                        spreadRadius: 0.5,
+                        color: Colors.white)
+                  ]
+                      : null),
+              duration: const Duration(milliseconds: 200),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(
+                    widget.icon,
+                    size: 45.0,
+                    color: smartColor(),
+                  ),
+                ]),
+              ),
+            ),
+          ),
+          Text(
+            widget.btnName,
+            semanticsLabel: widget.btnName,
+            style:
+            TextStyle(color: smartColor(), fontWeight: FontWeight.bold),
           )
         ],
       ),
