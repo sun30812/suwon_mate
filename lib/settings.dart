@@ -339,7 +339,7 @@ class _SettingPageState extends State<SettingPage> {
                         ],
                       )),
                   CardInfo(
-                      icon: Icons.settings,
+                      icon: Icons.settings_outlined,
                       title: '기능 설정',
                       detail: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -353,29 +353,33 @@ class _SettingPageState extends State<SettingPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return const AlertDialog(
-                                              title: Text('데이터 절약 모드'),
-                                              content: Text(
-                                                  '데이터 사용량을 줄이기 위해 일부 기능의 사용을 제한하고, DB 업데이트를 '
-                                                  '자동으로 하지 않습니다. \nWeb 플랫폼에서는 지원하지 않습니다.'),
-                                            );
-                                          });
-                                    },
-                                    child: Row(
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 10.0),
-                                          child:
-                                              Icon(Icons.offline_bolt_outlined),
-                                        ),
-                                        Text('데이터 절약 모드'),
-                                      ],
-                                    )),
+                                Material(
+                                  color: Colors.grey[300],
+                                  child: InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return const AlertDialog(
+                                                title: Text('데이터 절약 모드'),
+                                                content: Text(
+                                                    '데이터 사용량을 줄이기 위해 일부 기능의 사용을 제한하고, DB 업데이트를 '
+                                                    '자동으로 하지 않습니다. \nWeb 플랫폼에서는 지원하지 않습니다.'),
+                                              );
+                                            });
+                                      },
+                                      child: Row(
+                                        children: const [
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 10.0),
+                                            child: Icon(
+                                                Icons.offline_bolt_outlined),
+                                          ),
+                                          Text('데이터 절약 모드'),
+                                        ],
+                                      )),
+                                ),
                                 Switch(
                                     activeTrackColor:
                                         const Color.fromARGB(255, 0, 54, 112),
@@ -407,28 +411,32 @@ class _SettingPageState extends State<SettingPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return const AlertDialog(
-                                              title: Text('입력하여 바로 검색'),
-                                              content: Text(
-                                                  '과목을 검색할 때 입력하는 즉시 검색을 바로 시작합니다. 이 기능을 비활성화 한다면 '
-                                                  '검색 버튼이 표시되며 검색 버튼을 눌러야 검색을 진행합니다.'),
-                                            );
-                                          });
-                                    },
-                                    child: Row(
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 10.0),
-                                          child: Icon(Icons.search),
-                                        ),
-                                        Text('입력하여 바로 검색'),
-                                      ],
-                                    )),
+                                Material(
+                                  color: Colors.grey[300],
+                                  child: InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return const AlertDialog(
+                                                title: Text('입력하여 바로 검색'),
+                                                content: Text(
+                                                    '과목을 검색할 때 입력하는 즉시 검색을 바로 시작합니다.\n'
+                                                        '검색 시 동작이 많이 끊기는 경우 해당 설정을 조절하여 개선할 수 있습니다.'),
+                                              );
+                                            });
+                                      },
+                                      child: Row(
+                                        children: const [
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 10.0),
+                                            child: Icon(Icons.search),
+                                          ),
+                                          Text('입력하여 바로 검색'),
+                                        ],
+                                      )),
+                                ),
                                 Switch(
                                     activeTrackColor:
                                         const Color.fromARGB(255, 0, 54, 112),
@@ -558,10 +566,11 @@ class _SettingPageState extends State<SettingPage> {
                                 const Padding(
                                     padding: EdgeInsets.only(right: 8.0)),
                                 TextButton(
-                                    child: const Text('orgsun30812@gmail.com'),
+                                    child: const Text(
+                                        'orgsun30812+suwon_mate_github@gmail.com'),
                                     onPressed: (() async {
                                       await launch(
-                                          'mailto:orgsun30812@gmail.com');
+                                          'mailto:orgsun30812+suwon_mate_github@gmail.com');
                                     })),
                               ],
                             ),
@@ -577,22 +586,43 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget updater(bool equalVersion) {
     if (equalVersion) {
-      return Container();
+      return Row(
+        children: const [
+          Icon(
+            Icons.check_circle_outline,
+            color: Colors.green,
+          ),
+          Padding(padding: EdgeInsets.only(right: 10.0)),
+          Text(
+            '현재 최신 버전을 사용하고 있습니다.',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )
+        ],
+      );
     } else {
-      return Column(
-        children: [
-          Row(
-            children: const [
-              Icon(Icons.system_update_alt),
-              Padding(padding: EdgeInsets.only(right: 10.0)),
-              Text(
-                '업데이트 사용가능',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )
+      return Material(
+        color: Colors.grey[300],
+        child: InkWell(
+          onTap: ((() async =>
+              await launch('https://github.com/sun30812/suwon_mate/releases'))),
+          child: Column(
+            children: [
+              Row(
+                children: const [
+                  Icon(
+                    Icons.arrow_circle_up_outlined,
+                    color: Colors.blue,
+                  ),
+                  Padding(padding: EdgeInsets.only(right: 10.0)),
+                  Text(
+                    '업데이트 사용가능(클릭하여 다운받기)',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
             ],
           ),
-          downloadUpdate(),
-        ],
+        ),
       );
     }
   }
@@ -605,9 +635,18 @@ class _SettingPageState extends State<SettingPage> {
         detail: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Web 플랫폼에서는 앱 버전이 항상 최신 버전으로 유지됩니다.',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Row(
+              children: const [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                ),
+                Padding(padding: EdgeInsets.only(right: 10.0)),
+                Text(
+                  'Web 플랫폼은 항상 최신 버전으로 유지됩니다.',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ],
             ),
             Text(
                 '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
@@ -657,10 +696,10 @@ class _SettingPageState extends State<SettingPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   updater(_snapshot.data == packageInfo.version),
-                  Text(
-                      '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
-                      '로컬 앱 버전: ${packageInfo.version}\n'
-                      '최신 앱 버전: ${_snapshot.data}'),
+                  if (_snapshot.data != packageInfo.version)
+                    Text('최신 앱 버전: ${_snapshot.data ?? '알 수 없음'}'),
+                  Text('로컬 앱 버전: ${packageInfo.version}\n'
+                      '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}')
                 ],
               ),
             );
@@ -670,9 +709,8 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget downloadUpdate() {
     return TextButton(
-        onPressed: (() async {
-          await launch('https://github.com/sun30812/suwon_mate/releases');
-        }),
+        onPressed: (() async =>
+            await launch('https://github.com/sun30812/suwon_mate/releases')),
         child: const Text('업데이트 확인 및 다운받기(사이트 이동)'));
   }
 }

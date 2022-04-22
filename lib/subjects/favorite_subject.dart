@@ -11,11 +11,8 @@ class FavoriteSubjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('즐겨찾는 과목'),
-      ),
-      body: const FavoriteListView(),
+    return const Scaffold(
+      body: FavoriteListView(),
     );
   }
 }

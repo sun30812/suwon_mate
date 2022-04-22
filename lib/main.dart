@@ -73,8 +73,11 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<BottomNavigationBarItem> shortcuts = const [
-    BottomNavigationBarItem(icon: Icon(Icons.apps), label: '앱스'),
-    BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
+    BottomNavigationBarItem(icon: Icon(Icons.apps), label: '메인'),
+    BottomNavigationBarItem(icon: Icon(Icons.schedule_outlined), label: '학사 일정', tooltip: '학사 일정'),
+    BottomNavigationBarItem(icon: Icon(Icons.star_border_outlined), label: '즐겨찾기', tooltip: '즐겨찾는 과목(베타)'),
+    BottomNavigationBarItem(icon: Icon(Icons.notifications_none_outlined), label: '공지사항', tooltip: '학교 공지사항'),
+    BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: '설정'),
   ];
   int _pageIndex = 0;
   Future<SharedPreferences> getSettings() async {
@@ -89,6 +92,7 @@ class _MainPageState extends State<MainPage> {
           title: const Text('수원 메이트'),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.grey[300],
           items: shortcuts,
           currentIndex: _pageIndex,
@@ -100,21 +104,29 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget tabPageBody() {
-    if (_pageIndex == 0) {
-      return FutureBuilder(
-        future: getSettings(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          } else if (snapshot.hasError) {
-            return const DataLoadingError();
-          } else {
-            return MainMenu(preferences: snapshot.data as SharedPreferences);
-          }
-        },
-      );
+    switch(_pageIndex) {
+      case 0:
+        return FutureBuilder(
+          future: getSettings(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            } else if (snapshot.hasError) {
+              return const DataLoadingError();
+            } else {
+              return MainMenu(preferences: snapshot.data as SharedPreferences);
+            }
+          },
+        );
+      case 1:
+        return const SchedulePage();
+      case 2:
+        return const FavoriteSubjectPage();
+      case 3:
+        return const InfoPage();
+      default:
+        return const SettingPage();
     }
-    return const SettingPage();
   }
 }
 
@@ -182,18 +194,13 @@ class _MainMenuState extends State<MainMenu> {
               : MainAxisAlignment.start,
           children: [
             const NotSupportPlatformMessage(),
-            Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SuwonButton(
+                SuwonSquareButton(
                   icon: Icons.help_outline,
                   buttonName: '도움말',
                   onPressed: () => Navigator.of(context).pushNamed('/help'),
-                ),
-                SuwonButton(
-                  icon: Icons.schedule_outlined,
-                  buttonName: '학사 일정',
-                  isActivate: isActivated && !kIsWeb,
-                  onPressed: () => Navigator.of(context).pushNamed('/schedule'),
                 ),
                 // TODO: 전화번호 찾기 기능은 구상중이며 사라질 수 있습니다.
                 // SuwonButton(
@@ -201,7 +208,7 @@ class _MainMenuState extends State<MainMenu> {
                 //   buttonName: '전화번호 찾기',
                 //   onPressed: () => Navigator.of(context).pushNamed('/contacts'),
                 // ),
-                SuwonButton(
+                SuwonSquareButton(
                   isActivate: isSupportPlatform,
                   icon: Icons.date_range,
                   buttonName: '개설 강좌 조회',
@@ -210,18 +217,6 @@ class _MainMenuState extends State<MainMenu> {
                     Navigator.of(context).pushNamed('/oclass');
                   },
                 ),
-                SuwonButton(
-                  icon: Icons.notifications_none,
-                  buttonName: '공지사항',
-                  isActivate: isActivated && !kIsWeb,
-                  onPressed: () => Navigator.of(context).pushNamed('/info'),
-                ),
-                SuwonButton(
-                    isActivate: isSupportPlatform,
-                    icon: Icons.star_outline,
-                    buttonName: '즐겨찾는 과목(베타)',
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed('/favorite')),
               ],
             ),
           ],

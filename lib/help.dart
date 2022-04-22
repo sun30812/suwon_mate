@@ -52,10 +52,10 @@ class HelpPage extends StatelessWidget {
                 ],
               )),
           const CardInfo(
-              icon: Icons.settings,
+              icon: Icons.settings_outlined,
               title: '설정',
               detail: Text(
-                '앱과 관련된 설정들을 할 수 있습니다.',
+                '앱과 관련된 설정들을 변경할 수 있습니다.',
                 style: TextStyle(fontSize: 16.0),
               )),
         ],
