@@ -642,7 +642,7 @@ class _SettingPageState extends State<SettingPage> {
             Row(
               children: const [
                 Icon(
-                  Icons.check_circle,
+                  Icons.check_circle_outline,
                   color: Colors.green,
                 ),
                 Padding(padding: EdgeInsets.only(right: 10.0)),
