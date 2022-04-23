@@ -715,7 +715,7 @@ class NotSupportInPlatform extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline),
+          const Icon(Icons.error_outline_outlined, color: Colors.redAccent,size: 45.0),
           Text(
             '$_platform 플랫폼에서는 지원되지 않습니다.',
             semanticsLabel: '$_platform 플랫폼에서는 지원되지 않습니다.',
