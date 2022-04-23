@@ -44,17 +44,21 @@ class _SettingPageState extends State<SettingPage> {
       packageInfo = packageInfo = PackageInfo(
           appName: 'Suwon Mate',
           packageName: 'suwon_mate',
-          version: '2.0.3',
-          buildNumber: '10');
+          version: '2.1.0',
+          buildNumber: '13');
     }
     SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref;
   }
 
-  Future getVersionData() async {
+  Stream getVersionData() {
     DatabaseReference appVer = FirebaseDatabase.instance.ref('version');
-    Map versionInfo = (await appVer.once()).snapshot.value as Map;
-    return versionInfo['app_ver'];
+    return appVer.child('app_ver').onValue;
+  }
+
+  Stream getDepartment() {
+    DatabaseReference data = FirebaseDatabase.instance.ref('departments');
+    return data.onValue;
   }
 
   @override
@@ -567,7 +571,7 @@ class _SettingPageState extends State<SettingPage> {
                                     padding: EdgeInsets.only(right: 8.0)),
                                 TextButton(
                                     child: const Text(
-                                        'orgsun30812+suwon_mate_github@gmail.com'),
+                                        '이메일 보내기'),
                                     onPressed: (() async {
                                       await launch(
                                           'mailto:orgsun30812+suwon_mate_github@gmail.com');
@@ -670,8 +674,8 @@ class _SettingPageState extends State<SettingPage> {
         ),
       );
     }
-    return FutureBuilder(
-        future: getVersionData(),
+    return StreamBuilder(
+        stream: getVersionData(),
         builder: (context, _snapshot) {
           if (!_snapshot.hasData) {
             return const CardInfo(
@@ -695,9 +699,9 @@ class _SettingPageState extends State<SettingPage> {
               detail: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  updater(_snapshot.data == packageInfo.version),
-                  if (_snapshot.data != packageInfo.version)
-                    Text('최신 앱 버전: ${_snapshot.data ?? '알 수 없음'}'),
+                  updater((_snapshot.data as DatabaseEvent).snapshot.value == packageInfo.version),
+                  if ((_snapshot.data as DatabaseEvent).snapshot.value != packageInfo.version)
+                    Text('최신 앱 버전: ${(_snapshot.data as DatabaseEvent).snapshot.value ?? '알 수 없음'}'),
                   Text('로컬 앱 버전: ${packageInfo.version}\n'
                       '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}')
                 ],
