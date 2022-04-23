@@ -512,7 +512,7 @@ class _SettingPageState extends State<SettingPage> {
                                     padding: EdgeInsets.only(right: 8.0)),
                                 TextButton(
                                     child: const Text(
-                                        'orgsun30812+suwon_mate@gmail.com'),
+                                        '이메일 보내기'),
                                     onPressed: (() async {
                                       await launch(
                                           'mailto:orgsun30812+suwon_mate@gmail.com');
