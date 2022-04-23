@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
@@ -17,6 +18,7 @@ Future<http.Response> getData() async {
 
 class SchedulePage extends StatelessWidget {
   const SchedulePage({Key? key}) : super(key: key);
+
 
   String getNowEvent(List<Map<String, String>> scheduleList) {
     DateTime now = DateTime.now();
@@ -41,6 +43,9 @@ class SchedulePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return const NotSupportInPlatform('Web');
+    }
     getData();
     return Scaffold(
       body: Center(
