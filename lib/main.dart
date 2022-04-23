@@ -1,21 +1,23 @@
 import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/donation/donation_page.dart';
+import 'package:suwon_mate/help.dart';
+import 'package:suwon_mate/information/info.dart';
 import 'package:suwon_mate/information/info_detail.dart';
-import 'package:suwon_mate/subjects/search.dart';
+import 'package:suwon_mate/schedule.dart';
 import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/subjects/favorite_subject.dart';
-import 'package:suwon_mate/help.dart';
 import 'package:suwon_mate/subjects/profesor_subjects.dart';
-import 'subjects/open_class_info.dart';
+import 'package:suwon_mate/subjects/search.dart';
+
 import 'firebase_options.dart';
-import 'package:flutter/material.dart';
-import 'package:suwon_mate/information/info.dart';
-import 'package:suwon_mate/schedule.dart';
 import 'styles/style_widget.dart';
 import 'subjects/open_class.dart';
+import 'subjects/open_class_info.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,9 +58,22 @@ class App extends StatelessWidget {
   }
 }
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  List<BottomNavigationBarItem> shortcuts = const [
+    BottomNavigationBarItem(icon: Icon(Icons.apps), label: '메인'),
+    BottomNavigationBarItem(icon: Icon(Icons.schedule_outlined), label: '학사 일정', tooltip: '학사 일정'),
+    BottomNavigationBarItem(icon: Icon(Icons.star_border_outlined), label: '즐겨찾기', tooltip: '즐겨찾는 과목(베타)'),
+    BottomNavigationBarItem(icon: Icon(Icons.notifications_none_outlined), label: '공지사항', tooltip: '학교 공지사항'),
+    BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: '설정'),
+  ];
+  int _pageIndex = 0;
   Future<SharedPreferences> getSettings() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref;
@@ -70,7 +85,22 @@ class MainPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('수원 메이트'),
         ),
-        body: FutureBuilder(
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.grey[300],
+          items: shortcuts,
+          currentIndex: _pageIndex,
+          onTap: (value) => setState(() {
+            _pageIndex = value;
+          }),
+        ),
+        body: tabPageBody());
+  }
+
+  Widget tabPageBody() {
+    switch(_pageIndex) {
+      case 0:
+        return FutureBuilder(
           future: getSettings(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -81,7 +111,16 @@ class MainPage extends StatelessWidget {
               return MainMenu(preferences: snapshot.data as SharedPreferences);
             }
           },
-        ));
+        );
+      case 1:
+        return const SchedulePage();
+      case 2:
+        return const FavoriteSubjectPage();
+      case 3:
+        return const InfoPage();
+      default:
+        return const SettingPage();
+    }
   }
 }
 
@@ -147,45 +186,24 @@ class _MainMenuState extends State<MainMenu> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const NotSupportPlatformMessage(),
-            Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SuwonButton(
+                SuwonSquareButton(
                   icon: Icons.help_outline,
                   buttonName: '도움말',
                   onPressed: () => Navigator.of(context).pushNamed('/help'),
                 ),
-                SuwonButton(
-                  icon: Icons.schedule_outlined,
-                  buttonName: '학사 일정',
-                  isActivate: isActivated,
-                  onPressed: () => Navigator.of(context).pushNamed('/schedule'),
-                ),
-                SuwonButton(
+                SuwonSquareButton(
                   icon: Icons.date_range,
                   buttonName: '개설 강좌 조회',
                   onPressed: () => Navigator.of(context).pushNamed('/oclass'),
                 ),
-                SuwonButton(
-                  icon: Icons.notifications_none,
-                  buttonName: '공지사항',
-                  isActivate: isActivated,
-                  onPressed: () => Navigator.of(context).pushNamed('/info'),
-                ),
-                SuwonButton(
-                    icon: Icons.star_outline,
-                    buttonName: '즐겨찾는 과목(베타)',
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed('/favorite')),
-                SuwonButton(
+                SuwonSquareButton(
                     icon: Icons.favorite_border_outlined,
                     buttonName: '광고 보기',
                     onPressed: () =>
                         Navigator.of(context).pushNamed('/donation')),
-                SuwonButton(
-                    icon: Icons.settings,
-                    buttonName: '설정',
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed('/settings')),
               ],
             ),
           ],
