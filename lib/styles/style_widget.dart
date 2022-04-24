@@ -785,3 +785,25 @@ class NotSupportPlatformMessage extends StatelessWidget {
     return Container();
   }
 }
+
+class DatasaveAlert extends StatelessWidget {
+  const DatasaveAlert({
+        Key? key,
+      })  : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.offline_bolt_outlined,size: 80.0),
+          Text(
+            '현재 데이터 절약 모드로 인해 이 페이지를 열 수 없습니다.',
+            style: TextStyle(fontSize: 16.0),
+          )
+        ],
+      ),
+    );
+  }
+}

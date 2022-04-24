@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/donation/donation_page.dart';
@@ -13,7 +14,6 @@ import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/subjects/favorite_subject.dart';
 import 'package:suwon_mate/subjects/profesor_subjects.dart';
 import 'package:suwon_mate/subjects/search.dart';
-
 import 'firebase_options.dart';
 import 'styles/style_widget.dart';
 import 'subjects/open_class.dart';
@@ -32,6 +32,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData().copyWith(
+        useMaterial3: true,
           scaffoldBackgroundColor: Colors.grey[300]!,
           appBarTheme:
               const AppBarTheme(color: Color.fromARGB(255, 0, 54, 112)),
@@ -117,7 +118,28 @@ class _MainPageState extends State<MainPage> {
       case 2:
         return const FavoriteSubjectPage();
       case 3:
-        return const InfoPage();
+        return FutureBuilder(
+          future: getSettings(),
+            builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container();
+          } else if (snapshot.hasError) {
+            return const DataLoadingError();
+          } else {
+            if ((snapshot.data as SharedPreferences).containsKey('settings')) {
+              Map<String, dynamic> functionSetting = jsonDecode(
+                  (snapshot.data as SharedPreferences)
+                      .getString('settings')!);
+              bool saveMode = functionSetting['offline'] ?? false;
+              if (saveMode) {
+                return const DatasaveAlert();
+              } else {
+                return const InfoPage();
+              }
+            }
+            return const InfoPage();
+          }
+        });
       default:
         return const SettingPage();
     }
@@ -172,13 +194,13 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   Widget build(BuildContext context) {
-    bool isActivated = true;
-    if (widget._preferences.containsKey('settings')) {
-      setState(() {
-        isActivated = !(jsonDecode((widget._preferences.getString('settings'))!)
-            as Map)['offline'];
-      });
-    }
+    // bool isActivated = true;
+    // if (widget._preferences.containsKey('settings')) {
+    //   setState(() {
+    //     isActivated = !(jsonDecode((widget._preferences.getString('settings'))!)
+    //         as Map)['offline'];
+    //   });
+    // }
 
     return Center(
       child: SingleChildScrollView(
