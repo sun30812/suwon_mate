@@ -1,10 +1,12 @@
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-import '../styles/style_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../styles/style_widget.dart';
 
 class InfoPage extends StatefulWidget {
   const InfoPage({Key? key}) : super(key: key);

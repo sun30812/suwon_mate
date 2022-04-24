@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -364,9 +365,12 @@ class _SettingPageState extends State<SettingPage> {
                                         showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
-                                              return const AlertDialog(
-                                                title: Text('데이터 절약 모드'),
-                                                content: Text(
+                                              return AlertDialog(
+                                                actions: [
+                                                  TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('확인'))
+                                                ],
+                                                title: const Text('데이터 절약 모드'),
+                                                content: const Text(
                                                     '데이터 사용량을 줄이기 위해 일부 기능의 사용을 제한하고, DB 업데이트를 '
                                                     '자동으로 하지 않습니다. \nWeb 플랫폼에서는 지원하지 않습니다.'),
                                               );
@@ -422,9 +426,12 @@ class _SettingPageState extends State<SettingPage> {
                                         showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
-                                              return const AlertDialog(
-                                                title: Text('입력하여 바로 검색'),
-                                                content: Text(
+                                              return  AlertDialog(
+                                                actions: [
+                                                  TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('확인'))
+                                                ],
+                                                title: const Text('입력하여 바로 검색'),
+                                                content: const Text(
                                                     '과목을 검색할 때 입력하는 즉시 검색을 바로 시작합니다.\n'
                                                         '검색 시 동작이 많이 끊기는 경우 해당 설정을 조절하여 개선할 수 있습니다.'),
                                               );
