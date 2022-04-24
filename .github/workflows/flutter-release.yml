@@ -74,6 +74,9 @@ jobs:
       - name: Install dependency
         run: flutter pub get
 
+      - name: Pod Repository Update
+        run: pod repo update
+
       - name: Configuration to build macOS App
         run: flutter config --enable-macos-desktop
 
