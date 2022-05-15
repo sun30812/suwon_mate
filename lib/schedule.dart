@@ -6,14 +6,7 @@ import 'package:suwon_mate/styles/style_widget.dart';
 
 Future<http.Response> getData() async {
   return await http.get(
-      Uri.parse('https://www.suwon.ac.kr/index.html?menuno=727'),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS, HEAD",
-        "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Headers":
-            "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
-      });
+      Uri.parse('https://www.suwon.ac.kr/index.html?menuno=727'));
 }
 
 class SchedulePage extends StatelessWidget {

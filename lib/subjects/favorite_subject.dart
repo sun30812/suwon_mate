@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
@@ -41,8 +41,27 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     _favoriteClassList = [];
   }
 
-  FutureOr onGoBack(dynamic data) {
-    setState(() {});
+  Future<void> getFavoriteData() async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+
+    if (_pref.containsKey('favoritesMap')) {
+      _favorites = jsonDecode(_pref.getString('favoritesMap')!);
+    }
+
+    if (_pref.containsKey('favorites')) {
+      _migrateFavorites = _pref.getStringList('favorites')!;
+    }
+
+
+    if (_pref.containsKey('settings')) {
+      if (_pref.containsKey('class') &&
+          (jsonDecode(_pref.getString('settings')!))['offline']) {
+        _isSaved = true;
+      }
+    }
+    setState(() {
+
+    });
   }
 
   Future getData() async {
@@ -54,6 +73,11 @@ class _FavoriteListViewState extends State<FavoriteListView> {
 
     if (_pref.containsKey('favorites')) {
       _migrateFavorites = _pref.getStringList('favorites')!;
+    }
+
+    if (_pref.containsKey('class')) {
+      _isSaved = true;
+      return _pref.getString('class');
     }
 
     if (_pref.containsKey('settings')) {
@@ -76,11 +100,12 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     return ref.once();
   }
 
+
   @override
   void dispose() async {
     super.dispose();
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setString('class', jsonEncode(_orgClassList));
+    // _pref.setString('class', jsonEncode(_orgClassList));
     _pref.remove('favorites');
   }
 
@@ -89,11 +114,26 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     return mainScreen();
   }
 
+  FutureOr refresh(Object? dat) async {
+    await getData();
+    setState(()  {
+    });
+  }
+
   Widget mainScreen() {
-    if (!kIsWeb &&
-        (defaultTargetPlatform == TargetPlatform.windows ||
-            defaultTargetPlatform == TargetPlatform.linux)) {
-      return const NotSupportInPlatform('Windows나 Linux');
+    if (!_isSaved) {
+      return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(
+                Icons.error_outline,
+                color: Colors.redAccent,
+                size: 50.0,
+              ),
+              Text('아직 개설강좌 조회를 들어가지 않은 경우 이용하실 수 없습니다.'),
+            ],
+          ));
     }
     return FutureBuilder(
         future: getData(),
@@ -142,7 +182,8 @@ class _FavoriteListViewState extends State<FavoriteListView> {
                   SuwonButton(
                       icon: Icons.date_range,
                       buttonName: '개설 강좌 조회',
-                      onPressed: () => Navigator.pushNamed(context, '/oclass'))
+                      onPressed: () => Navigator.pushNamed(context, '/oclass')
+                          .then((value) => refresh(value)))
                 ],
               ));
             } else {
@@ -154,25 +195,29 @@ class _FavoriteListViewState extends State<FavoriteListView> {
                   }
                 }
               }
-              return ListView.builder(
-                  itemCount: _favorites.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return SimpleCardButton(
-                        onPressed: () => Navigator.of(context)
-                            .pushNamed('/oclass/info',
-                                arguments: _favoriteClassList[index])
-                            .then(onGoBack),
-                        title: _favoriteClassList[index]["subjtNm"],
-                        subTitle: _favoriteClassList[index]["ltrPrfsNm"] ??
-                            "이름 공개 안됨",
-                        content: Text((_favoriteClassList[index]["deptNm"] ??
-                                "학부 전체 대상(전공 없음)") +
-                            ", " +
-                            _favoriteClassList[index]["facDvnm"] +
-                            ', ' +
-                            (_favoriteClassList[index]["timtSmryCn"] ??
-                                "공개 안됨")));
-                  });
+              return RefreshIndicator(
+                onRefresh: (getFavoriteData),
+                child: ListView.builder(
+                    itemCount: _favorites.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return SimpleCardButton(
+                          onPressed: () => Navigator.of(context)
+                              .pushNamed('/oclass/info',
+                                  arguments: _favoriteClassList[index])
+                          .then((value) => refresh(value))
+                          ,
+                          title: _favoriteClassList[index]["subjtNm"],
+                          subTitle: _favoriteClassList[index]["ltrPrfsNm"] ??
+                              "이름 공개 안됨",
+                          content: Text((_favoriteClassList[index]["deptNm"] ??
+                                  "학부 전체 대상(전공 없음)") +
+                              ", " +
+                              _favoriteClassList[index]["facDvnm"] +
+                              ', ' +
+                              (_favoriteClassList[index]["timtSmryCn"] ??
+                                  "공개 안됨")));
+                    }),
+              );
             }
           }
         });

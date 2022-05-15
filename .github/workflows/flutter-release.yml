@@ -62,36 +62,36 @@ jobs:
           path: |
             suwon_mate_win.zip
   
-  BuildmacOS:
-    runs-on: macos-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Flutter action
-        uses: subosito/flutter-action@v2.3.0
-
-      - name: Install dependency
-        run: flutter pub get
-
-      - name: Pod Repository Update
-        run: pod repo update
-
-      - name: Configuration to build macOS App
-        run: flutter config --enable-macos-desktop
-
-      - name: Build macOS App
-        run: flutter build macos
-
-      - name: Zip .app file
-        run: zip -Dr suwon_mate.app.zip build/macos/Build/Products/Release/suwon_mate.app
-
-      - name: Upload files
-        uses: actions/upload-artifact@v2
-        with:
-          name: output
-          path: |
-            suwon_mate.app.zip
+#  BuildmacOS:
+#    runs-on: macos-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Flutter action
+#        uses: subosito/flutter-action@v2.3.0
+#
+#      - name: Install dependency
+#        run: flutter pub get
+#
+#      - name: Pod Repository Update
+#        run: pod repo update
+#
+#      - name: Configuration to build macOS App
+#        run: flutter config --enable-macos-desktop
+#
+#      - name: Build macOS App
+#        run: flutter build macos
+#
+#      - name: Zip .app file
+#        run: zip -Dr suwon_mate.app.zip build/macos/Build/Products/Release/suwon_mate.app
+#
+#      - name: Upload files
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: output
+#          path: |
+#            suwon_mate.app.zip
 
   BuildLinux:
     runs-on: ubuntu-latest
@@ -130,7 +130,7 @@ jobs:
 
   Release:
     runs-on: ubuntu-latest
-    needs: [BuildWindows,BuildAPK,BuildmacOS,BuildLinux]
+    needs: [BuildWindows,BuildAPK,BuildLinux]
     steps:
       - name: Download files
         uses: actions/download-artifact@v2
@@ -142,5 +142,4 @@ jobs:
           files: |
             suwon_mate_android.apk
             suwon_mate_win.zip
-            suwon_mate.app.zip
             suwon_mate_linux.zip
