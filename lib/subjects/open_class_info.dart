@@ -148,6 +148,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                   _isAddFavorite = true;
                   Map _map = {widget._depart: widget._subjectCode};
                   _favorites.add(_map);
+                  print(_favorites);
                 });
                 syncFavorite();
               },
@@ -162,10 +163,11 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                       getFavoriteRemoveIndex(widget._subjectCode);
                   if (_removeIndex != null) {
                     _favorites.removeAt(_removeIndex);
+                    print(_favorites);
                   }
                   _isAddFavorite = false;
-                });
                 syncFavorite();
+                });
               },
             );
           }

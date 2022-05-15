@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,16 +19,11 @@ import 'styles/style_widget.dart';
 import 'subjects/open_class.dart';
 import 'subjects/open_class_info.dart';
 
-bool isSupportPlatform = kIsWeb || (!Platform.isWindows && !Platform.isLinux);
 void main() async {
-  if (!isSupportPlatform) {
-    runApp(const App());
-  } else {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
-    runApp(const App());
-  }
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
@@ -43,7 +36,9 @@ class App extends StatelessWidget {
         useMaterial3: true,
           scaffoldBackgroundColor: Colors.grey[300]!,
           appBarTheme:
-              const AppBarTheme(color: Color.fromARGB(255, 0, 54, 112)),
+               AppBarTheme(titleTextStyle: const TextStyle().copyWith(
+                 color: Colors.white
+               ),color: const Color.fromARGB(255, 0, 54, 112)),
           colorScheme: ThemeData().colorScheme.copyWith(
               secondary: const Color.fromARGB(255, 0, 54, 112),
               onSecondary: const Color.fromARGB(255, 0, 54, 112),
@@ -213,9 +208,6 @@ class _MainMenuState extends State<MainMenu> {
     return Center(
       child: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: isSupportPlatform
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.start,
           children: [
             const NotSupportPlatformMessage(),
             Row(
@@ -233,7 +225,6 @@ class _MainMenuState extends State<MainMenu> {
                 //   onPressed: () => Navigator.of(context).pushNamed('/contacts'),
                 // ),
                 SuwonSquareButton(
-                  isActivate: isSupportPlatform,
                   icon: Icons.date_range,
                   buttonName: '개설 강좌 조회',
                   onPressed: () {

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
@@ -8,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -26,7 +25,7 @@ class _SettingPageState extends State<SettingPage> {
   String _grade = '1학년';
   bool _isFirst = true;
   bool _isSynced = false;
-  final isDebug = false;
+  final isDebug = true;
   late PackageInfo packageInfo;
   late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
@@ -226,6 +225,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 );
               }
+
               majorDropdownList.clear();
               majorDropdownList.add(const DropdownMenuItem(
                 child: Text('전체'),
@@ -367,7 +367,11 @@ class _SettingPageState extends State<SettingPage> {
                                             builder: (BuildContext context) {
                                               return AlertDialog(
                                                 actions: [
-                                                  TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('확인'))
+                                                  TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.of(context)
+                                                              .pop(),
+                                                      child: const Text('확인'))
                                                 ],
                                                 title: const Text('데이터 절약 모드'),
                                                 content: const Text(
@@ -426,14 +430,18 @@ class _SettingPageState extends State<SettingPage> {
                                         showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
-                                              return  AlertDialog(
+                                              return AlertDialog(
                                                 actions: [
-                                                  TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('확인'))
+                                                  TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.of(context)
+                                                              .pop(),
+                                                      child: const Text('확인'))
                                                 ],
                                                 title: const Text('입력하여 바로 검색'),
                                                 content: const Text(
                                                     '과목을 검색할 때 입력하는 즉시 검색을 바로 시작합니다.\n'
-                                                        '검색 시 동작이 많이 끊기는 경우 해당 설정을 조절하여 개선할 수 있습니다.'),
+                                                    '검색 시 동작이 많이 끊기는 경우 해당 설정을 조절하여 개선할 수 있습니다.'),
                                               );
                                             });
                                       },
@@ -577,10 +585,9 @@ class _SettingPageState extends State<SettingPage> {
                                 const Padding(
                                     padding: EdgeInsets.only(right: 8.0)),
                                 TextButton(
-                                    child: const Text(
-                                        '이메일 보내기'),
+                                    child: const Text('이메일 보내기'),
                                     onPressed: (() async {
-                                      await launch(
+                                      await launchUrlString(
                                           'mailto:orgsun30812+suwon_mate_github@gmail.com');
                                     })),
                               ],
@@ -614,8 +621,8 @@ class _SettingPageState extends State<SettingPage> {
       return Material(
         color: Colors.grey[300],
         child: InkWell(
-          onTap: ((() async =>
-              await launch('https://github.com/sun30812/suwon_mate/releases'))),
+          onTap: ((() async => await launchUrlString(
+              'https://github.com/sun30812/suwon_mate/releases'))),
           child: Column(
             children: [
               Row(
@@ -665,21 +672,6 @@ class _SettingPageState extends State<SettingPage> {
           ],
         ),
       );
-    } else if (Platform.isWindows || Platform.isLinux) {
-      return CardInfo(
-        icon: Icons.info_outline,
-        title: '버전 정보',
-        detail: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-                '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
-                '로컬 앱 버전: ${packageInfo.version}\n'
-                '최신 앱 버전: 해당 플랫폼에서 확인 불가'),
-            downloadUpdate()
-          ],
-        ),
-      );
     }
     return StreamBuilder(
         stream: getVersionData(),
@@ -706,9 +698,12 @@ class _SettingPageState extends State<SettingPage> {
               detail: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  updater((_snapshot.data as DatabaseEvent).snapshot.value == packageInfo.version),
-                  if ((_snapshot.data as DatabaseEvent).snapshot.value != packageInfo.version)
-                    Text('최신 앱 버전: ${(_snapshot.data as DatabaseEvent).snapshot.value ?? '알 수 없음'}'),
+                  updater((_snapshot.data as DatabaseEvent).snapshot.value ==
+                      packageInfo.version),
+                  if ((_snapshot.data as DatabaseEvent).snapshot.value !=
+                      packageInfo.version)
+                    Text(
+                        '최신 앱 버전: ${(_snapshot.data as DatabaseEvent).snapshot.value ?? '알 수 없음'}'),
                   Text('로컬 앱 버전: ${packageInfo.version}\n'
                       '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}')
                 ],
@@ -720,8 +715,8 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget downloadUpdate() {
     return TextButton(
-        onPressed: (() async =>
-            await launch('https://github.com/sun30812/suwon_mate/releases')),
+        onPressed: (() async => await launchUrlString(
+            'https://github.com/sun30812/suwon_mate/releases')),
         child: const Text('업데이트 확인 및 다운받기(사이트 이동)'));
   }
 }

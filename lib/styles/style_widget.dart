@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -751,30 +749,6 @@ class NotSupportPlatformMessage extends StatelessWidget {
                           'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.',
                           semanticsLabel:
                               'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.',
-                        ))),
-                child: const Text(
-                  '설명 보기',
-                  semanticsLabel: '설명 보기',
-                ))
-          ]);
-    } else if (Platform.isWindows || Platform.isLinux) {
-      return MaterialBanner(
-          content: const Text(
-            'Windows/Linux 플랫폼의 경우 일부 기능이 동작하지 않습니다.',
-            semanticsLabel: 'Windows/Linux 플랫폼의 경우 일부 기능이 동작하지 않습니다.',
-          ),
-          actions: [
-            TextButton(
-                onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => SuwonDialog.simple(
-                        context: context,
-                        icon: Icons.help_outline,
-                        title: '안내',
-                        content: const Text(
-                          'Windows/Linux 플랫폼에서는 [개설 강좌 조회]나 [즐겨찾는 과목] 기능을 아직 사용할 수 없습니다.',
-                          semanticsLabel:
-                              'Windows/Linux 플랫폼에서는 [개설 강좌 조회]나 [즐겨찾는 과목] 기능을 아직 사용할 수 없습니다.',
                         ))),
                 child: const Text(
                   '설명 보기',
