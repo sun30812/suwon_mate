@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -14,19 +15,38 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  /// 학부가 포함되는 리스트이다. 나중에 실제 학부들이 이 변수에 추가된다.
   List<String> subList = ['컴퓨터학부', '경영학부'];
+
+  /// 학과가 포함되는 리스트이다. 나중에 실제 학과들이 이 변수에 추가된다.
   List<String> majorList = ['학부 공통', '전체'];
+
+  /// 학년 리스트이다. 학년을 기준으로 쿼리할 때 사용된다.
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
+
+  /// 현재 학부를 나타내는 변수이다.
   String _myDp = '컴퓨터학부';
+
+  /// 현재 학과를 나타내는 변수이다.
   String _mySub = '전체';
+
+  /// 현재 학년을 나타내는 변수이다.
   String _grade = '1학년';
+
+  /// 학과 목록과 같이 추후 파싱이 필요할 시 한 번만 파싱을 수행하도록 도와주는 변수이다.
   bool _isFirst = true;
+
+  /// 현재 가진 데이터가 동기화된 데이터인지 판단하는 변수이다.
   bool _isSynced = false;
   late PackageInfo packageInfo;
+
+  /// 서버DB의 버전을 담고 있는 변수이다.
   late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
   List<DropdownMenuItem<String>> majorDropdownList = [];
   List<DropdownMenuItem<String>> gradeDropdownList = [];
+
+  /// 기능 설정과 관련된 항목이다.
   Map<String, dynamic> functionSetting = {
     'offline': false,
     'liveSearch': true,
@@ -34,6 +54,10 @@ class _SettingPageState extends State<SettingPage> {
     'bottomBanner': true,
   };
 
+  /// 현재 앱의 패키지 정보 및 설정 값을 가져오는 메서드이다.
+  ///
+  /// 현재 앱의 이름 및 버전등을 가져온 후 설정 저장소를 반환하는 메서드이다.
+  /// 만일 패키지 정보를 가져오는데 실패한 경우 코드에 명시된 버전으로 지정된다.
   Future<SharedPreferences> getSettings() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     packageInfo = await PackageInfo.fromPlatform();
@@ -67,6 +91,9 @@ class _SettingPageState extends State<SettingPage> {
     _pref.setString('settings', jsonEncode(functionSetting));
   }
 
+  /// 개설 강좌 조회를 아직 누르지 않은 경우 경고위젯을 띄우는 메서드
+  /// 개설강좌 조회를 아직 누르지 않은 경우 학부 데이터를 받아오지 않았기 때문에 설정에서 고를 수 있는 학부 및 학과가 적다.
+  /// 이를 알리기 위해 존재하는 위젯이다.
   Widget noSyncWarning() {
     if (_isSynced) {
       return Container();
@@ -151,7 +178,7 @@ class _SettingPageState extends State<SettingPage> {
               }
               return ListView(
                 children: [
-                  CardInfo(
+                  InfoCard(
                       icon: Icons.school_outlined,
                       title: '학생 정보',
                       detail: Column(
@@ -225,7 +252,7 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                         ],
                       )),
-                  CardInfo(
+                  InfoCard(
                       icon: Icons.settings_outlined,
                       title: '기능 설정',
                       detail: Column(
@@ -372,7 +399,7 @@ class _SettingPageState extends State<SettingPage> {
                             )
                         ],
                       )),
-                  CardInfo(
+                  InfoCard(
                       icon: Icons.favorite_outline,
                       title: '광고 설정',
                       detail: Column(
@@ -422,7 +449,7 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                         ],
                       )),
-                  CardInfo(
+                  InfoCard(
                     icon: Icons.restore,
                     title: '초기화 메뉴',
                     detail: Column(
@@ -493,14 +520,14 @@ class _SettingPageState extends State<SettingPage> {
                       ],
                     ),
                   ),
-                  CardInfo(
+                  InfoCard(
                     icon: Icons.info_outline,
                     title: '버전 정보',
                     detail: Text(
                         '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}\n'
                         '로컬 앱 버전: ${packageInfo.version}'),
                   ),
-                  CardInfo(
+                  InfoCard(
                       icon: Icons.help_outline,
                       title: '문의하기',
                       detail: Column(

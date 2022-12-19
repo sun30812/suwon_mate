@@ -4,9 +4,12 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-
 import '../styles/style_widget.dart';
 
+/// 수원대학교의 공지사항을 보여주는 페이지입니다.
+///
+/// 수원대학교의 공지사항을 받아서 위젯([SimpleCardButton])으로 출력해줍니다.
+/// 만일 공지사항을 볼 수 없는 플랫폼인 경우 [NotSupportInPlatform]페이지를 출력한다.
 class InfoPage extends StatefulWidget {
   const InfoPage({Key? key}) : super(key: key);
 
@@ -15,6 +18,7 @@ class InfoPage extends StatefulWidget {
 }
 
 class _InfoPageState extends State<InfoPage> {
+  /// 수원대학교의 공지사항을 html문서로 가져오는 메서드이다.
   Future getData() async {
     return await http
         .get(Uri.parse('https://www.suwon.ac.kr/index.html?menuno=674'));
@@ -35,9 +39,6 @@ class _InfoPageState extends State<InfoPage> {
   }
 
   Widget mainScreen() {
-    if (kIsWeb) {
-      return const NotSupportInPlatform('Web');
-    }
     dom.Element rows;
     return RefreshIndicator(
       onRefresh: () async {

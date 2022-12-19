@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/api/keys.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 
+/// 개설 강좌 조회 시 페이지이다.
 class OpenClass extends StatefulWidget {
   const OpenClass({Key? key}) : super(key: key);
 
@@ -124,6 +125,9 @@ class _OpenClassState extends State<OpenClass> {
     return ref.once();
   }
 
+  /// 어떤 영역인지 고르는 [DropdownButton]이다.
+  ///
+  /// [dept]가 교양인 경우 영역을 고를 수 있는 [DropdownButton]이 나타나고, 아닌경우 나타나지 않는다.
   Widget regionSelector(String dept) {
     if (dept == '교양') {
       return DropdownButton(
@@ -141,7 +145,6 @@ class _OpenClassState extends State<OpenClass> {
   @override
   void initState() {
     super.initState();
-
     for (var dat in gradeList) {
       gradeDownList.add(DropdownMenuItem(
         child: Text(dat),
