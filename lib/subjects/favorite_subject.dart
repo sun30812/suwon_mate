@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 
+/// 즐겨찾는 과목을 볼 수 있는 페이지이다.
 class FavoriteSubjectPage extends StatelessWidget {
   const FavoriteSubjectPage({Key? key}) : super(key: key);
 
@@ -41,6 +41,7 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     _favoriteClassList = [];
   }
 
+  /// [SharedPreferences]로부터 즐겨찾는 과목 및 설정 값을 가져오는 메서드이다.
   Future<void> getFavoriteData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
 
@@ -52,16 +53,13 @@ class _FavoriteListViewState extends State<FavoriteListView> {
       _migrateFavorites = _pref.getStringList('favorites')!;
     }
 
-
     if (_pref.containsKey('settings')) {
       if (_pref.containsKey('class') &&
           (jsonDecode(_pref.getString('settings')!))['offline']) {
         _isSaved = true;
       }
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   Future getData() async {
@@ -100,7 +98,6 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     return ref.once();
   }
 
-
   @override
   void dispose() async {
     super.dispose();
@@ -114,26 +111,32 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     return mainScreen();
   }
 
+  /// [RefreshIndicator]로 인해 새로고침 되는 경우 사용되는 메서드이다.
+  ///
+  /// 여러 설정 값이나 즐겨찾기 한 과목들을 다시 불러오는 작업을 수행한다.
   FutureOr refresh(Object? dat) async {
     await getData();
-    setState(()  {
-    });
+    setState(() {});
   }
 
+  /// 즐겨찾는 과목 페이지로 이동 시 먼저 보이는 화면이다.
+  ///
+  /// 만일 개설강좌 조회를 한 번도 하지 않은 경우 즐겨찾는 과목에 필요한 일부 설정 값이 없기 때문에 올바르게 동작하지 않는다.
+  /// 이 경우 개설강좌 조회를 들어가지 않으면 이용이 불가하다는 내용을 출력하는 역할도 한다.
   Widget mainScreen() {
     if (!_isSaved) {
       return Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(
-                Icons.error_outline,
-                color: Colors.redAccent,
-                size: 50.0,
-              ),
-              Text('아직 개설강좌 조회를 들어가지 않은 경우 이용하실 수 없습니다.'),
-            ],
-          ));
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(
+            Icons.error_outline,
+            color: Colors.redAccent,
+            size: 50.0,
+          ),
+          Text('아직 개설강좌 조회를 들어가지 않은 경우 이용하실 수 없습니다.'),
+        ],
+      ));
     }
     return FutureBuilder(
         future: getData(),
@@ -204,8 +207,7 @@ class _FavoriteListViewState extends State<FavoriteListView> {
                           onPressed: () => Navigator.of(context)
                               .pushNamed('/oclass/info',
                                   arguments: _favoriteClassList[index])
-                          .then((value) => refresh(value))
-                          ,
+                              .then((value) => refresh(value)),
                           title: _favoriteClassList[index]["subjtNm"],
                           subTitle: _favoriteClassList[index]["ltrPrfsNm"] ??
                               "이름 공개 안됨",

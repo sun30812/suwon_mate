@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 
+/// 검색 버튼 누를 시 나타나는 검색 페이지이다.
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
 
@@ -10,10 +11,13 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controller = TextEditingController();
+  /// 과목의 이름이다.
   final TextEditingController _controller2 = TextEditingController();
   List classList = [];
   bool _isFirst = true;
+  /// 자동으로 검색을 시작하는 기능의 활성화 여부이다.
   bool _liveSearch = true;
+  /// 자동으로 검색을 시작하는 기능이 활성화 되어있을 시 몇자부터 검색을 시작할 지에 대한 변수이다.
   double _liveSearchCount = 0.0;
 
   @override
@@ -21,6 +25,10 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
   }
 
+  /// 과목 코드로 과목 이름을 검색하는 메서드
+  ///
+  /// 과목 코드를 [code]에 입력하면 [classList]로부터 [code]와 과목 코드를 비교해서
+  /// 일치하는 과목의 이름을 반환한다. 만일 없는 경우 `none`을 반환한다.
   String searchSubjectName(String code, List classList) {
     for (var dat in classList) {
       if (dat['subjtCd'] == code) {
@@ -30,9 +38,13 @@ class _SearchPageState extends State<SearchPage> {
     return 'none';
   }
 
-  int getSubjectIndex(String code, List listData) {
+  /// 과목 코드로 과목이 실존하는지 판단하기 위해 인덱스 값을 반환하는 메서드이다.
+  ///
+  /// 과목 코드를 [code]에 입력하면 [classList]로부터 [code]와 과목 코드를 비교해서
+  /// [classList]에서 찾고자 하는 과목이 몇번째에 있는지 찾아서 그 인덱스를 반환한다.
+  int getSubjectIndex(String code, List classList) {
     int _index = 0;
-    for (var dat in listData) {
+    for (var dat in classList) {
       if (code == '${dat['subjtCd']}-${dat['diclNo']}') {
         return _index;
       }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'styles/style_widget.dart';
 
+/// 도움말 페이지이다. 각 메뉴에 대한 설명을 확인할 수 있는 페이지이다.
+///
+/// 메인 화면에서 도움말을 누른 경우 보여지는 페이지이며, 각 항목에 대한 설명은 [InfoCard]위젯을 통해 보여준다.
 class HelpPage extends StatelessWidget {
   const HelpPage({Key? key}) : super(key: key);
 
@@ -12,14 +15,14 @@ class HelpPage extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          const CardInfo(
+          const InfoCard(
               icon: Icons.schedule_outlined,
               title: '학사 일정',
               detail: Text(
                 '학교의 일정을 확인할 수 있습니다.',
                 style: TextStyle(fontSize: 16.0),
               )),
-          CardInfo(
+          InfoCard(
               icon: Icons.date_range,
               title: '개설 강좌 조회',
               detail: Column(
@@ -32,14 +35,14 @@ class HelpPage extends StatelessWidget {
                   ),
                 ],
               )),
-          const CardInfo(
+          const InfoCard(
               icon: Icons.notifications_none,
               title: '공지사항',
               detail: Text(
                 '학교의 공지사항을 볼 수 있습니다.\n제목을 클릭하면 세부정보를 확인할 수 있습니다.',
                 style: TextStyle(fontSize: 16.0),
               )),
-          CardInfo(
+          InfoCard(
               icon: Icons.star_outline,
               title: '즐겨찾는 과목(베타)',
               detail: Column(
@@ -51,7 +54,7 @@ class HelpPage extends StatelessWidget {
                   ),
                 ],
               )),
-          const CardInfo(
+          const InfoCard(
               icon: Icons.settings_outlined,
               title: '설정',
               detail: Text(

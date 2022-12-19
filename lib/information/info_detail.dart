@@ -5,6 +5,11 @@ import 'package:http/http.dart' as http;
 import 'package:suwon_mate/styles/style_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// 공지사항에 대한 상세내용을 출력하는 페이지이다.
+///
+/// **주의: 본 클래스는 더 이상 사용되지 않는 페이지 입니다.**
+///
+/// 더 이상 해당 코드에 대해서는 유지보수가 진행되지 않을 것이며, 추후 업데이트 시 해당 클래스 및 코드는 제거됩니다.
 class InfoDetailPage extends StatelessWidget {
   const InfoDetailPage({Key? key}) : super(key: key);
 
