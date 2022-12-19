@@ -33,7 +33,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('도움말'));
       await tester.pumpAndSettle();
-      expect(find.byType(CardInfo), findsNWidgets(5));
+      expect(find.byType(InfoCard), findsNWidgets(5));
     });
   });
   group('Open Class Page Test', () {
@@ -55,7 +55,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byType(SimpleCardButton));
       await tester.pumpAndSettle();
-      expect(find.byType(CardInfo, skipOffstage: false), findsNWidgets(5));
+      expect(find.byType(InfoCard, skipOffstage: false), findsNWidgets(5));
       expect(find.text('자유로운 Flutter 개발(비대면)'), findsOneWidget);
     });
     testWidgets('View associate professor', ((tester) async {

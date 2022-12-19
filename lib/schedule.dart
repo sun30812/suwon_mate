@@ -4,15 +4,22 @@ import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
 import 'package:suwon_mate/styles/style_widget.dart';
 
-Future<http.Response> getData() async {
-  return await http.get(
+/// 수원대학교 공지사항 페이지에서 주요행사를 가져오기 위해 사용되는 메서드이다.
+///
+/// 수원대학교 주요행사 페이지의 내용을 파싱을 위해 html문서로 가져온다. 비동기적 작업으로 수행을 하고
+/// 작업이 완료되는 동안 사용자에게 로딩창을 띄울 수 있도록 [Future]를 반환한다.
+Future<http.Response> getData() {
+  return http.get(
       Uri.parse('https://www.suwon.ac.kr/index.html?menuno=727'));
 }
-
+/// 학교의 주요 행사를 안내하는 페이지이다.
+///
+/// 학교의 주요 행사를 위젯으로 정리해놓은 페이지이다. 해당 페이지에서는 사이트에 게시된 전체 일정과 현재 일정을 확인할 수 있다.
 class SchedulePage extends StatelessWidget {
+  /// 학교의 주요 행사를 위젯으로 정리해놓은 페이지이다.
   const SchedulePage({Key? key}) : super(key: key);
 
-
+  /// 현재 시행되고 있는 이벤트를 알려주는 메서드이다. 만일 오늘 해당되는 행사가 없을 시 없음 이라는 값을 반환한다.
   String getNowEvent(List<Map<String, String>> scheduleList) {
     DateTime now = DateTime.now();
     for (Map dat in scheduleList) {

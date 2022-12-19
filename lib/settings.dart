@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,26 +16,53 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  /// 학부가 포함되는 리스트이다. 나중에 실제 학부들이 이 변수에 추가된다.
   List<String> subList = ['컴퓨터학부', '경영학부'];
+
+  /// 학과가 포함되는 리스트이다. 나중에 실제 학과들이 이 변수에 추가된다.
   List<String> majorList = ['학부 공통', '전체'];
+
+  /// 학년 리스트이다. 학년을 기준으로 쿼리할 때 사용된다.
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
+
+  /// 현재 학부를 나타내는 변수이다.
   String _myDp = '컴퓨터학부';
+
+  /// 현재 학과를 나타내는 변수이다.
   String _mySub = '전체';
+
+  /// 현재 학년을 나타내는 변수이다.
   String _grade = '1학년';
+
+  /// 학과 목록과 같이 추후 파싱이 필요할 시 한 번만 파싱을 수행하도록 도와주는 변수이다.
   bool _isFirst = true;
+
+  /// 현재 가진 데이터가 동기화된 데이터인지 판단하는 변수이다.
   bool _isSynced = false;
+
+  /// 해당 프로그램이 디버그 용으로 동작하는지에 대한 변수이다.
   final isDebug = true;
+
+  /// 앱의 버전을 출력하기 위한 정보를 가진 변수이다.
   late PackageInfo packageInfo;
+
+  /// 서버DB의 버전을 담고 있는 변수이다.
   late String serverVersion;
   List<DropdownMenuItem<String>> subDropdownList = [];
   List<DropdownMenuItem<String>> majorDropdownList = [];
   List<DropdownMenuItem<String>> gradeDropdownList = [];
+
+  /// 기능 설정과 관련된 항목이다.
   Map<String, dynamic> functionSetting = {
     'offline': false,
     'liveSearch': true,
     'liveSearchCount': 0.0
   };
 
+  /// 현재 앱의 패키지 정보 및 설정 값을 가져오는 메서드이다.
+  ///
+  /// 현재 앱의 이름 및 버전등을 가져온 후 설정 저장소를 반환하는 메서드이다.
+  /// 만일 패키지 정보를 가져오는데 실패한 경우 코드에 명시된 버전으로 지정된다.
   Future<SharedPreferences> getSettings() async {
     try {
       packageInfo = await PackageInfo.fromPlatform();
@@ -51,11 +77,18 @@ class _SettingPageState extends State<SettingPage> {
     return _pref;
   }
 
+  /// 서버로부터 최신 앱 버전을 가져오는 메서드이다.
+  ///
+  /// Firebase에서 `app_ver`정보를 가져온다. 이를 통해 최근에 배포된 앱과 현재 설치된 앱의 버전의 차이를 보고
+  /// 업데이트 여부를 판단할 수 있도록 도와준다.
   Stream getVersionData() {
     DatabaseReference appVer = FirebaseDatabase.instance.ref('version');
     return appVer.child('app_ver').onValue;
   }
 
+  /// 서버로부터 학부 정보를 가져오는 메서드이다.
+  ///
+  /// Firebase에서 학부에 대한 정보를 가져온다. 이를 통해 DB에 명시된 학부를 확인하는 것이 가능하다.
   Stream getDepartment() {
     DatabaseReference data = FirebaseDatabase.instance.ref('departments');
     return data.onValue;
@@ -88,6 +121,9 @@ class _SettingPageState extends State<SettingPage> {
     _pref.setString('settings', jsonEncode(functionSetting));
   }
 
+  /// 개설 강좌 조회를 아직 누르지 않은 경우 경고위젯을 띄우는 메서드
+  /// 개설강좌 조회를 아직 누르지 않은 경우 학부 데이터를 받아오지 않았기 때문에 설정에서 고를 수 있는 학부 및 학과가 적다.
+  /// 이를 알리기 위해 존재하는 위젯이다.
   Widget noSyncWarning() {
     if (_isSynced) {
       return Container();
@@ -98,9 +134,12 @@ class _SettingPageState extends State<SettingPage> {
         message: '아직 개설 강좌 조회를 들어가지 않은 경우 기본 전공을 지정할 수 있는 범위가 좁습니다.');
   }
 
+  /// [isDebug]가 `true`로 설정되어 있을 시 나타나는 위젯이다.
+  ///
+  /// 디버그에 용이한 설정을 앱 상에 나오도록 해주며 즐겨찾기 항목을 지운다던지 데이터를 초기화 한다던지의 작업을 수행할 수 있다.
   Widget debugWidget() {
     if (isDebug) {
-      return CardInfo(
+      return InfoCard(
           icon: Icons.adb_outlined,
           title: '디버그 설정',
           detail: Column(
@@ -269,7 +308,7 @@ class _SettingPageState extends State<SettingPage> {
               }
               return ListView(
                 children: [
-                  CardInfo(
+                  InfoCard(
                       icon: Icons.school_outlined,
                       title: '학생 정보',
                       detail: Column(
@@ -343,7 +382,7 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                         ],
                       )),
-                  CardInfo(
+                  InfoCard(
                       icon: Icons.settings_outlined,
                       title: '기능 설정',
                       detail: Column(
@@ -498,7 +537,7 @@ class _SettingPageState extends State<SettingPage> {
                             )
                         ],
                       )),
-                  CardInfo(
+                  InfoCard(
                     icon: Icons.restore,
                     title: '초기화 메뉴',
                     detail: Column(
@@ -569,7 +608,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                   debugWidget(),
                   versionInfo(snapshot),
-                  CardInfo(
+                  InfoCard(
                       icon: Icons.help_outline,
                       title: '문의하기',
                       detail: Column(
@@ -602,6 +641,11 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
+  /// 현재 앱 버전과 서버상에 명시된 최신 버전을 비교해서 차이날 시 알려주는 메서드이다.
+  ///
+  /// 현재 앱 버전보다 서버상에 명시된 앱 버전이 높은 경우 앱 업데이트를 권장하는 위젯을 띄우는 위젯이다.
+  /// [equalVersion]을 통해 설치된 앱 버전과 최신 버전을 비교한 결과를 받아서 최신 버전인 경우 초록색 완료 마크를
+  /// 표시하고, 업데이트가 필요할 시 업데이트 아이콘을 파란색으로 띄운다. 또한 업데이트된 앱을 받을 수 있는 링크로 안내한다.
   Widget updater(bool equalVersion) {
     if (equalVersion) {
       return Row(
@@ -645,9 +689,13 @@ class _SettingPageState extends State<SettingPage> {
     }
   }
 
+  /// 로컬 DB버전 및 앱 버전 정보를 출력하는 위젯이다.
+  ///
+  /// DB버전 정보를 [snapshot]으로부터 가져와서 DB버전을 출력해주고, 앱 버전도 출력해주는 위젯이다.
+  /// Web 버전의 경우 항상 최신으로 유지되므로 항상 최신으로 유지된다는 위젯을 출력한다.
   Widget versionInfo(AsyncSnapshot<dynamic> snapshot) {
     if (kIsWeb) {
-      return CardInfo(
+      return InfoCard(
         icon: Icons.info_outline,
         title: '버전 정보',
         detail: Column(
@@ -677,13 +725,13 @@ class _SettingPageState extends State<SettingPage> {
         stream: getVersionData(),
         builder: (context, _snapshot) {
           if (!_snapshot.hasData) {
-            return const CardInfo(
+            return const InfoCard(
               icon: Icons.info_outline,
               title: '버전 정보',
               detail: Center(child: CircularProgressIndicator.adaptive()),
             );
           } else if (_snapshot.hasError) {
-            return CardInfo(
+            return InfoCard(
               icon: Icons.info_outline,
               title: '버전 정보',
               detail: Text(
@@ -692,7 +740,7 @@ class _SettingPageState extends State<SettingPage> {
                   '최신 앱 버전: 정보를 가져오는데 오류가 발생했습니다.'),
             );
           } else {
-            return CardInfo(
+            return InfoCard(
               icon: Icons.info_outline,
               title: '버전 정보',
               detail: Column(
@@ -713,6 +761,9 @@ class _SettingPageState extends State<SettingPage> {
         });
   }
 
+  /// 업데이트 필요 시 나타나는 버튼이다.
+  ///
+  /// 해당 버튼을 누르면 최신 앱을 받을 수 있는 프로젝트 저장소의 release탭으로 이동한다.
   Widget downloadUpdate() {
     return TextButton(
         onPressed: (() async => await launchUrlString(

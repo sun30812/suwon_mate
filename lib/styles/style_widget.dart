@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// 강좌에 대한 세부 정보를 보여주는 페이지이다.
 class ClassDetailInfoCard extends StatelessWidget {
   final String subjectCode,
       openYear,
@@ -42,7 +43,7 @@ class ClassDetailInfoCard extends StatelessWidget {
     return Flexible(
       child: ListView(
         children: [
-          CardInfo(
+          InfoCard(
               icon: Icons.account_circle_outlined,
               title: '수업 대상자',
               detail: Text(
@@ -52,7 +53,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                     '대상 학년은 $guestGrade 이고 대상 학부는 $guestDept 이며 대상 학과는 $guestMjor 입니다.',
                 style: const TextStyle(fontSize: 17.0),
               )),
-          CardInfo(
+          InfoCard(
               icon: Icons.book_outlined,
               title: '과목 정보',
               detail: Column(
@@ -87,7 +88,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                   ),
                 ],
               )),
-          CardInfo(
+          InfoCard(
               icon: Icons.work_outline,
               title: '강의자 정보',
               detail: Column(
@@ -121,7 +122,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                   ),
                 ],
               )),
-          CardInfo(
+          InfoCard(
               icon: Icons.school_outlined,
               title: '수업 관련 사항',
               detail: Text(
@@ -130,7 +131,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                 semanticsLabel:
                     '수업 장소 및 요일은 $classLocation 이며, 교양 영역은 $region 이며, 수업 언어는 $classLang 입니다.',
               )),
-          CardInfo(
+          InfoCard(
               icon: Icons.info_outline,
               title: '추가 정보',
               detail: Text(
@@ -144,6 +145,9 @@ class ClassDetailInfoCard extends StatelessWidget {
   }
 }
 
+/// 데이터를 불러올 수 없을 시 출력되는 경고 메세지이다.
+///
+/// 어떠한 이유로 인해 데이터를 불러올 수 없는 경우 메세지가 표시된다.
 class DataLoadingError extends StatelessWidget {
   const DataLoadingError({Key? key}) : super(key: key);
 
@@ -163,11 +167,28 @@ class DataLoadingError extends StatelessWidget {
   }
 }
 
+/// 앱에서 큼지막한 아이콘을 쓰는 메뉴 버튼에 쓰이는 위젯이다. 정사각형 형태를 보인다.
 class SuwonSquareButton extends StatefulWidget {
+  /// 버튼의 활성화 여부를 지정한다.
+  ///
+  /// 버튼에 동작이 지정된 경우에도 어떠한 설정에 의해 사용을 막아야 할 경우가 존재한다.
+  /// 그럴 때 해당 속성을 `false`로 지정하면 사용을 막는 것이 가능하다.
   final bool? isActivate;
+
+  /// 버튼의 아이콘을 지정한다.
   final IconData icon;
+
+  /// 버튼의 이름을 지정한다.
   final String btnName;
+
+  /// 버튼을 누를 시 동작을 지정한다.
   final void Function()? onPressed;
+
+  /// 아이콘이 큼지막한 정사각형 버튼이다.
+  ///
+  /// 버튼의 활성화 여부를 [isActivate]를 통해 지정할 수 있으며 지정하지 않을 시 `true`로 간주한다.
+  /// 버튼의 아이콘이나 이름은 [icon], [btnName]을 통해 지정이 가능하다.
+  /// 버튼을 누를 시 동작을 지정하기 위해서는 [onPressed]를 지정해야 한다.
   const SuwonSquareButton({
     Key? key,
     this.isActivate,
@@ -192,6 +213,7 @@ class _SuwonSquareButtonState extends State<SuwonSquareButton> {
     return widget.onPressed;
   }
 
+  /// 활성화 된 버튼일 경우 버튼을 누를 때 효과를 준다.
   Color smartColor() {
     if ((widget.isActivate ?? true) && (widget.onPressed != null)) {
       return Colors.grey[700]!;
@@ -230,17 +252,17 @@ class _SuwonSquareButtonState extends State<SuwonSquareButton> {
                   borderRadius: BorderRadius.circular(10.0),
                   boxShadow: !_isClicked && (widget.isActivate ?? true)
                       ? [
-                    BoxShadow(
-                        offset: const Offset(3, 3),
-                        blurRadius: 15,
-                        spreadRadius: 0.5,
-                        color: Colors.grey[500]!),
-                    const BoxShadow(
-                        offset: Offset(-3, -3),
-                        blurRadius: 15,
-                        spreadRadius: 0.5,
-                        color: Colors.white)
-                  ]
+                          BoxShadow(
+                              offset: const Offset(3, 3),
+                              blurRadius: 15,
+                              spreadRadius: 0.5,
+                              color: Colors.grey[500]!),
+                          const BoxShadow(
+                              offset: Offset(-3, -3),
+                              blurRadius: 15,
+                              spreadRadius: 0.5,
+                              color: Colors.white)
+                        ]
                       : null),
               duration: const Duration(milliseconds: 200),
               child: Padding(
@@ -258,8 +280,7 @@ class _SuwonSquareButtonState extends State<SuwonSquareButton> {
           Text(
             widget.btnName,
             semanticsLabel: widget.btnName,
-            style:
-            TextStyle(color: smartColor(), fontWeight: FontWeight.bold),
+            style: TextStyle(color: smartColor(), fontWeight: FontWeight.bold),
           )
         ],
       ),
@@ -468,19 +489,35 @@ class _SimpleCardButtonState extends State<SimpleCardButton> {
   }
 }
 
-class CardInfo extends StatefulWidget {
+/// 어떠한 정보를 출력할 떄 사용되는 위젯
+///
+/// [icon]으로 지정된 아이콘과 함께 어떤 정보를 출력하는데 사용된다. 아이콘 오른쪽에는
+/// [title]이 출력된다. 세부 내용은 [detail]에서 정할 수 있는데 [Widget]타입이기 때문에
+/// 글자를 출력할 수도 있고 임의의 위젯을 출력하는 것도 가능하다.
+class InfoCard extends StatefulWidget {
+  /// 카드 상단에 나타나는 아이콘
   final IconData icon;
+
+  /// 아이콘 오른쪽에 표시되는 카드 제목
   final String title;
+
+  /// 카드 내용
   final Widget detail;
-  const CardInfo(
+
+  /// 어떠한 정보를 출력할 떄 사용되는 위젯
+  ///
+  /// [icon]으로 지정된 아이콘과 함께 어떤 정보를 출력하는데 사용된다. 아이콘 오른쪽에는
+  /// [title]이 출력된다. 세부 내용은 [detail]에서 정할 수 있는데 [Widget]타입이기 때문에
+  /// 글자를 출력할 수도 있고 임의의 위젯을 출력하는 것도 가능하다.
+  const InfoCard(
       {Key? key, required this.icon, required this.title, required this.detail})
       : super(key: key);
 
   @override
-  State<CardInfo> createState() => _CardInfoState();
+  State<InfoCard> createState() => _InfoCardState();
 }
 
-class _CardInfoState extends State<CardInfo> {
+class _InfoCardState extends State<InfoCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -529,11 +566,18 @@ class _CardInfoState extends State<CardInfo> {
   }
 }
 
+/// 과목 검색 시 사용되는 검색창이다.
 class SearchBar extends StatefulWidget {
   final void Function(String)? _onChanged;
   final void Function()? _onAcceptPressed;
   final IconData? _icon;
   final IconData? _acceptIcon;
+
+  /// 과목 검색 시 사용되는 검색창으로 보통 상단에 위치해있다.
+  /// 검색 버튼에 들어갈 아이콘을 지정하는 [acceptIcon]을 지정할 수 있고,
+  /// [onAcceptPressed]를 통해 검색 버튼이 눌릴 시의 동작을 정의할 수 있다.
+  /// 또한 검색창 왼쪽의 아이콘인 [icon]을 지정하는 것이 가능하며
+  /// 텍스트를 수정할 때 마다 수행할 동작을 지정하는 경우 [onChanged]를 사용할 수 있다.
   const SearchBar(
       {Key? key,
       IconData? acceptIcon,
@@ -591,12 +635,45 @@ class _SearchBarState extends State<SearchBar> {
   }
 }
 
+/// 알림창에 해당하는 위젯이다. 보통 어떤 동작을 수행할 시 경고를 띄울 목적으로 활용이 가능하다.
+///
+/// ## 예제
+///
+/// ```dart
+/// TextButton(
+///     onPressed: () async {
+///       showDialog(
+///           barrierDismissible: false,
+///           context: context,
+///           builder: (BuildContext context) => SuwonDialog(
+///                 icon: Icons.error_outline,
+///                 title: '경고',
+///                 content: const Text('앱의 데이터를 모두 지웁니까?'),
+///                 onPressed: () async {
+///                   SharedPreferences _pref =
+///                       await SharedPreferences.getInstance();
+///                   _pref.remove('favoritesMap');
+///                   Navigator.of(context).pop();
+///                 },
+///               ));
+///     },
+///     style: ButtonStyle(
+///         overlayColor: MaterialStateProperty.all(
+///             Colors.redAccent.withAlpha(30)),
+///         foregroundColor:
+///             MaterialStateProperty.all(Colors.redAccent)),
+///     child: const Text(
+///       '디버그: 앱의 모든 설정 데이터 지우기',
+///     ))
+///```
 class SuwonDialog extends StatelessWidget {
   final IconData _icon;
   final String _title;
   final Widget _content;
   final bool _isDestructive;
   final void Function()? _onPressed;
+
+  /// 알림창에 해당하는 위젯이다.
   const SuwonDialog({
     required IconData icon,
     required String title,
@@ -698,9 +775,13 @@ class NotiCard extends StatelessWidget {
     );
   }
 }
-
+/// 플랫폼에서 지원하지 않는 동작의 경우 표시되는 페이지이다.
+///
+/// 만일 지원하지 않는 플랫폼의 경우 해당 플랫폼의 이름인 [platform]과 함께 지원되지 않는다는 화면을 표시한다.
 class NotSupportInPlatform extends StatelessWidget {
+  /// 플랫폼 이름을 명시하는 변수이다.
   final String _platform;
+  /// 플랫폼에서 지원하지 않는 동작의 경우 표시되는 페이지이다.
   const NotSupportInPlatform(
     String platform, {
     Key? key,
@@ -713,7 +794,8 @@ class NotSupportInPlatform extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline_outlined, color: Colors.redAccent,size: 45.0),
+          const Icon(Icons.error_outline_outlined,
+              color: Colors.redAccent, size: 45.0),
           Text(
             '$_platform 플랫폼에서는 지원되지 않습니다.',
             semanticsLabel: '$_platform 플랫폼에서는 지원되지 않습니다.',
@@ -759,11 +841,11 @@ class NotSupportPlatformMessage extends StatelessWidget {
     return Container();
   }
 }
-
-class DatasaveAlert extends StatelessWidget {
-  const DatasaveAlert({
-        Key? key,
-      })  : super(key: key);
+/// 데이터 절약 모드가 활성화된 경우 접근을 제한하기 위해 사용되는 페이지이다.
+class DataSaveAlert extends StatelessWidget {
+  const DataSaveAlert({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -771,7 +853,7 @@ class DatasaveAlert extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          Icon(Icons.offline_bolt_outlined,size: 80.0),
+          Icon(Icons.offline_bolt_outlined, size: 80.0),
           Text(
             '현재 데이터 절약 모드로 인해 이 페이지를 열 수 없습니다.',
             style: TextStyle(fontSize: 16.0),
