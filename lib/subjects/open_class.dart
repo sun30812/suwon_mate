@@ -2,19 +2,46 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/api/keys.dart';
+import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 
 /// 개설 강좌 조회 시 페이지이다.
+///
+/// Firebase의 RealtimeDatabase를 통해 강좌 목록에 관한 데이터를 가져와서 화면에 카드 형태로 나타내는
+/// 페이지이다.
 class OpenClass extends StatefulWidget {
-  const OpenClass({Key? key}) : super(key: key);
+  /// 본인의 학부를 나타내는 변수
+  final String myDept;
+
+  /// 본인의 전공을 나타내는 변수
+  final String myMajor;
+
+  /// 본인의 학년을 나타내는 변수
+  final String myGrade;
+
+  /// 설정 값에 대한 정보가 담긴 변수
+  final Map<String, dynamic> settingsData;
+
+  /// 개설 강좌 조회 시 페이지이다.
+  const OpenClass(
+      {required this.settingsData,
+      required this.myDept,
+      required this.myMajor,
+      required this.myGrade,
+      Key? key})
+      : super(key: key);
 
   @override
   _OpenClassState createState() => _OpenClassState();
 }
 
 class _OpenClassState extends State<OpenClass> {
+  late String _myDept = widget.myDept;
+  late String _myMajor = widget.myMajor;
+  late String _myGrade = widget.myGrade;
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
   List<DropdownMenuItem<String>> dpDropdownList = [];
   List<DropdownMenuItem<String>> subjectDropdownList = [];
@@ -53,19 +80,11 @@ class _OpenClassState extends State<OpenClass> {
       value: '자연과 과학',
     )
   ];
-  List orgClassList = [];
-  bool _offline = false;
-  bool _liveSearch = true;
-  double _liveSearchCount = 0.0;
-  bool _isSaved = false;
-  String _myDept = '컴퓨터학부';
-  String _mySub = '학부 공통';
-  String _myGrade = '1학년';
+  Map allClassList = {};
   String _region = '전체';
   Set<String> dpSet = {};
   Map<String, List> dpMap = {};
   Map subjects = {};
-  bool _isFirst = true;
   bool _isFirstDp = true;
   BannerAd? _bannerAd;
   bool _loadBanner = false;
@@ -97,30 +116,10 @@ class _OpenClassState extends State<OpenClass> {
 
   Future getData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    if (_isFirst) {
-      _myDept = _pref.getString('myDept') ?? '컴퓨터학부';
-      _mySub = _pref.getString('mySubject') ?? '학부 공통';
-      _myGrade = _pref.getString('myGrade') ?? '1학년';
-      _isFirst = false;
-      if (_pref.containsKey('settings')) {
-        Map settingData = jsonDecode(_pref.getString('settings')!) as Map;
-        _offline = settingData['offline'];
-        _liveSearch = settingData['liveSearch'] ?? true;
-        _liveSearchCount = settingData['liveSearchCount'] ?? 0.0;
-      }
-    }
-    if ((_pref.containsKey('db_ver')) && _offline) {
-      _isSaved = true;
-      return _pref.getString('class');
-    }
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
-    if ((_pref.getString('db_ver')) == versionInfo["db_ver"]) {
-      _isSaved = true;
-      return _pref.getString('class');
-    }
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref('estbLectDtaiList_test');
+    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
+
     _pref.setString('db_ver', versionInfo["db_ver"]);
     return ref.once();
   }
@@ -157,8 +156,6 @@ class _OpenClassState extends State<OpenClass> {
   void dispose() async {
     super.dispose();
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    String _saveData = jsonEncode(orgClassList);
-    _pref.setString('class', _saveData);
     _pref.remove('dp_set');
     _pref.setString('subjects', jsonEncode(subjects));
     _pref.setString('dpMap', jsonEncode(dpMap));
@@ -176,10 +173,14 @@ class _OpenClassState extends State<OpenClass> {
           title: const Text('개설 강좌 조회'),
           actions: [
             IconButton(
-              onPressed: () => Navigator.of(context).pushNamed(
-                '/oclass/search',
-                arguments: [orgClassList, _liveSearch, _liveSearchCount],
-              ),
+              onPressed: () => context.push(
+                '/oclass/search',extra: [
+                // TODO: 전체 과목 데이터 넘기는 법 확인 필요
+                  allClassList.values
+                      .map((dat) => ClassInfo.fromFirebaseDatabase(dat))
+                      .toList(),
+                  widget.settingsData
+              ]),
               icon: const Icon(Icons.search),
               tooltip: '검색',
             )
@@ -199,33 +200,31 @@ class _OpenClassState extends State<OpenClass> {
             } else if (snapshot.hasError) {
               return const DataLoadingError();
             } else {
-              if (_isSaved) {
-                orgClassList = jsonDecode(snapshot.data as String);
-              } else {
-                DatabaseEvent _event = snapshot.data;
-                orgClassList = _event.snapshot.value as List;
-              }
-              List classList = [];
+              DatabaseEvent _event = snapshot.data;
+              allClassList = _event.snapshot.value as Map;
+              List<ClassInfo> classList = [];
               Set tempSet = {};
               dpSet = {};
 
-              for (var dat in orgClassList[0].keys) {
-                Set _subSet = {};
-                for (var dat2 in orgClassList[0][dat]) {
-                  if (dat2['estbMjorNm'] != null) {
-                    _subSet.add(dat2['estbMjorNm']);
+              for (var department in allClassList.keys) {
+                Set subSet = {};
+                for (var dat2 in ClassInfo.fromFirebaseDatabase(
+                    allClassList[department])) {
+                  if (dat2.guestMjor != null) {
+                    subSet.add(dat2.guestMjor);
                   }
                 }
-                dpMap[dat.toString()] = _subSet.toList();
+                dpMap[department.toString()] = subSet.toList();
               }
-              for (var dat in orgClassList[0].keys) {
-                if ((dat != '교양') && (dat != '교양(야)')) {
-                  dpSet.add(dat.toString());
+              for (var department in allClassList.keys) {
+                if ((department != '교양') && (department != '교양(야)')) {
+                  dpSet.add(department.toString());
                 }
               }
-              for (var dat in orgClassList[0][_myDept]) {
-                if (dat['estbMjorNm'] != null) {
-                  tempSet.add(dat['estbMjorNm']);
+              for (var dat
+                  in ClassInfo.fromFirebaseDatabase(allClassList[_myDept])) {
+                if (dat.guestMjor != null) {
+                  tempSet.add(dat.guestMjor);
                 }
               }
               if (_isFirstDp) {
@@ -271,27 +270,26 @@ class _OpenClassState extends State<OpenClass> {
                   value: subject,
                 ));
               }
-              for (var classData in orgClassList[0][_myDept]) {
+              for (var classData
+                  in ClassInfo.fromFirebaseDatabase(allClassList[_myDept])) {
                 if (_myDept == '교양') {
-                  if ((classData['trgtGrdeCd'].toString() + '학년' == _myGrade) &&
+                  if ((classData.guestGrade.toString() + '학년' == _myGrade) &&
                       ((_region == '전체' ||
-                          _region == (classData["cltTerrNm"] ?? 'none')))) {
+                          _region == (classData.region ?? 'none')))) {
                     classList.add(classData);
                   }
-                } else if (_mySub == '학부 공통') {
-                  if ((classData['estbMjorNm'] == null) &&
-                      ((classData['trgtGrdeCd'].toString() + '학년') ==
-                          _myGrade)) {
+                } else if (_myMajor == '학부 공통') {
+                  if ((classData.guestMjor == null) &&
+                      ((classData.guestGrade.toString() + '학년') == _myGrade)) {
                     classList.add(classData);
                   }
-                } else if ((_mySub == '전체' ||
-                        (classData['estbMjorNm'] == _mySub)) &&
-                    ((classData['trgtGrdeCd'].toString() + '학년') == _myGrade)) {
+                } else if ((_myMajor == '전체' ||
+                        (classData.guestMjor == _myMajor)) &&
+                    ((classData.guestGrade.toString() + '학년') == _myGrade)) {
                   classList.add(classData);
                 }
               }
-              classList.sort((a, b) => ((a["subjtNm"] as String)
-                  .compareTo((b["subjtNm"] as String))));
+              classList.sort((a, b) => (a.name.compareTo(b.name)));
               return Column(
                 children: [
                   SingleChildScrollView(
@@ -310,7 +308,7 @@ class _OpenClassState extends State<OpenClass> {
                             onChanged: (String? value) {
                               setState(() {
                                 _myDept = value!;
-                                _mySub = '학부 공통';
+                                _myMajor = '학부 공통';
                               });
                             },
                             value: _myDept,
@@ -322,10 +320,10 @@ class _OpenClassState extends State<OpenClass> {
                             items: subjectDropdownList,
                             onChanged: (String? value) {
                               setState(() {
-                                _mySub = value!;
+                                _myMajor = value!;
                               });
                             },
-                            value: _mySub,
+                            value: _myMajor,
                           ),
                         ),
                         Padding(
@@ -349,18 +347,16 @@ class _OpenClassState extends State<OpenClass> {
                         itemCount: classList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return SimpleCardButton(
-                            onPressed: () => Navigator.of(context).pushNamed(
-                                '/oclass/info',
-                                arguments: classList[index]),
-                            title: classList[index]["subjtNm"],
-                            subTitle:
-                                classList[index]["ltrPrfsNm"] ?? "이름 공개 안됨",
-                            content: Text((classList[index]["estbMjorNm"] ??
+                            onPressed: () => context.push('/oclass/info',
+                                extra: classList[index]),
+                            title: classList[index].name,
+                            subTitle: classList[index].hostName ?? "이름 공개 안됨",
+                            content: Text((classList[index].guestMjor ??
                                     "학부 전체 대상") +
                                 ", " +
-                                classList[index]["facDvnm"] +
+                                (classList[index].subjectKind ?? '공개 안됨') +
                                 ', ' +
-                                (classList[index]["timtSmryCn"] ?? "공개 안됨")),
+                                (classList[index].classLocation ?? "공개 안됨")),
                           );
                         }),
                   ),

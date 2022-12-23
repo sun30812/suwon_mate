@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+import 'package:suwon_mate/model/notice.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../styles/style_widget.dart';
 
@@ -10,14 +12,14 @@ import '../styles/style_widget.dart';
 ///
 /// 수원대학교의 공지사항을 받아서 위젯([SimpleCardButton])으로 출력해줍니다.
 /// 만일 공지사항을 볼 수 없는 플랫폼인 경우 [NotSupportInPlatform]페이지를 출력한다.
-class InfoPage extends StatefulWidget {
-  const InfoPage({Key? key}) : super(key: key);
+class NoticePage extends StatefulWidget {
+  const NoticePage({Key? key}) : super(key: key);
 
   @override
-  State<InfoPage> createState() => _InfoPageState();
+  State<NoticePage> createState() => _NoticePageState();
 }
 
-class _InfoPageState extends State<InfoPage> {
+class _NoticePageState extends State<NoticePage> {
   /// 수원대학교의 공지사항을 html문서로 가져오는 메서드이다.
   Future getData() async {
     return await http
@@ -31,8 +33,11 @@ class _InfoPageState extends State<InfoPage> {
           icon: Icons.screen_share_outlined,
           buttonName: '브라우저로 보기',
           onPressed: () async {
-            await launch('https://www.suwon.ac.kr/index.html?menuno=674',
-                forceSafariVC: false, forceWebView: false);
+            await launchUrl(
+                Uri(
+                    scheme: 'https',
+                    host: 'www.suwon.ac.kr/index.html?menuno=674'),
+                mode: LaunchMode.externalApplication);
           }),
       body: mainScreen(),
     );
@@ -44,8 +49,8 @@ class _InfoPageState extends State<InfoPage> {
       onRefresh: () async {
         http.Response response = await http
             .get(Uri.parse('https://www.suwon.ac.kr/index.html?menuno=674'));
-         setState(() {
-           rows = parse(response.body)
+        setState(() {
+          rows = parse(response.body)
               .getElementsByClassName('board_basic_list')[0];
         });
       },
@@ -64,23 +69,25 @@ class _InfoPageState extends State<InfoPage> {
             } else if (snapshot.hasError) {
               return const DataLoadingError();
             } else {
-               rows = parse((snapshot.data as http.Response).body)
+              rows = parse((snapshot.data as http.Response).body)
                   .getElementsByClassName('board_basic_list')[0];
               return ListView.builder(
                   itemCount: rows.getElementsByClassName('subject').length,
                   itemBuilder: (BuildContext context, int index) {
-                    Map<String, String> dat = {};
-                    dat['title'] =
-                        rows.getElementsByClassName('subject')[index].text.trim();
-                    dat['site_code'] = rows
-                        .getElementsByClassName('subject')[index]
-                        .innerHtml
-                        .split(',')[2]
-                        .split(')')[0];
+                    Notice siteData = Notice(
+                        title: rows
+                            .getElementsByClassName('subject')[index]
+                            .text
+                            .trim(),
+                        siteCode: rows
+                            .getElementsByClassName('subject')[index]
+                            .innerHtml
+                            .split(',')[2]
+                            .split(')')[0]);
                     return SimpleCardButton(
-                        onPressed: () => Navigator.of(context)
-                            .pushNamed('/info/detail', arguments: dat),
-                        title: dat['title']!,
+                        onPressed: () =>
+                            context.push('/notice/detail', extra: siteData),
+                        title: siteData.title,
                         content: Text(
                           rows
                                   .getElementsByClassName('info')[index]

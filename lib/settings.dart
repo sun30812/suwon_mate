@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -177,6 +177,7 @@ class _SettingPageState extends State<SettingPage> {
                 _isFirst = false;
               }
               return ListView(
+                shrinkWrap: true,
                 children: [
                   InfoCard(
                       icon: Icons.school_outlined,

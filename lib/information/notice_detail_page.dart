@@ -2,17 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+import 'package:suwon_mate/model/notice.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// 공지사항에 대한 상세내용을 출력하는 페이지이다.
 ///
-/// **주의: 본 클래스는 더 이상 사용되지 않는 페이지 입니다.**
-///
-/// 더 이상 해당 코드에 대해서는 유지보수가 진행되지 않을 것이며, 추후 업데이트 시 해당 클래스 및 코드는 제거됩니다.
-class InfoDetailPage extends StatelessWidget {
-  const InfoDetailPage({Key? key}) : super(key: key);
+/// 공지사항 페이지에서 특정 위젯을 클릭 시 상세 공지사항을 출력하는 페이지이다.
+/// [notice]를 통해 게시글의 제목과 해당 게시글의 사이트 코드를 받아서 상세정보를 가져와서 보여주는 페이지이다.
+class NoticeDetailPage extends StatelessWidget {
+  /// 특정 공지사항 게시글의 일부 정보를 가진 변수이다.
+  ///
+  /// ## 같이보기
+  /// * [Notice]
+  ///
+  final Notice notice;
 
+  /// 공지사항에 대한 상세내용을 출력하는 페이지
+  const NoticeDetailPage({required this.notice, Key? key}) : super(key: key);
+
+  /// 공지사항 게시글의 코드를 받아서 특정 공지사항의 html문서를 가져오는 메서드
+  ///
+  /// [siteCode]에 게시글 코드를 제공해서 공지사항 게시글을 받아올 수 있도록 한다.
   Future getData(String siteCode) async {
     return await http.get(Uri.parse(
         'https://www.suwon.ac.kr/index.html?menuno=674&bbsno=$siteCode&boardno=$siteCode&siteno=37&act=view'));
@@ -20,20 +31,21 @@ class InfoDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dynamic args = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       floatingActionButton: SuwonButton(
           icon: Icons.screen_share_outlined,
           buttonName: '브라우저로 보기',
           onPressed: () async {
-            await launch(
-                'https://www.suwon.ac.kr/index.html?menuno=674&bbsno=${args['site_code']}&boardno=${args['site_code']}&siteno=37&act=view',
-                forceSafariVC: false,
-                forceWebView: false);
+            await launchUrl(
+                Uri(
+                    scheme: 'https',
+                    host:
+                        'www.suwon.ac.kr/index.html?menuno=674&bbsno=${notice.siteCode}&boardno=${notice.siteCode}&siteno=37&act=view'),
+                mode: LaunchMode.externalApplication);
           }),
-      appBar: AppBar(title: Text(args['title'])),
+      appBar: AppBar(title: Text(notice.title)),
       body: FutureBuilder(
-        future: getData(args['site_code']),
+        future: getData(notice.siteCode),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator.adaptive());
