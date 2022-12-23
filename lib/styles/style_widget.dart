@@ -1,42 +1,13 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:suwon_mate/model/class_info.dart';
 
 /// 강좌에 대한 세부 정보를 보여주는 페이지이다.
 class ClassDetailInfoCard extends StatelessWidget {
-  final String subjectCode,
-      openYear,
-      subjectKind,
-      hostName,
-      hostGrade,
-      classLocation,
-      region,
-      classLang,
-      promise,
-      extra,
-      point,
-      sex,
-      guestGrade,
-      guestDept,
-      guestMjor;
-  const ClassDetailInfoCard({
-    Key? key,
-    required this.subjectCode,
-    required this.openYear,
-    required this.subjectKind,
-    required this.hostName,
-    required this.hostGrade,
-    required this.classLocation,
-    required this.region,
-    required this.classLang,
-    required this.promise,
-    required this.point,
-    required this.extra,
-    required this.sex,
-    required this.guestGrade,
-    required this.guestDept,
-    required this.guestMjor,
-  }) : super(key: key);
+  final ClassInfo classInfo;
+  const ClassDetailInfoCard({required this.classInfo, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +18,10 @@ class ClassDetailInfoCard extends StatelessWidget {
               icon: Icons.account_circle_outlined,
               title: '수업 대상자',
               detail: Text(
-                '대상 학년: $guestGrade\n대상 학부: $guestDept\n'
-                '대상 학과: $guestMjor',
+                '대상 학년: ${classInfo.guestGrade}\n대상 학부: ${classInfo.guestDept}\n'
+                '대상 학과: ${classInfo.guestMjor}',
                 semanticsLabel:
-                    '대상 학년은 $guestGrade 이고 대상 학부는 $guestDept 이며 대상 학과는 $guestMjor 입니다.',
+                    '대상 학년은 ${classInfo.guestGrade} 이고 대상 학부는 ${classInfo.guestDept} 이며 대상 학과는 ${classInfo.guestMjor} 입니다.',
                 style: const TextStyle(fontSize: 17.0),
               )),
           InfoCard(
@@ -62,13 +33,15 @@ class ClassDetailInfoCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('과목 코드: $subjectCode',
-                          semanticsLabel: '과목 코드는 $subjectCode 입니다.',
+                      Text('과목 코드: ${classInfo.subjectCode}',
+                          semanticsLabel:
+                              '과목 코드는 ${classInfo.subjectCode} 입니다.',
                           style: const TextStyle(fontSize: 17.0)),
                       IconButton(
                           tooltip: '과목 코드 복사',
                           onPressed: () {
-                            Clipboard.setData(ClipboardData(text: subjectCode))
+                            Clipboard.setData(
+                                    ClipboardData(text: classInfo.subjectCode))
                                 .then((value) => {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(
@@ -81,9 +54,9 @@ class ClassDetailInfoCard extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    '개설년도: $openYear\n교과 종류: $subjectKind\n학점: $point',
+                    '개설년도: ${classInfo.openYear}\n교과 종류: ${classInfo.subjectKind}\n학점: ${classInfo.point}',
                     semanticsLabel:
-                        '개설 년도는 $openYear년 이고 교과 종류는 $subjectKind이며 학점은 $point점 입니다.',
+                        '개설 년도는 ${classInfo.openYear}년 이고 교과 종류는 ${classInfo.subjectKind}이며 학점은 ${classInfo.point}점 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
@@ -95,29 +68,30 @@ class ClassDetailInfoCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '성별: $sex',
-                    semanticsLabel: '성별은 $sex성 입니다.',
+                    '성별: ${classInfo.sex}',
+                    semanticsLabel: '성별은 ${classInfo.sex}성 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '성함: $hostName',
-                        semanticsLabel: '성함은 $hostName 입니다.',
+                        '성함: ${classInfo.hostName}',
+                        semanticsLabel: '성함은 ${classInfo.hostName} 입니다.',
                         style: const TextStyle(fontSize: 17.0),
                       ),
                       IconButton(
-                        onPressed: () => Navigator.of(context)
-                            .pushNamed('/professor', arguments: hostName),
+                        onPressed: () => Navigator.of(context).pushNamed(
+                            '/professor',
+                            arguments: classInfo.hostName),
                         icon: const Icon(Icons.search),
                         tooltip: '해당 강의자가 강의하는 모든 과목을 검색합니다.',
                       )
                     ],
                   ),
                   Text(
-                    '직책: $hostGrade',
-                    semanticsLabel: '직책은 $hostGrade 입니다.',
+                    '직책: ${classInfo.hostGrade}',
+                    semanticsLabel: '직책은 ${classInfo.hostGrade} 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
@@ -126,18 +100,19 @@ class ClassDetailInfoCard extends StatelessWidget {
               icon: Icons.school_outlined,
               title: '수업 관련 사항',
               detail: Text(
-                '수업 장소 및 요일: $classLocation\n교양 영역: $region\n수업 언어: $classLang',
+                '수업 장소 및 요일: ${classInfo.classLocation}\n교양 영역: ${classInfo.region ?? '해당 없음'}\n수업 언어: ${classInfo.classLanguage}',
                 style: const TextStyle(fontSize: 17.0),
                 semanticsLabel:
-                    '수업 장소 및 요일은 $classLocation 이며, 교양 영역은 $region 이며, 수업 언어는 $classLang 입니다.',
+                    '수업 장소 및 요일은 ${classInfo.classLocation} 이며, 교양 영역은 ${classInfo.region ?? '해당 없음'} 이며, 수업 언어는 ${classInfo.classLanguage} 입니다.',
               )),
           InfoCard(
               icon: Icons.info_outline,
               title: '추가 정보',
               detail: Text(
-                '강의자 계약 정보: $promise\n수업 방식: $extra',
+                '강의자 계약 정보: ${classInfo.promise}\n수업 방식: ${classInfo.extra}',
                 style: const TextStyle(fontSize: 17.0),
-                semanticsLabel: '강의자는 계약 종류는 $promise 이며 $extra 의 수업 방식을 따릅니다.',
+                semanticsLabel:
+                    '강의자는 계약 종류는 ${classInfo.promise} 이며 ${classInfo.extra} 의 수업 방식을 따릅니다.',
               ))
         ],
       ),
@@ -775,12 +750,14 @@ class NotiCard extends StatelessWidget {
     );
   }
 }
+
 /// 플랫폼에서 지원하지 않는 동작의 경우 표시되는 페이지이다.
 ///
 /// 만일 지원하지 않는 플랫폼의 경우 해당 플랫폼의 이름인 [platform]과 함께 지원되지 않는다는 화면을 표시한다.
 class NotSupportInPlatform extends StatelessWidget {
   /// 플랫폼 이름을 명시하는 변수이다.
   final String _platform;
+
   /// 플랫폼에서 지원하지 않는 동작의 경우 표시되는 페이지이다.
   const NotSupportInPlatform(
     String platform, {
@@ -841,6 +818,7 @@ class NotSupportPlatformMessage extends StatelessWidget {
     return Container();
   }
 }
+
 /// 데이터 절약 모드가 활성화된 경우 접근을 제한하기 위해 사용되는 페이지이다.
 class DataSaveAlert extends StatelessWidget {
   const DataSaveAlert({

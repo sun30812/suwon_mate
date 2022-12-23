@@ -81,9 +81,9 @@ class _SettingPageState extends State<SettingPage> {
   ///
   /// Firebase에서 `app_ver`정보를 가져온다. 이를 통해 최근에 배포된 앱과 현재 설치된 앱의 버전의 차이를 보고
   /// 업데이트 여부를 판단할 수 있도록 도와준다.
-  Stream getVersionData() {
+  Future<DatabaseEvent> getVersionData() {
     DatabaseReference appVer = FirebaseDatabase.instance.ref('version');
-    return appVer.child('app_ver').onValue;
+    return appVer.child('app_ver').once();
   }
 
   /// 서버로부터 학부 정보를 가져오는 메서드이다.
@@ -307,6 +307,7 @@ class _SettingPageState extends State<SettingPage> {
                 _isFirst = false;
               }
               return ListView(
+                shrinkWrap: true,
                 children: [
                   InfoCard(
                       icon: Icons.school_outlined,
@@ -721,16 +722,16 @@ class _SettingPageState extends State<SettingPage> {
         ),
       );
     }
-    return StreamBuilder(
-        stream: getVersionData(),
-        builder: (context, _snapshot) {
-          if (!_snapshot.hasData) {
+    return FutureBuilder(
+        future: getVersionData(),
+        builder: (context, versionSnapshot) {
+          if (!versionSnapshot.hasData) {
             return const InfoCard(
               icon: Icons.info_outline,
               title: '버전 정보',
               detail: Center(child: CircularProgressIndicator.adaptive()),
             );
-          } else if (_snapshot.hasError) {
+          } else if (versionSnapshot.hasError) {
             return InfoCard(
               icon: Icons.info_outline,
               title: '버전 정보',
@@ -746,12 +747,13 @@ class _SettingPageState extends State<SettingPage> {
               detail: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  updater((_snapshot.data as DatabaseEvent).snapshot.value ==
-                      packageInfo.version),
-                  if ((_snapshot.data as DatabaseEvent).snapshot.value !=
+                  updater(
+                      (versionSnapshot.data as DatabaseEvent).snapshot.value ==
+                          packageInfo.version),
+                  if ((versionSnapshot.data as DatabaseEvent).snapshot.value !=
                       packageInfo.version)
                     Text(
-                        '최신 앱 버전: ${(_snapshot.data as DatabaseEvent).snapshot.value ?? '알 수 없음'}'),
+                        '최신 앱 버전: ${(versionSnapshot.data as DatabaseEvent).snapshot.value ?? '알 수 없음'}'),
                   Text('로컬 앱 버전: ${packageInfo.version}\n'
                       '로컬 DB 버전: ${(snapshot.data as SharedPreferences).getString('db_ver') ?? '다운로드 필요'}')
                 ],
