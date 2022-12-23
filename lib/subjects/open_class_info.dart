@@ -1,32 +1,33 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 
 class OpenClassInfo extends StatelessWidget {
-  const OpenClassInfo({Key? key}) : super(key: key);
+  final ClassInfo classInfo;
+  const OpenClassInfo({required this.classInfo, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final dynamic arg = ModalRoute.of(context)!.settings.arguments!;
     return Scaffold(
       appBar: AppBar(
-        title: Text((arg['subjtNm'])),
+        title: Text(classInfo.name),
       ),
       body: OpenClassInfoPage(
-        classData: arg,
+        classData: classInfo,
       ),
       floatingActionButton: FavoriteButton(
-        depart: arg['estbDpmjNm'],
-        subjectCode: '${arg['subjtCd']}-${arg['diclNo']}',
+        depart: classInfo.guestDept ?? '공개 안됨',
+        subjectCode: classInfo.subjectCode,
       ),
     );
   }
 }
 
 class OpenClassInfoPage extends StatefulWidget {
-  final dynamic classData;
-  const OpenClassInfoPage({Key? key, required this.classData})
+  final ClassInfo classData;
+  const OpenClassInfoPage({required this.classData, Key? key})
       : super(key: key);
 
   @override
@@ -40,22 +41,7 @@ class _OpenClassInfoPageState extends State<OpenClassInfoPage> {
       child: Column(
         children: [
           ClassDetailInfoCard(
-            classLang: widget.classData["lssnLangNm"] ?? '해당 없음',
-            subjectCode:
-                '${widget.classData['subjtCd']}-${widget.classData['diclNo']}',
-            openYear: widget.classData["subjtEstbYear"],
-            point: widget.classData["point"].toString(),
-            subjectKind: widget.classData["facDvnm"] ?? '공개 안됨',
-            classLocation: widget.classData["timtSmryCn"] ?? '공개 안됨',
-            region: widget.classData["cltTerrNm"] ?? '해당 없음',
-            sex: widget.classData["sexCdNm"] ?? '공개 안됨',
-            promise: widget.classData["hffcStatNm"] ?? '공개 안됨',
-            hostGrade: widget.classData["clsfNm"] ?? '공개 안됨',
-            hostName: widget.classData["ltrPrfsNm"] ?? '공개 안됨',
-            extra: widget.classData["capprTypeNm"] ?? '공개 안됨',
-            guestDept: widget.classData["estbDpmjNm"] ?? '공개 안됨',
-            guestMjor: widget.classData["estbMjorNm"] ?? '학부 전체',
-            guestGrade: (widget.classData["trgtGrdeCd"] ?? 0).toString() + '학년',
+            classInfo: widget.classData,
           ),
         ],
       ),
@@ -147,7 +133,6 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                   _isAddFavorite = true;
                   Map _map = {widget._depart: widget._subjectCode};
                   _favorites.add(_map);
-                  print(_favorites);
                 });
                 syncFavorite();
               },
@@ -162,10 +147,9 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                       getFavoriteRemoveIndex(widget._subjectCode);
                   if (_removeIndex != null) {
                     _favorites.removeAt(_removeIndex);
-                    print(_favorites);
                   }
                   _isAddFavorite = false;
-                syncFavorite();
+                  syncFavorite();
                 });
               },
             );

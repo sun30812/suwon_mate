@@ -5,8 +5,11 @@
 /// ## 같이보기
 /// - [ClassDetailInfoCard]
 class ClassInfo {
+  /// 과목 이름
+  final String name;
+
   /// 강의에서 사용되는 언어
-  final String classLanguage;
+  final String? classLanguage;
 
   /// 과목 코드
   final String subjectCode;
@@ -15,45 +18,46 @@ class ClassInfo {
   final String openYear;
 
   /// 해당 과목 수강 시 얻을 수 있는 학점
-  final int point;
+  final String point;
 
   /// 과목 종류
-  final String subjectKind;
+  final String? subjectKind;
 
   /// 강의실 위치
-  final String classLocation;
+  final String? classLocation;
 
   /// 과목의 영역
-  final String region;
+  final String? region;
 
   /// 강의자의 성별
-  final String sex;
+  final String? sex;
 
   /// 강의자의 계약 기간
-  final String promise;
+  final String? promise;
 
   /// 강의자의 직책
-  final String hostGrade;
+  final String? hostGrade;
 
   /// 강의자 성함
-  final String hostName;
+  final String? hostName;
 
   /// 수업 방식
-  final String extra;
+  final String? extra;
 
   /// 강의 대상 학부
-  final String guestDept;
+  final String? guestDept;
 
   /// 강의 대상 학과
-  final String guestMjor;
+  final String? guestMjor;
 
   /// 강의 대상 학년
-  final int guestGrade;
+  final int? guestGrade;
 
   /// 특정 강의에 대한 정보를 가지는 클래스이다.
   ///
   ClassInfo(
-      {required this.classLanguage,
+      {required this.name,
+      required this.classLanguage,
       required this.subjectCode,
       required this.openYear,
       required this.point,
@@ -69,13 +73,18 @@ class ClassInfo {
       required this.guestMjor,
       required this.guestGrade});
 
+  static List<ClassInfo> fromFirebaseDatabase(List jsonList) {
+    return jsonList.map((subject) => ClassInfo.fromJson(subject)).toList();
+  }
+
   /// [ClassInfo]로 역직렬화 시 사용되는 메서드이다.
-  factory ClassInfo.fromJson(Map<String, dynamic> json) {
+  factory ClassInfo.fromJson(Map json) {
     return ClassInfo(
+        name: json['subjtNm'],
         classLanguage: json['lssnLangNm'],
-        subjectCode: '${json['subjtCd']}${json['diclNo']}',
+        subjectCode: '${json['subjtCd']}-${json['diclNo']}',
         openYear: json['subjtEstbYear'],
-        point: json['point'],
+        point: json['point'].toString(),
         subjectKind: json['facDvnm'],
         classLocation: json['timtSmryCn'],
         region: json['cltTerrNm'],
