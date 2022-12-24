@@ -173,13 +173,16 @@ class _OpenClassState extends State<OpenClass> {
           title: const Text('개설 강좌 조회'),
           actions: [
             IconButton(
-              onPressed: () => context.push(
-                '/oclass/search',extra: [
-                // TODO: 전체 과목 데이터 넘기는 법 확인 필요
-                  allClassList.values
-                      .map((dat) => ClassInfo.fromFirebaseDatabase(dat))
-                      .toList(),
+              onPressed: () {
+                List<ClassInfo> classList = [];
+              for (List data in allClassList.values) {
+                classList.addAll(ClassInfo.fromFirebaseDatabase(data));
+              }
+              context.push('/oclass/search', extra: [
+                 classList,
                   widget.settingsData
+                ]);
+            }),
               ]),
               icon: const Icon(Icons.search),
               tooltip: '검색',
