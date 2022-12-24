@@ -140,13 +140,16 @@ class _OpenClassState extends State<OpenClass> {
             isActivate: true,
             icon: Icons.search,
             buttonName: '검색',
-            onPressed: () => context.push('/oclass/search', extra: [
-                  // TODO: 전체 과목 데이터 넘기는 법 확인 필요
-                  allClassList.values
-                      .map((dat) => ClassInfo.fromFirebaseDatabase(dat))
-                      .toList(),
+            onPressed: () {
+              List<ClassInfo> classList = [];
+              for (List data in allClassList.values) {
+                classList.addAll(ClassInfo.fromFirebaseDatabase(data));
+              }
+              context.push('/oclass/search', extra: [
+                 classList,
                   widget.settingsData
-                ])),
+                ]);
+            }),
         body: FutureBuilder(
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {

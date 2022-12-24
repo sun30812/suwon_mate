@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
-
 import '../model/class_info.dart';
 
 /// 검색 버튼 누를 시 나타나는 검색 페이지이다.
@@ -28,44 +27,28 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final TextEditingController _controller = TextEditingController();
+  /// 과목명을 입력받는 변수이다.
+  final TextEditingController _subjectNameController = TextEditingController();
 
   /// 과목 코드를 입력받는 변수이다.
-  final TextEditingController _controller2 = TextEditingController();
+  final TextEditingController _subjectCodeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
   }
 
-  // TODO: 검색 통일화
-
-  /// 과목 코드로 과목 이름을 검색하는 메서드
+  /// 과목 코드로 강좌를 검색하는 메서드
   ///
   /// 과목 코드를 [code]에 입력하면 [classList]로부터 [code]와 과목 코드를 비교해서
-  /// 일치하는 과목의 이름을 반환한다. 만일 없는 경우 `null`을 반환한다.
-  String searchSubjectName(String code, List classList) {
+  /// 일치하는 강좌의 정보를 반환한다. 만일 없는 경우 `null`을 반환한다.
+  ClassInfo? searchSubject(String code, List<ClassInfo> classList) {
     for (var dat in classList) {
-      if (dat['subjtCd'] == code) {
-        return dat['subjtNm'];
+      if (dat.subjectCode == code) {
+        return dat;
       }
     }
-    return 'none';
-  }
-
-  /// 과목 코드로 과목이 실존하는지 판단하기 위해 인덱스 값을 반환하는 메서드이다.
-  ///
-  /// 과목 코드를 [code]에 입력하면 [classList]로부터 [code]와 과목 코드를 비교해서
-  /// [classList]에서 찾고자 하는 과목이 몇번째에 있는지 찾아서 그 인덱스를 반환한다.
-  int getSubjectIndex(String code, List classList) {
-    int _index = 0;
-    for (var dat in classList) {
-      if (code == '${dat['subjtCd']}-${dat['diclNo']}') {
-        return _index;
-      }
-      _index++;
-    }
-    return -1;
+    return null;
   }
 
   @override
@@ -86,14 +69,14 @@ class _SearchPageState extends State<SearchPage> {
                       const Text('과목코드를 입력하여 검색할 수 있습니다.'),
                       TextField(
                         key: const Key('subject_code_field'),
-                        controller: _controller2,
+                        controller: _subjectCodeController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             hintText: '과목 코드 입력',
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear),
                               onPressed: () => setState(() {
-                                _controller2.text = '';
+                                _subjectCodeController.text = '';
                               }),
                             )),
                       )
@@ -101,27 +84,18 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    if (_controller2.text.contains('-')) {
-                      int _searchResult =
-                          getSubjectIndex(_controller2.text, widget.classList);
-                      if (_searchResult == -1) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('해당 과목은 존재하지 않습니다.')));
-                        return;
-                      }
-                      Navigator.of(context).pushNamed('/oclass/info',
-                          arguments: widget.classList[_searchResult]);
-                    } else {
-                      String subjectName = searchSubjectName(
-                          _controller2.text, widget.classList);
-                      if (subjectName == 'none') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('해당 과목은 존재하지 않습니다.')));
+                    if (_subjectCodeController.text.contains('-')) {
+                      ClassInfo? searchResult = searchSubject(
+                          _subjectCodeController.text, widget.classList);
+                      if (searchResult != null) {
+                        context.push('/oclass/info', extra: searchResult);
                       } else {
-                        setState(() {
-                          _controller.text = subjectName;
-                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('존재하지 않는 과목 코드입니다.')));
                       }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('과목코드 전체를 입력해주십시요.')));
                     }
                   },
                 ),
@@ -142,20 +116,20 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ],
           ),
-          searchHint(_controller.text.isNotEmpty),
+          searchHint(_subjectNameController.text.isNotEmpty),
           Flexible(
             child: ListView.builder(
                 itemCount: widget.classList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  if ((_controller.text.isNotEmpty) &&
+                  if ((_subjectNameController.text.isNotEmpty) &&
                       (widget.classList[index].hostName
                               .toString()
-                              .contains(_controller.text) ||
+                              .contains(_subjectNameController.text) ||
                           widget.classList[index].name
                               .toString()
-                              .contains(_controller.text))) {
+                              .contains(_subjectNameController.text))) {
                     return SimpleCardButton(
-                      onPressed: () => context.go('/oclass/info',
+                      onPressed: () => context.push('/oclass/info',
                           extra: widget.classList[index]),
                       title: widget.classList[index].name,
                       subTitle: widget.classList[index].hostName ?? "이름 공개 안됨",
@@ -179,9 +153,9 @@ class _SearchPageState extends State<SearchPage> {
     if (widget.liveSearch) {
       return SearchBar(
           icon: Icons.search,
-          controller: _controller,
+          controller: _subjectNameController,
           onChanged: (value) {
-            if (_controller.text.length >= widget.liveSearchCount) {
+            if (_subjectNameController.text.length >= widget.liveSearchCount) {
               setState(() {});
             }
           });
@@ -189,7 +163,7 @@ class _SearchPageState extends State<SearchPage> {
       return SearchBar(
           acceptIcon: Icons.search,
           icon: Icons.search,
-          controller: _controller,
+          controller: _subjectNameController,
           onAcceptPressed: () => setState(() {}));
     }
   }
