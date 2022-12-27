@@ -11,7 +11,6 @@ import 'package:suwon_mate/model/notice.dart';
 import 'package:suwon_mate/schedule.dart';
 import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/subjects/favorite_subject.dart';
-import 'package:suwon_mate/subjects/professor_subjects.dart';
 import 'package:suwon_mate/subjects/search.dart';
 // import 'contacts/search.dart' as contacts;
 import 'firebase_options.dart';
@@ -38,10 +37,6 @@ class App extends StatelessWidget {
           GoRoute(
             path: 'schedule',
             builder: (context, state) => const SchedulePage(),
-          ),
-          GoRoute(
-            path: 'professor',
-            builder: (context, state) => const ProfessorSubjectsPage(),
           ),
           GoRoute(
               path: 'notice',
