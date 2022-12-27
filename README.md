@@ -72,7 +72,6 @@ macOS, Windows, Android, Linux용으로 빌드된 파일을 사용하거나 Web 
 
 - [Firebase hosting](https://suwon-mate.web.app)
 - [Firebase hosting-legacy](https://suwon-mate-legacy.web.app)
-- [Azure Web App](https://orange-moss-005eb8300.1.azurestaticapps.net)
 
 ## 앱 테스트 해보기
 만일 해당 앱을 자유롭게 수정해보시는 경우 정상 동작 여부가 궁금하다면 `flutter test` 를 실행해보세요.  

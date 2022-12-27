@@ -81,11 +81,11 @@ class ClassDetailInfoCard extends StatelessWidget {
                         style: const TextStyle(fontSize: 17.0),
                       ),
                       IconButton(
-                        onPressed: () => Navigator.of(context).pushNamed(
-                            '/professor',
-                            arguments: classInfo.hostName),
-                        icon: const Icon(Icons.search),
-                        tooltip: '해당 강의자가 강의하는 모든 과목을 검색합니다.',
+                        onPressed: () => Clipboard.setData(ClipboardData(
+                          text: classInfo.hostName
+                        )).then((value) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('강의자 이름이 복사되었습니다.')))),
+                        icon: const Icon(Icons.copy),
+                        tooltip: '강의자 이름 복사',
                       )
                     ],
                   ),
