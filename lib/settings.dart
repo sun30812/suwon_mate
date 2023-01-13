@@ -110,10 +110,12 @@ class _SettingPageState extends State<SettingPage> {
       body: FutureBuilder(
           future: getSettings(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator.adaptive());
             } else if (snapshot.hasError) {
-              return const DataLoadingError();
+              return DataLoadingError(
+                errorMessage: snapshot.error,
+              );
             } else {
               if (_isFirst &&
                   (snapshot.data as SharedPreferences)

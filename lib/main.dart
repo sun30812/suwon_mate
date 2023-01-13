@@ -130,7 +130,9 @@ class App extends StatelessWidget {
             colorScheme: ThemeData().colorScheme.copyWith(
                 secondary: const Color.fromARGB(255, 0, 54, 112),
                 onSecondary: const Color.fromARGB(255, 0, 54, 112),
-                primary: const Color.fromARGB(255, 0, 54, 112))),
+                primary: const Color.fromARGB(255, 0, 54, 112)
+            )
+        ),
         title: '수원 메이트',
         routerConfig: _routes);
   }
@@ -202,10 +204,12 @@ class _MainPageState extends State<MainPage> {
         return FutureBuilder(
           future: getSettings(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return Container();
             } else if (snapshot.hasError) {
-              return const DataLoadingError();
+              return DataLoadingError(
+                errorMessage: snapshot.error,
+              );
             } else {
               return MainMenu(preferences: snapshot.data as SharedPreferences);
             }
@@ -219,10 +223,12 @@ class _MainPageState extends State<MainPage> {
         return FutureBuilder(
             future: getSettings(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return Container();
               } else if (snapshot.hasError) {
-                return const DataLoadingError();
+                return DataLoadingError(
+                  errorMessage: snapshot.error,
+                );
               } else {
                 if ((snapshot.data as SharedPreferences)
                     .containsKey('settings')) {
@@ -265,7 +271,8 @@ class _MainMenuState extends State<MainMenu> {
   /// 감지된 경우에는 안내창을 띄우고 현재 버전에 맞는 DB로 재구성한다.
   void migrationCheck() {
     if (widget._preferences.containsKey('mySub') ||
-        widget._preferences.containsKey('class')) {
+        widget._preferences.containsKey('class') ||
+        widget._preferences.containsKey('favoritesMap')) {
       showDialog(
           context: context,
           builder: (context) {
