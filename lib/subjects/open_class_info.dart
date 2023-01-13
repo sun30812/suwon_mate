@@ -1,11 +1,26 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 
+/// 과목에 대한 세부정보를 표시하는 카드형태의 위젯들이 모여있는 페이지의
+///
+/// [classInfo]을 매개변수로 가지는 생성자를 통해 해당 클래스의 객체를 생성할 수 있다.
 class OpenClassInfo extends StatelessWidget {
+  /// 과목에 해당하는 변수이다.
   final ClassInfo classInfo;
+
+  /// 과목에 대한 세부정보를 표시하는 페이지이다.
+  ///
+  /// [classInfo]를 통해 과목에 대한 일부 정보를 받아 [AppBar]에 과목 이름을 출력한다던가
+  /// 즐겨찾기 버튼을 통해 수행되는 동작에서 요구하는 정보를 받는 역할을 한다.
+  ///
+  /// ## 같이보기
+  /// * [ClassInfo]
+  /// * [ClassDetailInfoCard]
+  ///
   const OpenClassInfo({required this.classInfo, Key? key}) : super(key: key);
 
   @override
@@ -18,13 +33,22 @@ class OpenClassInfo extends StatelessWidget {
         classData: classInfo,
       ),
       floatingActionButton: FavoriteButton(
-        depart: classInfo.guestDept ?? '공개 안됨',
-        subjectCode: classInfo.subjectCode,
+        classData: classInfo,
       ),
     );
   }
 }
 
+/// 과목에 대한 세부정보를 표시하는 페이지이다.
+///
+/// [classInfo]를 통해 과목에 대한 정보를 받아서 세부 정보를 화면에 표시해준다.
+/// 과목 이름, 학점, 과목 코드등의 정보를 확인할 수 있는 카드 형태로 구성된 페이지가
+/// 표시된다.
+///
+/// ## 같이보기
+/// * [ClassInfo]
+/// * [ClassDetailInfoCard]
+///
 class OpenClassInfoPage extends StatefulWidget {
   final ClassInfo classData;
   const OpenClassInfoPage({required this.classData, Key? key})
@@ -49,13 +73,20 @@ class _OpenClassInfoPageState extends State<OpenClassInfoPage> {
   }
 }
 
+/// 즐겨찾기 버튼에 해당하는 위젯이다.
+///
+/// 즐겨찾기 등록 여부에 따라 다른 디자인을 제공하고 어떤 문제로 인해 즐겨찾기 기능을 사용할 수 없을 때
+/// 누를 수 없도록 하는 등의 기능을 제공한다.
 class FavoriteButton extends StatefulWidget {
-  final String _subjectCode;
-  final String _depart;
-  const FavoriteButton(
-      {Key? key, required String depart, required String subjectCode})
-      : _depart = depart,
-        _subjectCode = subjectCode,
+  /// 과목에 대한 정보를 가진 필드이다.
+  final ClassInfo _classData;
+
+  /// 과목 세부정보 페이지에서 우하단에 위치한 즐겨찾기 등록 버튼이다.
+  ///
+  /// [classData]를 통해 과목에 대한 정보를 받아서 즐겨찾기 리스트에 현재 표시중인 과목을 추가하는
+  /// 등의 작업을 가능하게 한다.
+  const FavoriteButton({Key? key, required ClassInfo classData})
+      : _classData = classData,
         super(key: key);
 
   @override
@@ -64,65 +95,48 @@ class FavoriteButton extends StatefulWidget {
 
 class _FavoriteButtonState extends State<FavoriteButton> {
   bool _isAddFavorite = false;
-  bool _isFirst = true;
-  bool _isGetFirst = true;
-  List _favorites = [];
+  List<ClassInfo> _favorites = [];
 
-  Future getData() async {
+  Future<List<ClassInfo>?> getFavoriteData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-
-    if (_isFirst) {
-      if (_pref.containsKey('favoritesMap')) {
-        _favorites = jsonDecode(_pref.getString('favoritesMap')!);
-      }
-      _isFirst = false;
+    if (_pref.containsKey('favoriteSubjectList')) {
+      List result = jsonDecode(_pref.getString('favoriteSubjectList')!);
+      return result.map((e) => ClassInfo.fromJson(e)).toList();
+    } else {
+      return null;
     }
-
-    for (var _favorite in _favorites) {
-      if (_favorite.values.first.toString() == widget._subjectCode) {
-        return true;
-      }
-    }
-    return false;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _favorites = [];
-  }
-
-  void syncFavorite() async {
+  /// 즐겨찾기에 대한 정보를 저장하는 설정값에 현재 즐겨찾기 리스트에 등록된 과목들을 저장하는 메서드이다.
+  ///
+  /// [favoriteList]로부터 즐겨찾기에 등록된 과목 리스트들을 받아서 [SharedPreferences]를 통해 설정값에 저장한다.
+  ///
+  /// ## 같이보기
+  /// * [ClassInfo]
+  /// * [SharedPreferences]
+  void syncFavorite(List<ClassInfo>? favoriteList) async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setString('favoritesMap', jsonEncode(_favorites));
-  }
-
-  int? getFavoriteRemoveIndex(String code) {
-    int _count = 0;
-    for (Map _favorite in _favorites) {
-      if (_favorite.values.first == code) {
-        return _count;
-      }
-      _count++;
-    }
-    return null;
+    _pref.setString('favoriteSubjectList', jsonEncode(favoriteList));
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getData(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (!snapshot.hasData) {
+    return FutureBuilder<List<ClassInfo>?>(
+      future: getFavoriteData(),
+      builder:
+          (BuildContext context, AsyncSnapshot<List<ClassInfo>?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const SuwonButton(
             icon: Icons.star_outline,
             buttonName: '즐겨찾기 추가',
             onPressed: null,
           );
         } else {
-          if (_isGetFirst) {
-            _isAddFavorite = snapshot.data as bool;
-            _isGetFirst = false;
+          _favorites = snapshot.data ?? [];
+          for (var classData in _favorites) {
+            if (classData == widget._classData) {
+              _isAddFavorite = true;
+            }
           }
           if (!_isAddFavorite) {
             return SuwonButton(
@@ -131,10 +145,9 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               onPressed: () {
                 setState(() {
                   _isAddFavorite = true;
-                  Map _map = {widget._depart: widget._subjectCode};
-                  _favorites.add(_map);
                 });
-                syncFavorite();
+                _favorites.add(widget._classData);
+                syncFavorite(_favorites);
               },
             );
           } else {
@@ -143,14 +156,11 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               buttonName: '즐겨찾기에서 제거',
               onPressed: () {
                 setState(() {
-                  int? _removeIndex =
-                      getFavoriteRemoveIndex(widget._subjectCode);
-                  if (_removeIndex != null) {
-                    _favorites.removeAt(_removeIndex);
-                  }
+                  _favorites.removeWhere((element) =>
+                      element.subjectCode == widget._classData.subjectCode);
                   _isAddFavorite = false;
-                  syncFavorite();
                 });
+                syncFavorite(_favorites);
               },
             );
           }

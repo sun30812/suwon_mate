@@ -81,9 +81,11 @@ class ClassDetailInfoCard extends StatelessWidget {
                         style: const TextStyle(fontSize: 17.0),
                       ),
                       IconButton(
-                        onPressed: () => Clipboard.setData(ClipboardData(
-                          text: classInfo.hostName
-                        )).then((value) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('강의자 이름이 복사되었습니다.')))),
+                        onPressed: () => Clipboard.setData(
+                                ClipboardData(text: classInfo.hostName))
+                            .then((value) => ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                    content: Text('강의자 이름이 복사되었습니다.')))),
                         icon: const Icon(Icons.copy),
                         tooltip: '강의자 이름 복사',
                       )
@@ -124,20 +126,21 @@ class ClassDetailInfoCard extends StatelessWidget {
 ///
 /// 어떠한 이유로 인해 데이터를 불러올 수 없는 경우 메세지가 표시된다.
 class DataLoadingError extends StatelessWidget {
-  const DataLoadingError({Key? key}) : super(key: key);
+  final dynamic errorMessage;
+  const DataLoadingError({required this.errorMessage, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: const [
-          Icon(Icons.error_outline),
-          Text(
-            '데이터를 불러올 수 없습니다.',
-            semanticsLabel: '데이터를 불러올 수 없습니다.',
-          )
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Icon(Icons.error_outline),
+        Text(
+          '데이터를 불러올 수 없습니다.\n오류정보: $errorMessage',
+          semanticsLabel: '오류로 인해 데이터를 불러올 수 없습니다.',
+        )
+      ],
     );
   }
 }
@@ -263,10 +266,18 @@ class _SuwonSquareButtonState extends State<SuwonSquareButton> {
   }
 }
 
+/// 아이콘과 글자가 가로로 같이 붙어있는 형태의 버튼이다.
 class SuwonButton extends StatefulWidget {
+  /// 버튼의 활성화 여부(`false`인 경우 버튼이 흐리게 표시되며 누를 수 없다.)
   final bool? isActivate;
+
+  /// 버튼의 왼쪽 부분에 위치한 아이콘
   final IconData icon;
+
+  /// 버튼의 오른쪽 부분에 위치한 버튼의 이름 및 설명
   final String btnName;
+
+  /// 버튼이 눌렸을 때 동작
   final void Function()? onPressed;
   const SuwonButton({
     Key? key,

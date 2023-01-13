@@ -17,7 +17,7 @@ class ClassInfo {
   /// 해당 과목의 개설 년도
   final String openYear;
 
-  /// 해당 과목 수강 시 얻을 수 있는 학점
+  /// 해당 과목 수강 시 얻을 수 있는 학점(간혹 자연수가 아닌 경우도 있기에 [String]으로 지정)
   final String point;
 
   /// 과목 종류
@@ -73,12 +73,15 @@ class ClassInfo {
       required this.guestMjor,
       required this.guestGrade});
 
+  /// FirebaseDatabase로부터 과목 정보를 불러올 때 사용하는 메서드이다.
   static List<ClassInfo> fromFirebaseDatabase(List jsonList) {
-    return jsonList.map((subject) => ClassInfo.fromJson(subject)).toList();
+    return jsonList
+        .map((subject) => ClassInfo.fromFirebaseJson(subject))
+        .toList();
   }
 
-  /// [ClassInfo]로 역직렬화 시 사용되는 메서드이다.
-  factory ClassInfo.fromJson(Map json) {
+  /// [ClassInfo]로 역직렬화 시 사용되는 메서드이다.(Firebase 전용)
+  factory ClassInfo.fromFirebaseJson(Map json) {
     return ClassInfo(
         name: json['subjtNm'],
         classLanguage: json['lssnLangNm'],
@@ -97,4 +100,53 @@ class ClassInfo {
         guestMjor: json['estbMjorNm'],
         guestGrade: json['trgtGrdeCd']);
   }
+
+  /// [ClassInfo]로 역직렬화 시 사용되는 메서드이다.
+  factory ClassInfo.fromJson(Map json) {
+    return ClassInfo(
+        name: json['subjtNm'],
+        classLanguage: json['lssnLangNm'],
+        subjectCode: json['subjectCode'],
+        openYear: json['subjtEstbYear'],
+        point: json['point'].toString(),
+        subjectKind: json['facDvnm'],
+        classLocation: json['timtSmryCn'],
+        region: json['cltTerrNm'],
+        sex: json['sexCdNm'],
+        promise: json['hffcStatNm'],
+        hostGrade: json['clsfNm'],
+        hostName: json['ltrPrfsNm'],
+        extra: json['capprTypeNm'],
+        guestDept: json['estbDpmjNm'],
+        guestMjor: json['estbMjorNm'],
+        guestGrade: json['trgtGrdeCd']);
+  }
+
+  /// [ClassInfo]를 직렬화 시 사용되는 메서드이다.
+  Map<String, dynamic> toJson() => {
+        'subjtNm': name,
+        'lssnLangNm': classLanguage,
+        'subjectCode': subjectCode,
+        'subjtEstbYear': openYear,
+        'point': point,
+        'facDvnm': subjectKind,
+        'timtSmryCn': classLocation,
+        'cltTerrNm': region,
+        'sexCdNm': sex,
+        'hffcStatNm': promise,
+        'clsfNm': hostGrade,
+        'ltrPrfsNm': hostName,
+        'capprTypeNm': extra,
+        'estbDpmjNm': guestDept,
+        'estbMjorNm': guestMjor,
+        'trgtGrdeCd': guestGrade,
+      };
+
+  /// 같은 과목 코드인 경우 같은 과목으로 취급하기 위한 메서드이다.
+  @override
+  bool operator ==(covariant ClassInfo other) =>
+      subjectCode == other.subjectCode;
+
+  @override
+  int get hashCode => subjectCode.hashCode;
 }

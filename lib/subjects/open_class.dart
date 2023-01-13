@@ -85,6 +85,7 @@ class _OpenClassState extends State<OpenClass> {
   Map subjects = {};
   bool _isFirstDp = true;
 
+  /// DB버전을 [SharedPreferences]에 저장하고 과목에 대한 정보를 FirebaseDatabase로부터 가져오는 메서드이다.
   Future getData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
@@ -145,10 +146,8 @@ class _OpenClassState extends State<OpenClass> {
               for (List data in allClassList.values) {
                 classList.addAll(ClassInfo.fromFirebaseDatabase(data));
               }
-              context.push('/oclass/search', extra: [
-                 classList,
-                  widget.settingsData
-                ]);
+              context.push('/oclass/search',
+                  extra: [classList, widget.settingsData]);
             }),
         body: FutureBuilder(
           future: getData(),
@@ -162,7 +161,9 @@ class _OpenClassState extends State<OpenClass> {
                 ],
               );
             } else if (snapshot.hasError) {
-              return const DataLoadingError();
+              return DataLoadingError(
+                errorMessage: snapshot.error,
+              );
             } else {
               DatabaseEvent _event = snapshot.data;
               allClassList = _event.snapshot.value as Map;
