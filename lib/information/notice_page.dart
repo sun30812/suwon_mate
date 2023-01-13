@@ -43,6 +43,9 @@ class _NoticePageState extends State<NoticePage> {
     );
   }
 
+  /// 학교 공지사항 목록을 출력하는 위젯이다.
+  ///
+  /// 만일 Web환경에서 해당 앱을 실행시키는 경우 작동되지 않기 때문에 플랫폼 관련 경고 메세지를 출력한다.
   Widget mainScreen() {
     if (kIsWeb) {
       return const NotSupportInPlatform('Web');
@@ -70,7 +73,9 @@ class _NoticePageState extends State<NoticePage> {
                 ],
               );
             } else if (snapshot.hasError) {
-              return const DataLoadingError();
+              return DataLoadingError(
+                errorMessage: snapshot.error,
+              );
             } else {
               rows = parse((snapshot.data as http.Response).body)
                   .getElementsByClassName('board_basic_list')[0];

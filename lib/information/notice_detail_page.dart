@@ -50,7 +50,9 @@ class NoticeDetailPage extends StatelessWidget {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator.adaptive());
           } else if (snapshot.hasError) {
-            return const DataLoadingError();
+            return DataLoadingError(
+              errorMessage: snapshot.error,
+            );
           } else {
             var body = parse((snapshot.data as http.Response).body);
             return SingleChildScrollView(

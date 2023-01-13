@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 
 /// 즐겨찾는 과목을 볼 수 있는 페이지이다.
@@ -17,6 +18,10 @@ class FavoriteSubjectPage extends StatelessWidget {
   }
 }
 
+/// 즐겨찾는 과목 페이지로 이동 시 보이는 화면이다.
+///
+/// 만일 개설강좌 조회를 한 번도 하지 않은 경우 즐겨찾는 과목에 필요한 일부 설정 값이 없기 때문에 올바르게 동작하지 않는다.
+/// 이 경우 개설강좌 조회를 들어가지 않으면 이용이 불가하다는 내용을 출력하는 역할도 한다.
 class FavoriteListView extends StatefulWidget {
   const FavoriteListView({Key? key}) : super(key: key);
 
@@ -25,90 +30,67 @@ class FavoriteListView extends StatefulWidget {
 }
 
 class _FavoriteListViewState extends State<FavoriteListView> {
-  bool _isSaved = false;
-  late List _orgClassList;
-  late Map _classList;
-  late List _favorites;
-  late List _favoriteClassList;
-  List<String> _migrateFavorites = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _orgClassList = [];
-    _classList = {};
-    _favorites = [];
-    _favoriteClassList = [];
-  }
-
-  /// [SharedPreferences]로부터 즐겨찾는 과목 및 설정 값을 가져오는 메서드이다.
-  Future<void> getFavoriteData() async {
+  /// [SharedPreferences]로부터 즐겨찾기 과목 리스트를 가져오는 메서드이다.
+  Future<List<ClassInfo>?> getData() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-
-    if (_pref.containsKey('favoritesMap')) {
-      _favorites = jsonDecode(_pref.getString('favoritesMap')!);
-    }
-
-    if (_pref.containsKey('favorites')) {
-      _migrateFavorites = _pref.getStringList('favorites')!;
-    }
-
-    if (_pref.containsKey('settings')) {
-      if (_pref.containsKey('class') &&
-          (jsonDecode(_pref.getString('settings')!))['offline']) {
-        _isSaved = true;
-      }
-    }
-    setState(() {});
-  }
-
-  Future getData() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-
-    if (_pref.containsKey('favoritesMap')) {
-      _favorites = jsonDecode(_pref.getString('favoritesMap')!);
-    }
-
-    if (_pref.containsKey('favorites')) {
-      _migrateFavorites = _pref.getStringList('favorites')!;
-    }
-
-    if (_pref.containsKey('class')) {
-      _isSaved = true;
-      return _pref.getString('class');
-    }
-
-    if (_pref.containsKey('settings')) {
-      if (_pref.containsKey('class') &&
-          (jsonDecode(_pref.getString('settings')!))['offline']) {
-        _isSaved = true;
-        return _pref.getString('class');
-      }
-    }
-
-    DatabaseReference version = FirebaseDatabase.instance.ref('version');
-    Map versionInfo = (await version.once()).snapshot.value as Map;
-    if ((_pref.getString('db_ver')) == versionInfo["db_ver"]) {
-      _isSaved = true;
-      return _pref.getString('class');
-    }
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref('estbLectDtaiList_test');
-    _pref.setString('db_ver', versionInfo["db_ver"]);
-    return ref.once();
-  }
-
-  @override
-  void dispose() async {
-    super.dispose();
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    // _pref.setString('class', jsonEncode(_orgClassList));
-    _pref.remove('favorites');
+    List result = jsonDecode((_pref.getString('favoriteSubjectList')) ?? '[]');
+    return result.map((e) => ClassInfo.fromJson(e)).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return mainScreen();
+    return FutureBuilder<List<ClassInfo>?>(
+        future: getData(),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<ClassInfo>?> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Center(child: CircularProgressIndicator.adaptive()),
+                Text('과목 정보 불러오는 중...')
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DataLoadingError(
+                  errorMessage: snapshot.error,
+                ),
+              ],
+            );
+          } else {
+            if (snapshot.data!.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.disabled_by_default_outlined),
+                    Text('즐겨찾기된 과목이 없습니다.'),
+                    Text('개설 강좌 조회에서 즐겨찾기를 추가해보세요')
+                  ],
+                ),
+              );
+            }
+            return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return SimpleCardButton(
+                    onPressed: () => context.push('/oclass/info',
+                        extra: snapshot.data![index]),
+                    title: snapshot.data![index].name,
+                    subTitle: snapshot.data![index].hostName ?? "이름 공개 안됨",
+                    content: Text(
+                        (snapshot.data![index].guestMjor ?? "학부 전체 대상") +
+                            ", " +
+                            (snapshot.data![index].subjectKind ?? '공개 안됨') +
+                            ', ' +
+                            (snapshot.data![index].classLocation ?? "공개 안됨")),
+                  );
+                });
+          }
+        });
   }
 
   /// [RefreshIndicator]로 인해 새로고침 되는 경우 사용되는 메서드이다.
@@ -117,111 +99,5 @@ class _FavoriteListViewState extends State<FavoriteListView> {
   FutureOr refresh(Object? dat) async {
     await getData();
     setState(() {});
-  }
-
-  /// 즐겨찾는 과목 페이지로 이동 시 먼저 보이는 화면이다.
-  ///
-  /// 만일 개설강좌 조회를 한 번도 하지 않은 경우 즐겨찾는 과목에 필요한 일부 설정 값이 없기 때문에 올바르게 동작하지 않는다.
-  /// 이 경우 개설강좌 조회를 들어가지 않으면 이용이 불가하다는 내용을 출력하는 역할도 한다.
-  Widget mainScreen() {
-    if (!_isSaved) {
-      return Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Icon(
-            Icons.error_outline,
-            color: Colors.redAccent,
-            size: 50.0,
-          ),
-          Text('아직 개설강좌 조회를 들어가지 않은 경우 이용하실 수 없습니다.'),
-        ],
-      ));
-    }
-    return FutureBuilder(
-        future: getData(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (!snapshot.hasData) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Center(child: CircularProgressIndicator.adaptive()),
-                Text('DB 버전 확인 및 갱신 중')
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return const DataLoadingError();
-          } else {
-            if (_isSaved) {
-              _orgClassList = jsonDecode(snapshot.data) as List;
-              _classList = _orgClassList[0];
-            } else {
-              DatabaseEvent _event = snapshot.data;
-              _orgClassList = (_event.snapshot.value as List);
-              _classList = _orgClassList[0];
-            }
-
-            if (_migrateFavorites.isNotEmpty) {
-              for (Map dat in _classList.values.first) {
-                for (String _code in _migrateFavorites) {
-                  if ('${dat['subjtCd']}-${dat['diclNo']}' == _code) {
-                    _favorites.add({dat['estbDpmjNm']: _code});
-                  }
-                }
-              }
-            }
-
-            if (_favorites.isEmpty) {
-              return Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.star_border,
-                    size: 50.0,
-                  ),
-                  const Text('아직 즐겨찾기에 등록하신 과목이 없습니다.\n'
-                      '개설강좌를 조회하여 추가해보세요.'),
-                  SuwonButton(
-                      icon: Icons.date_range,
-                      buttonName: '개설 강좌 조회',
-                      onPressed: () => Navigator.pushNamed(context, '/oclass')
-                          .then((value) => refresh(value)))
-                ],
-              ));
-            } else {
-              for (Map favorite in _favorites) {
-                for (var dat in _classList[favorite.keys.first]) {
-                  if ('${dat['subjtCd']}-${dat['diclNo']}' ==
-                      favorite.values.first) {
-                    _favoriteClassList.add(dat);
-                  }
-                }
-              }
-              return RefreshIndicator(
-                onRefresh: (getFavoriteData),
-                child: ListView.builder(
-                    itemCount: _favorites.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return SimpleCardButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed('/oclass/info',
-                                  arguments: _favoriteClassList[index])
-                              .then((value) => refresh(value)),
-                          title: _favoriteClassList[index]["subjtNm"],
-                          subTitle: _favoriteClassList[index]["ltrPrfsNm"] ??
-                              "이름 공개 안됨",
-                          content: Text((_favoriteClassList[index]["deptNm"] ??
-                                  "학부 전체 대상(전공 없음)") +
-                              ", " +
-                              _favoriteClassList[index]["facDvnm"] +
-                              ', ' +
-                              (_favoriteClassList[index]["timtSmryCn"] ??
-                                  "공개 안됨")));
-                    }),
-              );
-            }
-          }
-        });
   }
 }

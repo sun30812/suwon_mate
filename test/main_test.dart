@@ -21,7 +21,7 @@ void main() {
   });
   group('Main Page Test', () {
     testWidgets('Test widgets', (tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App());
       expect(find.text('수원 메이트'), findsOneWidget);
       await tester.pumpAndSettle();
       expect(find.byType(SuwonButton), findsNWidgets(5));
@@ -29,7 +29,7 @@ void main() {
   });
   group('Help Page Test', () {
     testWidgets('Test Widgets', (tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App());
       await tester.pumpAndSettle();
       await tester.tap(find.text('도움말'));
       await tester.pumpAndSettle();
@@ -38,7 +38,7 @@ void main() {
   });
   group('Open Class Page Test', () {
     testWidgets('Test Widgets', (tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App());
       await tester.pumpAndSettle();
       await tester.tap(find.text('개설 강좌 조회'));
       await tester.pumpAndSettle();
@@ -49,7 +49,7 @@ void main() {
       expect(find.text('자유로운 Flutter 개발(비대면)'), findsOneWidget);
     });
     testWidgets('Click widget to view detail page', (tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App());
       await tester.pumpAndSettle();
       await tester.tap(find.text('개설 강좌 조회'));
       await tester.pumpAndSettle();
@@ -59,7 +59,7 @@ void main() {
       expect(find.text('자유로운 Flutter 개발(비대면)'), findsOneWidget);
     });
     testWidgets('View associate professor', ((tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App());
       await tester.pumpAndSettle();
       await tester.tap(find.text('개설 강좌 조회'));
       await tester.pumpAndSettle();
@@ -71,7 +71,7 @@ void main() {
       expect(find.byType(SimpleCardButton), findsOneWidget);
     }));
     testWidgets('Search subject', (tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App());
       await tester.pumpAndSettle();
       await tester.tap(find.text('개설 강좌 조회'));
       await tester.pumpAndSettle();
@@ -82,7 +82,7 @@ void main() {
       expect(find.byType(SimpleCardButton), findsWidgets);
     });
     testWidgets('Search subject with code', (tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App());
       await tester.pumpAndSettle();
       await tester.tap(find.text('개설 강좌 조회'));
       await tester.pumpAndSettle();
@@ -99,7 +99,7 @@ void main() {
       expect(find.byType(SimpleCardButton), findsOneWidget);
     });
     testWidgets('Search subject with full code', (tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App());
       await tester.pumpAndSettle();
       await tester.tap(find.text('개설 강좌 조회'));
       await tester.pumpAndSettle();
@@ -117,7 +117,7 @@ void main() {
   });
   group('Favorite Subject Page', () {
     testWidgets('Add/Remove favorite Test', (tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App());
       await tester.pumpAndSettle();
       await tester.tap(find.text('개설 강좌 조회'));
       await tester.pumpAndSettle();
@@ -152,7 +152,7 @@ void main() {
       _pref.setStringList('favorites', _testFavorites);
     });
     testWidgets('Add/Remove favorite Test', (tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App());
       await tester.pumpAndSettle();
       await tester.tap(find.text('즐겨찾는 과목(베타)'));
       await tester.pumpAndSettle();

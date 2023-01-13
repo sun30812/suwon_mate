@@ -70,8 +70,8 @@ class _SettingPageState extends State<SettingPage> {
       packageInfo = packageInfo = PackageInfo(
           appName: 'Suwon Mate',
           packageName: 'suwon_mate',
-          version: '2.1.0',
-          buildNumber: '13');
+          version: '2.3.0',
+          buildNumber: '16');
     }
     SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref;
@@ -216,10 +216,12 @@ class _SettingPageState extends State<SettingPage> {
       body: FutureBuilder(
           future: getSettings(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator.adaptive());
             } else if (snapshot.hasError) {
-              return const DataLoadingError();
+              return DataLoadingError(
+                errorMessage: snapshot.error,
+              );
             } else {
               if (_isFirst &&
                   (snapshot.data as SharedPreferences)
