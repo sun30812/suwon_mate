@@ -40,8 +40,8 @@ class _SettingPageState extends State<SettingPage> {
       packageInfo = packageInfo = PackageInfo(
           appName: '수원 메이트',
           packageName: 'suwon_mate',
-          version: '1.3.9',
-          buildNumber: '6');
+          version: '1.4.0',
+          buildNumber: '7');
     }
     SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref;
