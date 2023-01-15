@@ -44,8 +44,6 @@ class _NoticePageState extends State<NoticePage> {
   }
 
   /// 학교 공지사항 목록을 출력하는 위젯이다.
-  ///
-  /// 만일 Web환경에서 해당 앱을 실행시키는 경우 작동되지 않기 때문에 플랫폼 관련 경고 메세지를 출력한다.
   Widget mainScreen() {
     dom.Element rows;
     return RefreshIndicator(
@@ -94,17 +92,7 @@ class _NoticePageState extends State<NoticePage> {
                             context.push('/notice/detail', extra: siteData),
                         title: siteData.title,
                         content: Text(
-                          rows
-                                  .getElementsByClassName('info')[index]
-                                  .getElementsByClassName('date')[0]
-                                  .text
-                                  .trim() +
-                              '/' +
-                              rows
-                                  .getElementsByClassName('info')[index]
-                                  .getElementsByClassName('hit')[0]
-                                  .text
-                                  .trim(),
+                          '${rows.getElementsByClassName('info')[index].getElementsByClassName('date')[0].text.trim()}/${rows.getElementsByClassName('info')[index].getElementsByClassName('hit')[0].text.trim()}',
                           textAlign: TextAlign.left,
                           style: const TextStyle(fontSize: 16.0),
                         ));

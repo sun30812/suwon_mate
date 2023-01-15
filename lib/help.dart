@@ -44,7 +44,7 @@ class HelpPage extends StatelessWidget {
               )),
           InfoCard(
               icon: Icons.star_outline,
-              title: '즐겨찾는 과목(베타)',
+              title: '즐겨찾는 과목',
               detail: Column(
                 children: const [
                   Text(
@@ -60,7 +60,7 @@ class HelpPage extends StatelessWidget {
               detail: Column(
                 children: const [
                   Text(
-                    '광고배너가 달린 페이지 입니다. 광고 빼고는 아무 기능 없습니다.\n그래도 개발자에게는 도움이 됩니다:)',
+                    '광고배너가 달린 페이지 입니다. 광고 빼고는 아무 기능 없습니다.\n대신 개발자에게 도움을 줄 수 있습니다:)',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],

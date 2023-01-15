@@ -55,7 +55,7 @@ class OpenClassInfoPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _OpenClassInfoPageState createState() => _OpenClassInfoPageState();
+  State<OpenClassInfoPage> createState() => _OpenClassInfoPageState();
 }
 
 class _OpenClassInfoPageState extends State<OpenClassInfoPage> {
@@ -90,7 +90,7 @@ class FavoriteButton extends StatefulWidget {
         super(key: key);
 
   @override
-  _FavoriteButtonState createState() => _FavoriteButtonState();
+  State<FavoriteButton> createState() => _FavoriteButtonState();
 }
 
 class _FavoriteButtonState extends State<FavoriteButton> {
@@ -98,9 +98,9 @@ class _FavoriteButtonState extends State<FavoriteButton> {
   List<ClassInfo> _favorites = [];
 
   Future<List<ClassInfo>?> getFavoriteData() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    if (_pref.containsKey('favoriteSubjectList')) {
-      List result = jsonDecode(_pref.getString('favoriteSubjectList')!);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    if (pref.containsKey('favoriteSubjectList')) {
+      List result = jsonDecode(pref.getString('favoriteSubjectList')!);
       return result.map((e) => ClassInfo.fromJson(e)).toList();
     } else {
       return null;
@@ -115,8 +115,8 @@ class _FavoriteButtonState extends State<FavoriteButton> {
   /// * [ClassInfo]
   /// * [SharedPreferences]
   void syncFavorite(List<ClassInfo>? favoriteList) async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setString('favoriteSubjectList', jsonEncode(favoriteList));
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('favoriteSubjectList', jsonEncode(favoriteList));
   }
 
   @override

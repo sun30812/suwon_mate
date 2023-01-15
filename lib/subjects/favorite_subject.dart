@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,14 +26,14 @@ class FavoriteListView extends StatefulWidget {
   const FavoriteListView({Key? key}) : super(key: key);
 
   @override
-  _FavoriteListViewState createState() => _FavoriteListViewState();
+  State<FavoriteListView> createState() => _FavoriteListViewState();
 }
 
 class _FavoriteListViewState extends State<FavoriteListView> {
   /// [SharedPreferences]로부터 즐겨찾기 과목 리스트를 가져오는 메서드이다.
   Future<List<ClassInfo>?> getData() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    List result = jsonDecode((_pref.getString('favoriteSubjectList')) ?? '[]');
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    List result = jsonDecode((pref.getString('favoriteSubjectList')) ?? '[]');
     return result.map((e) => ClassInfo.fromJson(e)).toList();
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/api/keys.dart';
@@ -11,6 +12,7 @@ class DonationPage extends StatefulWidget {
   State<DonationPage> createState() => _DonationPageState();
 }
 
+/// 메인 화면의 광고 보기를 누르면 나오는 화면이다.
 class _DonationPageState extends State<DonationPage> {
   InterstitialAd? _interstitialAd;
   BannerAd? _bannerAd;
@@ -18,7 +20,7 @@ class _DonationPageState extends State<DonationPage> {
 
   void _createInterstitialAd() {
     InterstitialAd.load(
-        adUnitId: 'ca-app-pub-3872045471700602/3738423083',
+        adUnitId: popupAdUintId,
         request: const AdRequest(),
         adLoadCallback:
             InterstitialAdLoadCallback(onAdLoaded: ((InterstitialAd ad) {
@@ -44,9 +46,10 @@ class _DonationPageState extends State<DonationPage> {
     _interstitialAd = null;
   }
 
+  /// 광고 보기 페이지에 접속한 횟수를 가져오는 메서드
   Future<int> getData() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    return _pref.getInt('donate') ?? 1;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getInt('donate') ?? 1;
   }
 
   Future<void> _createBanner(BuildContext context) async {
@@ -82,9 +85,9 @@ class _DonationPageState extends State<DonationPage> {
   @override
   void dispose() async {
     super.dispose();
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    int _donate = _pref.getInt('donate') ?? 1;
-    _pref.setInt('donate', ++_donate);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    int donate = pref.getInt('donate') ?? 1;
+    pref.setInt('donate', ++donate);
     _bannerAd?.dispose();
   }
 
@@ -96,7 +99,7 @@ class _DonationPageState extends State<DonationPage> {
     }
     return Scaffold(
         appBar: AppBar(
-          title: const Text('광고보기'),
+          title: const Text('광고 보기'),
         ),
         body: FutureBuilder(
             future: getData(),
@@ -104,7 +107,9 @@ class _DonationPageState extends State<DonationPage> {
               if (!snaphost.hasData) {
                 return Container();
               } else if (snaphost.hasError) {
-                return const DataLoadingError();
+                return DataLoadingError(
+                  errorMessage: snaphost.error,
+                );
               } else {
                 return Center(
                   child: Column(
@@ -112,12 +117,12 @@ class _DonationPageState extends State<DonationPage> {
                     children: [
                       Column(
                         children: [
-                          CardInfo(
+                          InfoCard(
                               icon: Icons.favorite_outline,
                               title: '도움을 준 횟수',
                               detail: Text(
                                   '이 페이지를 방문하므로써 저에게 도움을 ${snaphost.data}번 주셨네요! 감사합니다 :D')),
-                          CardInfo(
+                          InfoCard(
                               icon: Icons.image_outlined,
                               title: '팝업 광고보기',
                               detail: Column(
@@ -129,7 +134,7 @@ class _DonationPageState extends State<DonationPage> {
                                       child: const Text('광고 시청'))
                                 ],
                               )),
-                          CardInfo(
+                          InfoCard(
                               icon: Icons.settings,
                               title: '하단 광고배너 설정',
                               detail: Column(
@@ -139,8 +144,8 @@ class _DonationPageState extends State<DonationPage> {
                                       '광고 설정에서 하단 배너에 광고 표시 기능을 켜서 개발자를 지원해줄 수 있습니다.'
                                       '\n기본값: 켜짐'),
                                   TextButton(
-                                      onPressed: (() => Navigator.of(context)
-                                          .pushNamed('/settings')),
+                                      onPressed: (() =>
+                                          context.push('/settings')),
                                       child: const Text('설정으로 이동'))
                                 ],
                               )),

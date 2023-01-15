@@ -35,6 +35,10 @@ class App extends StatelessWidget {
         builder: (context, state) => const MainPage(),
         routes: <RouteBase>[
           GoRoute(
+            path: 'donation',
+            builder: (context, state) => const DonationPage(),
+          ),
+          GoRoute(
             path: 'schedule',
             builder: (context, state) => const SchedulePage(),
           ),
@@ -93,33 +97,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData().copyWith(
-          useMaterial3: true,
-          scaffoldBackgroundColor: Colors.grey[300]!,
-          appBarTheme:
-              const AppBarTheme(
-              color: Color.fromARGB(255, 0, 54, 112)),
-          colorScheme: ThemeData().colorScheme.copyWith(
-              secondary: const Color.fromARGB(255, 0, 54, 112),
-              onSecondary: const Color.fromARGB(255, 0, 54, 112),
-              primary: const Color.fromARGB(255, 0, 54, 112))),
-      title: '수원 메이트',
-      home: const MainPage(),
-      routes: {
-        '/schedule': (context) => const SchedulePage(),
-        '/oclass': (context) => const OpenClass(),
-        '/oclass/search': (context) => const SearchPage(),
-        '/oclass/info': (context) => const OpenClassInfo(),
-        '/professor': (context) => const ProfessorSubjectsPage(),
-        '/info': (context) => const InfoPage(),
-        '/info/detail': (context) => const InfoDetailPage(),
-        '/favorite': (context) => const FavoriteSubjectPage(),
-        '/donation': (context) => const DonationPage(),
-        '/settings': (context) => const SettingPage(),
-        '/help': (context) => const HelpPage()
-      },
-    );
     return MaterialApp.router(
         theme: ThemeData().copyWith(
             useMaterial3: true,
@@ -130,9 +107,7 @@ class App extends StatelessWidget {
             colorScheme: ThemeData().colorScheme.copyWith(
                 secondary: const Color.fromARGB(255, 0, 54, 112),
                 onSecondary: const Color.fromARGB(255, 0, 54, 112),
-                primary: const Color.fromARGB(255, 0, 54, 112)
-            )
-        ),
+                primary: const Color.fromARGB(255, 0, 54, 112))),
         title: '수원 메이트',
         routerConfig: _routes);
   }
@@ -173,15 +148,6 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('수원 메이트'),
-          actions: [
-            IconButton(
-                onPressed: () async {
-                  SharedPreferences pref =
-                      await SharedPreferences.getInstance();
-                  pref.clear();
-                },
-                icon: const Icon(Icons.clear_all))
-          ],
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
@@ -332,19 +298,21 @@ class _MainMenuState extends State<MainMenu> {
                     migrationCheck();
                     SharedPreferences pref =
                         await SharedPreferences.getInstance();
-                    context.push('/oclass', extra: [
-                      pref.getString('myDept') ?? '컴퓨터학부',
-                      pref.getString('mySubject') ?? '학부 공통',
-                      pref.getString('myGrade') ?? '1학년',
-                      pref.getString('settings'),
-                    ]);
+                    if (mounted) {
+                      context.push('/oclass', extra: [
+                        pref.getString('myDept') ?? '컴퓨터학부',
+                        pref.getString('mySubject') ?? '학부 공통',
+                        pref.getString('myGrade') ?? '1학년',
+                        pref.getString('settings'),
+                      ]);
+                    }
                   },
                 ),
                 SuwonSquareButton(
-                    icon: Icons.favorite_border_outlined,
-                    buttonName: '광고 보기',
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed('/donation')),
+                  icon: Icons.favorite_border_outlined,
+                  buttonName: '광고 보기',
+                  onPressed: () => context.push('/donation'),
+                )
               ],
             ),
           ],

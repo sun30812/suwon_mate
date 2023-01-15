@@ -35,7 +35,7 @@ class OpenClass extends StatefulWidget {
       : super(key: key);
 
   @override
-  _OpenClassState createState() => _OpenClassState();
+  State<OpenClass> createState() => _OpenClassState();
 }
 
 class _OpenClassState extends State<OpenClass> {
@@ -48,36 +48,36 @@ class _OpenClassState extends State<OpenClass> {
   List<DropdownMenuItem<String>> gradeDownList = [];
   List<DropdownMenuItem<String>> regionList = const [
     DropdownMenuItem(
-      child: Text('전체'),
       value: '전체',
+      child: Text('전체'),
     ),
     DropdownMenuItem(
-      child: Text('1영역'),
       value: '언어와 소통',
+      child: Text('1영역'),
     ),
     DropdownMenuItem(
-      child: Text('2영역'),
       value: '세계와 문명',
+      child: Text('2영역'),
     ),
     DropdownMenuItem(
-      child: Text('3영역'),
       value: '역사와 사회',
+      child: Text('3영역'),
     ),
     DropdownMenuItem(
-      child: Text('4영역'),
       value: '문화와 철학',
+      child: Text('4영역'),
     ),
     DropdownMenuItem(
-      child: Text('5영역'),
       value: '기술과 정보',
+      child: Text('5영역'),
     ),
     DropdownMenuItem(
-      child: Text('6영역'),
       value: '건강과 예술',
+      child: Text('6영역'),
     ),
     DropdownMenuItem(
-      child: Text('7영역'),
       value: '자연과 과학',
+      child: Text('7영역'),
     )
   ];
   Map allClassList = {};
@@ -89,11 +89,17 @@ class _OpenClassState extends State<OpenClass> {
   BannerAd? _bannerAd;
   bool _loadBanner = false;
 
+  /// 개설 강좌 조회에서 하단 배너에 광고를 생성하는 메서드이다.
+  ///
+  /// 앱 내 설정의 하단 배너 광고표시 여부에 따라 광고를 표시하는 메서드로
+  /// 사용자 기기의 화면 크기를 계산하여 거기에 맞는 크기의 광고를 제공한다.
+  /// 만일 광고가 어떠한 문제로 인해 송출되지 않는 경우이거나 사용자가 광고표시를 설정에서 활성화 하지 않은 경우
+  /// 광고는 나타나지 않는다.
   Future<void> _createBanner(BuildContext context) async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    Map settingData = jsonDecode(_pref.getString('settings')!) as Map;
-    final _bottomBannerAd = settingData['bottomBanner'] ?? true;
-    if (!_bottomBannerAd) {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    Map settingData = jsonDecode(pref.getString('settings') ?? '{}') as Map;
+    final bottomBannerAd = settingData['bottomBanner'] ?? true;
+    if (!bottomBannerAd) {
       return;
     }
     final AnchoredAdaptiveBannerAdSize? size =
@@ -147,8 +153,8 @@ class _OpenClassState extends State<OpenClass> {
     super.initState();
     for (var dat in gradeList) {
       gradeDownList.add(DropdownMenuItem(
-        child: Text(dat),
         value: dat,
+        child: Text(dat),
       ));
     }
   }
@@ -156,10 +162,10 @@ class _OpenClassState extends State<OpenClass> {
   @override
   void dispose() async {
     super.dispose();
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.remove('dp_set');
-    _pref.setString('subjects', jsonEncode(subjects));
-    _pref.setString('dpMap', jsonEncode(dpMap));
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.remove('dp_set');
+    pref.setString('subjects', jsonEncode(subjects));
+    pref.setString('dpMap', jsonEncode(dpMap));
     _bannerAd?.dispose();
   }
 
@@ -170,24 +176,19 @@ class _OpenClassState extends State<OpenClass> {
       _loadBanner = true;
     }
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('개설 강좌 조회'),
-          actions: [
-            IconButton(
-              onPressed: () {
-                List<ClassInfo> classList = [];
+        appBar: AppBar(title: const Text('개설 강좌 조회')),
+        floatingActionButton: SuwonButton(
+            isActivate: true,
+            icon: Icons.search,
+            buttonName: '검색',
+            onPressed: () {
+              List<ClassInfo> classList = [];
               for (List data in allClassList.values) {
                 classList.addAll(ClassInfo.fromFirebaseDatabase(data));
               }
               context.push('/oclass/search',
                   extra: [classList, widget.settingsData]);
             }),
-              ]),
-              icon: const Icon(Icons.search),
-              tooltip: '검색',
-            )
-          ],
-        ),
         body: FutureBuilder(
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -234,12 +235,12 @@ class _OpenClassState extends State<OpenClass> {
               if (_isFirstDp) {
                 List<String> _tempList = [];
                 dpDropdownList.add(const DropdownMenuItem(
-                  child: Text('교양'),
                   value: '교양',
+                  child: Text('교양'),
                 ));
                 dpDropdownList.add(const DropdownMenuItem(
-                  child: Text('교양(야)'),
                   value: '교양(야)',
+                  child: Text('교양(야)'),
                 ));
                 for (String depart in dpSet) {
                   _tempList.add(depart);
@@ -247,49 +248,49 @@ class _OpenClassState extends State<OpenClass> {
                 _tempList.sort((a, b) => a.compareTo(b));
                 for (String depart in _tempList) {
                   dpDropdownList.add(DropdownMenuItem(
-                    child: Text(depart),
                     value: depart,
+                    child: Text(depart),
                   ));
                 }
 
                 _isFirstDp = false;
               }
-              List _tempList = [];
+              List tempList = [];
               subjectDropdownList.clear();
               subjectDropdownList.add(const DropdownMenuItem(
-                child: Text('전체'),
                 value: '전체',
+                child: Text('전체'),
               ));
               subjectDropdownList.add(const DropdownMenuItem(
-                child: Text('학부 공통'),
                 value: '학부 공통',
+                child: Text('학부 공통'),
               ));
               for (String subject in tempSet) {
-                _tempList.add(subject);
+                tempList.add(subject);
               }
-              _tempList.sort((a, b) => a.compareTo(b));
-              for (String subject in _tempList) {
+              tempList.sort((a, b) => a.compareTo(b));
+              for (String subject in tempList) {
                 subjectDropdownList.add(DropdownMenuItem(
-                  child: Text(subject),
                   value: subject,
+                  child: Text(subject),
                 ));
               }
               for (var classData
                   in ClassInfo.fromFirebaseDatabase(allClassList[_myDept])) {
                 if (_myDept == '교양') {
-                  if ((classData.guestGrade.toString() + '학년' == _myGrade) &&
+                  if (('${classData.guestGrade}학년' == _myGrade) &&
                       ((_region == '전체' ||
                           _region == (classData.region ?? 'none')))) {
                     classList.add(classData);
                   }
                 } else if (_myMajor == '학부 공통') {
                   if ((classData.guestMjor == null) &&
-                      ((classData.guestGrade.toString() + '학년') == _myGrade)) {
+                      (('${classData.guestGrade}학년') == _myGrade)) {
                     classList.add(classData);
                   }
                 } else if ((_myMajor == '전체' ||
                         (classData.guestMjor == _myMajor)) &&
-                    ((classData.guestGrade.toString() + '학년') == _myGrade)) {
+                    (('${classData.guestGrade}학년') == _myGrade)) {
                   classList.add(classData);
                 }
               }

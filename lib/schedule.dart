@@ -57,13 +57,13 @@ class SchedulePage extends StatelessWidget {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.none) {
               return Card(
+                color: Colors.amber,
                 child: Row(
                   children: const [
                     Icon(Icons.announcement),
                     Text("오류가 발생했습니다."),
                   ],
                 ),
-                color: Colors.amber,
               );
             } else if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
