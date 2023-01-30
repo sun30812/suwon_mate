@@ -1,11 +1,11 @@
-import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 
-/// 과목에 대한 세부정보를 표시하는 카드형태의 위젯들이 모여있는 페이지의
+import '../controller/favorite_controller.dart';
+
+/// 과목에 대한 세부정보를 표시하는 카드형태의 위젯들이 모여있는 페이지
 ///
 /// [classInfo]을 매개변수로 가지는 생성자를 통해 해당 클래스의 객체를 생성할 수 있다.
 class OpenClassInfo extends StatelessWidget {
@@ -55,7 +55,7 @@ class OpenClassInfoPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _OpenClassInfoPageState createState() => _OpenClassInfoPageState();
+  State<OpenClassInfoPage> createState() => _OpenClassInfoPageState();
 }
 
 class _OpenClassInfoPageState extends State<OpenClassInfoPage> {
@@ -77,7 +77,7 @@ class _OpenClassInfoPageState extends State<OpenClassInfoPage> {
 ///
 /// 즐겨찾기 등록 여부에 따라 다른 디자인을 제공하고 어떤 문제로 인해 즐겨찾기 기능을 사용할 수 없을 때
 /// 누를 수 없도록 하는 등의 기능을 제공한다.
-class FavoriteButton extends StatefulWidget {
+class FavoriteButton extends ConsumerWidget {
   /// 과목에 대한 정보를 가진 필드이다.
   final ClassInfo _classData;
 
@@ -90,80 +90,16 @@ class FavoriteButton extends StatefulWidget {
         super(key: key);
 
   @override
-  _FavoriteButtonState createState() => _FavoriteButtonState();
-}
-
-class _FavoriteButtonState extends State<FavoriteButton> {
-  bool _isAddFavorite = false;
-  List<ClassInfo> _favorites = [];
-
-  Future<List<ClassInfo>?> getFavoriteData() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    if (_pref.containsKey('favoriteSubjectList')) {
-      List result = jsonDecode(_pref.getString('favoriteSubjectList')!);
-      return result.map((e) => ClassInfo.fromJson(e)).toList();
-    } else {
-      return null;
-    }
-  }
-
-  /// 즐겨찾기에 대한 정보를 저장하는 설정값에 현재 즐겨찾기 리스트에 등록된 과목들을 저장하는 메서드이다.
-  ///
-  /// [favoriteList]로부터 즐겨찾기에 등록된 과목 리스트들을 받아서 [SharedPreferences]를 통해 설정값에 저장한다.
-  ///
-  /// ## 같이보기
-  /// * [ClassInfo]
-  /// * [SharedPreferences]
-  void syncFavorite(List<ClassInfo>? favoriteList) async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setString('favoriteSubjectList', jsonEncode(favoriteList));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<List<ClassInfo>?>(
-      future: getFavoriteData(),
-      builder:
-          (BuildContext context, AsyncSnapshot<List<ClassInfo>?> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SuwonButton(
-            icon: Icons.star_outline,
-            buttonName: '즐겨찾기 추가',
-            onPressed: null,
-          );
+  Widget build(BuildContext context, WidgetRef ref) {
+    List<ClassInfo> classInfo = ref.watch(favoriteControllerNotifierProvider);
+    return SuwonButton(
+      icon: classInfo.contains(_classData) ? Icons.star: Icons.star_outline,
+      buttonName: classInfo.contains(_classData) ? '즐겨찾기에서 제거': '즐겨찾기 추가',
+      onPressed: () {
+        if (classInfo.contains(_classData)) {
+          ref.read(favoriteControllerNotifierProvider.notifier).removeSubject(_classData.subjectCode);
         } else {
-          _favorites = snapshot.data ?? [];
-          for (var classData in _favorites) {
-            if (classData == widget._classData) {
-              _isAddFavorite = true;
-            }
-          }
-          if (!_isAddFavorite) {
-            return SuwonButton(
-              icon: Icons.star_outline,
-              buttonName: '즐겨찾기 추가',
-              onPressed: () {
-                setState(() {
-                  _isAddFavorite = true;
-                });
-                _favorites.add(widget._classData);
-                syncFavorite(_favorites);
-              },
-            );
-          } else {
-            return SuwonButton(
-              icon: Icons.star,
-              buttonName: '즐겨찾기에서 제거',
-              onPressed: () {
-                setState(() {
-                  _favorites.removeWhere((element) =>
-                      element.subjectCode == widget._classData.subjectCode);
-                  _isAddFavorite = false;
-                });
-                syncFavorite(_favorites);
-              },
-            );
-          }
+          ref.read(favoriteControllerNotifierProvider.notifier).addSubject(_classData);
         }
       },
     );

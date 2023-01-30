@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/help.dart';
 import 'package:suwon_mate/information/notice_page.dart';
@@ -22,11 +23,11 @@ import 'package:go_router/go_router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(App());
+  runApp(ProviderScope(child: App()));
 }
 
 /// 앱에서 사용되는 페이지들을 정의하고 앱 기본 디자인이나 테마를 정의하는 부분이다.
-class App extends StatelessWidget {
+class App extends ConsumerWidget {
   App({Key? key}) : super(key: key);
 
   final _routes = GoRouter(routes: <RouteBase>[
@@ -92,7 +93,7 @@ class App extends StatelessWidget {
   ]);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
         theme: ThemeData().copyWith(
             useMaterial3: true,
