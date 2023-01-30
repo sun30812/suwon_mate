@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
+
 /// 특정 강의에 대한 정보를 가지는 클래스이다.
 ///
 /// 특정 강의에 대한 정보를 요구하는 위젯을 다루기 쉽도록 만들어진 클래스이다.
 ///
 /// ## 같이보기
 /// - [ClassDetailInfoCard]
+@immutable
 class ClassInfo {
   /// 과목 이름
   final String name;

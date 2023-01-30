@@ -44,12 +44,11 @@ class HelpPage extends StatelessWidget {
               )),
           InfoCard(
               icon: Icons.star_outline,
-              title: '즐겨찾는 과목',
+              title: '즐겨찾기',
               detail: Column(
                 children: const [
                   Text(
-                    '개설 강좌 조회에서 즐겨찾기에 추가한 과목들만 확인할 수 있습니다.\n'
-                    '현재 즐겨찾는 과목 페이지에서 즐겨찾기 제거 시 앱 메인화면으로 나갔다가 들어와야 정상적으로 반영됩니다.',
+                    '개설 강좌 조회에서 즐겨찾기에 추가한 과목들만 확인할 수 있습니다.',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],
