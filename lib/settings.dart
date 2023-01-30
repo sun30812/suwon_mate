@@ -12,7 +12,7 @@ class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
 
   @override
-  _SettingPageState createState() => _SettingPageState();
+  State<SettingPage> createState() => _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
@@ -73,8 +73,8 @@ class _SettingPageState extends State<SettingPage> {
           version: '2.3.0',
           buildNumber: '16');
     }
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    return _pref;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref;
   }
 
   /// 서버로부터 최신 앱 버전을 가져오는 메서드이다.
@@ -86,27 +86,20 @@ class _SettingPageState extends State<SettingPage> {
     return appVer.child('app_ver').once();
   }
 
-  /// 서버로부터 학부 정보를 가져오는 메서드이다.
-  ///
-  /// Firebase에서 학부에 대한 정보를 가져온다. 이를 통해 DB에 명시된 학부를 확인하는 것이 가능하다.
-  Stream getDepartment() {
-    DatabaseReference data = FirebaseDatabase.instance.ref('departments');
-    return data.onValue;
-  }
 
   @override
   void initState() {
     super.initState();
     subDropdownList = subList
         .map((dat) => DropdownMenuItem(
-              child: Text(dat),
               value: dat,
+              child: Text(dat),
             ))
         .toList();
     gradeDropdownList = gradeList
         .map((dat) => DropdownMenuItem(
-              child: Text(dat),
               value: dat,
+              child: Text(dat),
             ))
         .toList();
   }
@@ -114,11 +107,11 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void dispose() async {
     super.dispose();
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.setString('myDept', _myDp);
-    _pref.setString('mySubject', _mySub);
-    _pref.setString('myGrade', _grade);
-    _pref.setString('settings', jsonEncode(functionSetting));
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('myDept', _myDp);
+    pref.setString('mySubject', _mySub);
+    pref.setString('myGrade', _grade);
+    pref.setString('settings', jsonEncode(functionSetting));
   }
 
   /// 개설 강좌 조회를 아직 누르지 않은 경우 경고위젯을 띄우는 메서드
@@ -152,11 +145,11 @@ class _SettingPageState extends State<SettingPage> {
               ),
               TextButton(
                   onPressed: (() async {
-                    SharedPreferences _pref =
+                    SharedPreferences pref =
                         await SharedPreferences.getInstance();
-                    _pref.remove('favoritesMap');
-                    List<String> _list = ['06993-001'];
-                    await _pref.setStringList('favorite', _list);
+                    pref.remove('favoritesMap');
+                    List<String> list = ['06993-001'];
+                    await pref.setStringList('favorite', list);
                     Navigator.of(context).pop();
                   }),
                   child: const Text('디버그: 이전 즐겨찾기 항목으로 설정')),
@@ -170,9 +163,9 @@ class _SettingPageState extends State<SettingPage> {
                               title: '경고',
                               content: const Text('즐겨찾는 과목의 데이터를 모두 지웁니까?'),
                               onPressed: () async {
-                                SharedPreferences _pref =
+                                SharedPreferences pref =
                                     await SharedPreferences.getInstance();
-                                _pref.remove('favoritesMap');
+                                pref.remove('favoritesMap');
                                 Navigator.of(context).pop();
                               },
                             ));
@@ -188,9 +181,9 @@ class _SettingPageState extends State<SettingPage> {
                               title: '경고',
                               content: const Text('앱의 데이터를 모두 지웁니까?'),
                               onPressed: () async {
-                                SharedPreferences _pref =
+                                SharedPreferences pref =
                                     await SharedPreferences.getInstance();
-                                _pref.remove('favoritesMap');
+                                pref.remove('favoritesMap');
                                 Navigator.of(context).pop();
                               },
                             ));
@@ -246,9 +239,9 @@ class _SettingPageState extends State<SettingPage> {
                         child: const Text('무시(앱 종료)')),
                     TextButton(
                         onPressed: (() async {
-                          SharedPreferences _pref =
+                          SharedPreferences pref =
                               await SharedPreferences.getInstance();
-                          _pref.remove('dp_set');
+                          pref.remove('dp_set');
                         }),
                         child: const Text('확인'))
                   ],
@@ -269,29 +262,29 @@ class _SettingPageState extends State<SettingPage> {
 
               majorDropdownList.clear();
               majorDropdownList.add(const DropdownMenuItem(
-                child: Text('전체'),
                 value: '전체',
+                child: Text('전체'),
               ));
               majorDropdownList.add(const DropdownMenuItem(
-                child: Text('학부 공통'),
                 value: '학부 공통',
+                child: Text('학부 공통'),
               ));
               if ((snapshot.data as SharedPreferences).containsKey('dpMap')) {
-                Map _subMap = jsonDecode(
+                Map subMap = jsonDecode(
                     (snapshot.data as SharedPreferences).getString('dpMap')!);
-                subDropdownList = (_subMap.keys.toList() as List<String>)
+                subDropdownList = (subMap.keys.toList() as List<String>)
                     .map((dat) => DropdownMenuItem(
-                          child: Text(dat),
                           value: dat,
+                          child: Text(dat),
                         ))
                     .toList();
                 subDropdownList.sort((a, b) => a.value!.compareTo(b.value!));
-                List _tempList = _subMap[_myDp] as List;
-                _tempList.sort((a, b) => a.compareTo(b));
-                majorDropdownList.addAll((_tempList)
+                List tempList = subMap[_myDp] as List;
+                tempList.sort((a, b) => a.compareTo(b));
+                majorDropdownList.addAll((tempList)
                     .map((dat) => DropdownMenuItem(
-                          child: Text(dat.toString()),
                           value: dat.toString(),
+                          child: Text(dat.toString()),
                         ))
                     .toList());
                 _isSynced = true;
@@ -559,15 +552,17 @@ class _SettingPageState extends State<SettingPage> {
                                               '학생 정보를 포함한 앱의 모든 데이터를 초기화합니다. 계속하시겠습니까?(이 작업은 되돌릴 수 없습니다.)'),
                                           isDestructive: true,
                                           onPressed: () async {
-                                            SharedPreferences _pref =
+                                            SharedPreferences pref =
                                                 await SharedPreferences
                                                     .getInstance();
-                                            _pref.clear().then((value) =>
+                                            pref.clear().then((value) =>
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(const SnackBar(
                                                         content: Text(
                                                             '앱의 모든 데이터를 초기화 하였습니다.'))));
-                                            Navigator.of(context).pop();
+                                            if (mounted) {
+                                              Navigator.of(context).pop();
+                                            }
                                           }));
                             },
                             style: ButtonStyle(
@@ -590,15 +585,17 @@ class _SettingPageState extends State<SettingPage> {
                                       content: const Text(
                                           'DB의 데이터를 다시 받습니다. 계속하시겠습니까?'),
                                       onPressed: () async {
-                                        SharedPreferences _pref =
+                                        SharedPreferences pref =
                                             await SharedPreferences
                                                 .getInstance();
-                                        _pref.remove('db_ver').then((value) =>
+                                        pref.remove('db_ver').then((value) =>
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(const SnackBar(
                                                     content: Text(
                                                         'DB 데이터를 지웠습니다.'))));
-                                        Navigator.of(context).pop();
+                                        if (mounted) {
+                                          Navigator.of(context).pop();
+                                        }
                                       },
                                     );
                                   });
@@ -627,11 +624,11 @@ class _SettingPageState extends State<SettingPage> {
                                 const Padding(
                                     padding: EdgeInsets.only(right: 8.0)),
                                 TextButton(
-                                    child: const Text('이메일 보내기'),
                                     onPressed: (() async {
                                       await launchUrlString(
                                           'mailto:orgsun30812+suwon_mate_github@gmail.com');
-                                    })),
+                                    }),
+                                    child: const Text('이메일 보내기')),
                               ],
                             ),
                           )
