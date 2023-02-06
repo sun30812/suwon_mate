@@ -644,10 +644,10 @@ class _SettingPageState extends State<SettingPage> {
   /// 현재 앱 버전과 서버상에 명시된 최신 버전을 비교해서 차이날 시 알려주는 메서드이다.
   ///
   /// 현재 앱 버전보다 서버상에 명시된 앱 버전이 높은 경우 앱 업데이트를 권장하는 위젯을 띄우는 위젯이다.
-  /// [equalVersion]을 통해 설치된 앱 버전과 최신 버전을 비교한 결과를 받아서 최신 버전인 경우 초록색 완료 마크를
+  /// [updated]을 통해 설치된 앱 버전과 최신 버전을 비교한 결과를 받아서 최신 버전인 경우 초록색 완료 마크를
   /// 표시하고, 업데이트가 필요할 시 업데이트 아이콘을 파란색으로 띄운다. 또한 업데이트된 앱을 받을 수 있는 링크로 안내한다.
-  Widget updater(bool equalVersion) {
-    if (equalVersion) {
+  Widget updater(bool updated) {
+    if (updated) {
       return Row(
         children: const [
           Icon(
@@ -747,8 +747,8 @@ class _SettingPageState extends State<SettingPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   updater(
-                      (versionSnapshot.data as DatabaseEvent).snapshot.value ==
-                          packageInfo.version),
+                      int.parse(((versionSnapshot.data as DatabaseEvent).snapshot.value as String).replaceAll('.', '')) <=
+                          int.parse(packageInfo.version.replaceAll('.', ''))),
                   if ((versionSnapshot.data as DatabaseEvent).snapshot.value !=
                       packageInfo.version)
                     Text(
