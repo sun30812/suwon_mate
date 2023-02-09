@@ -87,12 +87,12 @@ class _OpenClassState extends State<OpenClass> {
 
   /// DB버전을 [SharedPreferences]에 저장하고 과목에 대한 정보를 FirebaseDatabase로부터 가져오는 메서드이다.
   Future getData() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
+    SharedPreferences pref = await SharedPreferences.getInstance();
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
     DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
 
-    _pref.setString('db_ver', versionInfo["db_ver"]);
+    pref.setString('db_ver', versionInfo["db_ver"]);
     return ref.once();
   }
 
@@ -127,10 +127,10 @@ class _OpenClassState extends State<OpenClass> {
   @override
   void dispose() async {
     super.dispose();
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    _pref.remove('dp_set');
-    _pref.setString('subjects', jsonEncode(subjects));
-    _pref.setString('dpMap', jsonEncode(dpMap));
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.remove('dp_set');
+    pref.setString('subjects', jsonEncode(subjects));
+    pref.setString('dpMap', jsonEncode(dpMap));
   }
 
   @override
@@ -165,8 +165,8 @@ class _OpenClassState extends State<OpenClass> {
                 errorMessage: snapshot.error,
               );
             } else {
-              DatabaseEvent _event = snapshot.data;
-              allClassList = _event.snapshot.value as Map;
+              DatabaseEvent event = snapshot.data;
+              allClassList = event.snapshot.value as Map;
               List<ClassInfo> classList = [];
               Set tempSet = {};
               dpSet = {};
@@ -193,7 +193,7 @@ class _OpenClassState extends State<OpenClass> {
                 }
               }
               if (_isFirstDp) {
-                List<String> _tempList = [];
+                List<String> tempList0 = [];
                 dpDropdownList.add(const DropdownMenuItem(
                   value: '교양',
                   child: Text('교양'),
@@ -203,10 +203,10 @@ class _OpenClassState extends State<OpenClass> {
                   child: Text('교양(야)'),
                 ));
                 for (String depart in dpSet) {
-                  _tempList.add(depart);
+                  tempList0.add(depart);
                 }
-                _tempList.sort((a, b) => a.compareTo(b));
-                for (String depart in _tempList) {
+                tempList0.sort((a, b) => a.compareTo(b));
+                for (String depart in tempList0) {
                   dpDropdownList.add(DropdownMenuItem(
                     value: depart,
                     child: Text(depart),
@@ -315,12 +315,8 @@ class _OpenClassState extends State<OpenClass> {
                                 extra: classList[index]),
                             title: classList[index].name,
                             subTitle: classList[index].hostName ?? "이름 공개 안됨",
-                            content: Text((classList[index].guestMjor ??
-                                    "학부 전체 대상") +
-                                ", " +
-                                (classList[index].subjectKind ?? '공개 안됨') +
-                                ', ' +
-                                (classList[index].classLocation ?? "공개 안됨")),
+                            content: Text(
+                                '${classList[index].guestMjor ?? '학부 전체 대상'}, ${classList[index].subjectKind ?? '공개 안됨'} ,${classList[index].classLocation ?? '공개 안됨'}'),
                           );
                         }),
                   ),

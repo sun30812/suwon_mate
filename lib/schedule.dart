@@ -23,16 +23,16 @@ class SchedulePage extends StatelessWidget {
   String getNowEvent(List<Map<String, String>> scheduleList) {
     DateTime now = DateTime.now();
     for (Map dat in scheduleList) {
-      String _temp = (dat.keys.first as String)
+      String temp = (dat.keys.first as String)
           .replaceAll(RegExp(r'\([^)]*\)'), '')
           .replaceAll('.', '');
-      if (now == DateTime.parse(_temp.substring(0, 8))) {
+      if (now == DateTime.parse(temp.substring(0, 8))) {
         return dat.values.first.toString();
-      } else if (_temp.contains('~')) {
+      } else if (temp.contains('~')) {
         if (now.millisecondsSinceEpoch >=
-                DateTime.parse(_temp.substring(0, 8)).millisecondsSinceEpoch &&
+                DateTime.parse(temp.substring(0, 8)).millisecondsSinceEpoch &&
             now.millisecondsSinceEpoch <=
-                DateTime.parse(_temp.substring(11, 19))
+                DateTime.parse(temp.substring(11, 19))
                     .millisecondsSinceEpoch) {
           return dat.values.first.toString();
         }
@@ -54,13 +54,13 @@ class SchedulePage extends StatelessWidget {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.none) {
               return Card(
+                color: Colors.amber,
                 child: Row(
                   children: const [
                     Icon(Icons.announcement),
                     Text("오류가 발생했습니다."),
                   ],
                 ),
-                color: Colors.amber,
               );
             } else if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -81,13 +81,13 @@ class SchedulePage extends StatelessWidget {
               var rows = doc
                   .getElementsByClassName('contents_table')[0]
                   .getElementsByTagName('tr');
-              List<Map<String, String>> _scheduleList = [];
+              List<Map<String, String>> scheduleList = [];
               for (int index = 0; index < rows.length - 1; index++) {
-                Map<String, String> _tempMap = {
+                Map<String, String> tempMap = {
                   (rows[1 + index].getElementsByTagName('td')[0]).text:
                       (rows[1 + index].getElementsByTagName('td')[1]).text
                 };
-                _scheduleList.add(_tempMap);
+                scheduleList.add(tempMap);
               }
               return Column(
                 children: [
@@ -102,7 +102,7 @@ class SchedulePage extends StatelessWidget {
                         ),
                         Flexible(
                           child: Text(
-                            '현재 일정: ${getNowEvent(_scheduleList)}',
+                            '현재 일정: ${getNowEvent(scheduleList)}',
                             softWrap: true,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -117,11 +117,11 @@ class SchedulePage extends StatelessWidget {
                   Flexible(
                     flex: 10,
                     child: ListView.builder(
-                        itemCount: _scheduleList.length,
+                        itemCount: scheduleList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return SimpleCardButton(
-                              title: _scheduleList[index].values.first,
-                              content: Text(_scheduleList[index].keys.first));
+                              title: scheduleList[index].values.first,
+                              content: Text(scheduleList[index].keys.first));
                         }),
                   ),
                 ],

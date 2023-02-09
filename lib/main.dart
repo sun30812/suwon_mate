@@ -13,7 +13,6 @@ import 'package:suwon_mate/schedule.dart';
 import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/subjects/favorite_subject.dart';
 import 'package:suwon_mate/subjects/search.dart';
-// import 'contacts/search.dart' as contacts;
 import 'firebase_options.dart';
 import 'styles/style_widget.dart';
 import 'subjects/open_class.dart';
@@ -104,9 +103,7 @@ class App extends ConsumerWidget {
             colorScheme: ThemeData().colorScheme.copyWith(
                 secondary: const Color.fromARGB(255, 0, 54, 112),
                 onSecondary: const Color.fromARGB(255, 0, 54, 112),
-                primary: const Color.fromARGB(255, 0, 54, 112)
-            )
-        ),
+                primary: const Color.fromARGB(255, 0, 54, 112))),
         title: '수원 메이트',
         routerConfig: _routes);
   }
@@ -128,7 +125,7 @@ class _MainPageState extends State<MainPage> {
     BottomNavigationBarItem(
         icon: Icon(Icons.star_border_outlined),
         label: '즐겨찾기',
-        tooltip: '즐겨찾는 과목(베타)'),
+        tooltip: '즐겨찾는 과목'),
     BottomNavigationBarItem(
         icon: Icon(Icons.notifications_none_outlined),
         label: '공지사항',
@@ -263,10 +260,12 @@ class _MainMenuState extends State<MainMenu> {
                     child: const Text('무시(앱 종료)')),
                 TextButton(
                     onPressed: (() async {
-                      SharedPreferences _pref =
+                      SharedPreferences pref =
                           await SharedPreferences.getInstance();
-                      _pref.clear();
-                      Navigator.pop(context);
+                      pref.clear();
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
                     }),
                     child: const Text('확인')),
               ],
@@ -277,14 +276,6 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   Widget build(BuildContext context) {
-    // bool isActivated = true;
-    // if (widget._preferences.containsKey('settings')) {
-    //   setState(() {
-    //     isActivated = !(jsonDecode((widget._preferences.getString('settings'))!)
-    //         as Map)['offline'];
-    //   });
-    // }
-
     return Center(
       child: SingleChildScrollView(
         child: Column(
@@ -298,12 +289,6 @@ class _MainMenuState extends State<MainMenu> {
                   buttonName: '도움말',
                   onPressed: () => context.push('/help'),
                 ),
-                // TODO: 전화번호 찾기 기능은 구상중이며 사라질 수 있습니다.
-                // SuwonButton(
-                //   icon: Icons.call_outlined,
-                //   buttonName: '전화번호 찾기',
-                //   onPressed: () => Navigator.of(context).pushNamed('/contacts'),
-                // ),
                 SuwonSquareButton(
                   icon: Icons.date_range,
                   buttonName: '개설 강좌 조회',
@@ -311,12 +296,14 @@ class _MainMenuState extends State<MainMenu> {
                     migrationCheck();
                     SharedPreferences pref =
                         await SharedPreferences.getInstance();
-                    context.push('/oclass', extra: [
-                      pref.getString('myDept') ?? '컴퓨터학부',
-                      pref.getString('mySubject') ?? '학부 공통',
-                      pref.getString('myGrade') ?? '1학년',
-                      pref.getString('settings'),
-                    ]);
+                    if (mounted) {
+                      context.push('/oclass', extra: [
+                        pref.getString('myDept') ?? '컴퓨터학부',
+                        pref.getString('mySubject') ?? '학부 공통',
+                        pref.getString('myGrade') ?? '1학년',
+                        pref.getString('settings'),
+                      ]);
+                    }
                   },
                 ),
               ],
