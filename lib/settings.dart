@@ -150,7 +150,10 @@ class _SettingPageState extends State<SettingPage> {
                     pref.remove('favoritesMap');
                     List<String> list = ['06993-001'];
                     await pref.setStringList('favorite', list);
+                    if (mounted) {
                     Navigator.of(context).pop();
+
+                    }
                   }),
                   child: const Text('디버그: 이전 즐겨찾기 항목으로 설정')),
               TextButton(
@@ -166,7 +169,10 @@ class _SettingPageState extends State<SettingPage> {
                                 SharedPreferences pref =
                                     await SharedPreferences.getInstance();
                                 pref.remove('favoritesMap');
+                                if (mounted) {
                                 Navigator.of(context).pop();
+
+                                }
                               },
                             ));
                   },
@@ -184,7 +190,10 @@ class _SettingPageState extends State<SettingPage> {
                                 SharedPreferences pref =
                                     await SharedPreferences.getInstance();
                                 pref.remove('favoritesMap');
+                                if (mounted) {
+
                                 Navigator.of(context).pop();
+                                }
                               },
                             ));
                   },

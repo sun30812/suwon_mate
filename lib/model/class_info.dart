@@ -58,7 +58,7 @@ class ClassInfo {
 
   /// 특정 강의에 대한 정보를 가지는 클래스이다.
   ///
-  ClassInfo(
+  const ClassInfo(
       {required this.name,
       required this.classLanguage,
       required this.subjectCode,
