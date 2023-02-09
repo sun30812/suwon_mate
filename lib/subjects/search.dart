@@ -129,17 +129,14 @@ class _SearchPageState extends State<SearchPage> {
                               .toString()
                               .contains(_subjectNameController.text))) {
                     return SimpleCardButton(
-                      onPressed: () => context.push('/oclass/info',
-                          extra: widget.classList[index]),
-                      title: widget.classList[index].name,
-                      subTitle: widget.classList[index].hostName ?? "이름 공개 안됨",
-                      content: Text((widget.classList[index].guestDept ??
-                              "학부 전체 대상(전공 없음)") +
-                          ", " +
-                          (widget.classList[index].subjectKind ?? '공개 안됨') +
-                          ', ' +
-                          (widget.classList[index].classLocation ?? "공개 안됨")),
-                    );
+                        onPressed: () => context.push('/oclass/info',
+                            extra: widget.classList[index]),
+                        title: widget.classList[index].name,
+                        subTitle:
+                            widget.classList[index].hostName ?? "이름 공개 안됨",
+                        content: Text(
+                          '${widget.classList[index].guestDept ?? '학부 전체 대상(전공 없음)'}, ${widget.classList[index].subjectKind ?? '공개 안됨'}, ${widget.classList[index].classLocation ?? '공개 안됨'}',
+                        ));
                   }
                   return Container();
                 }),
