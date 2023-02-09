@@ -146,10 +146,10 @@ void main() {
   });
   group('Favorite Migration', () {
     setUp(() async {
-      SharedPreferences _pref = await SharedPreferences.getInstance();
-      List<String> _testFavorites = ['30812-000'];
-      _pref.remove('favoritesMap');
-      _pref.setStringList('favorites', _testFavorites);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      List<String> testFavorites = ['30812-000'];
+      pref.remove('favoritesMap');
+      pref.setStringList('favorites', testFavorites);
     });
     testWidgets('Add/Remove favorite Test', (tester) async {
       await tester.pumpWidget(App());

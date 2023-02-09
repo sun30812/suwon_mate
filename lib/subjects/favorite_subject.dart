@@ -25,7 +25,7 @@ class FavoriteListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     List<ClassInfo> classInfo = ref.watch(favoriteControllerNotifierProvider);
     if (ref.read(favoriteControllerNotifierProvider.notifier).isLoading) {
-      return  Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
@@ -34,8 +34,7 @@ class FavoriteListView extends ConsumerWidget {
           ],
         ),
       );
-    }
-    else if (classInfo.isEmpty) {
+    } else if (classInfo.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -55,11 +54,13 @@ class FavoriteListView extends ConsumerWidget {
                 context.push('/oclass/info', extra: classInfo[index]),
             title: classInfo[index].name,
             subTitle: classInfo[index].hostName ?? "이름 공개 안됨",
-            content: Text((classInfo[index].guestMjor ?? "학부 전체 대상") +
-                ", " +
-                (classInfo[index].subjectKind ?? '공개 안됨') +
-                ', ' +
-                (classInfo[index].classLocation ?? "공개 안됨")),
+            // content: Text((classInfo[index].guestMjor ?? '학부 전체 대상') +
+            //     ", " +
+            //     (classInfo[index].subjectKind ?? '공개 안됨') +
+            //     ', ' +
+            //     (classInfo[index].classLocation ?? "공개 안됨")),
+            content: Text(
+                '${classInfo[index].guestMjor ?? '학부 전체 대상'}, ${classInfo[index].subjectKind ?? '공개 안됨'}, ${classInfo[index].classLocation ?? '공개 안됨'}'),
           );
         });
   }

@@ -97,17 +97,7 @@ class _NoticePageState extends State<NoticePage> {
                             context.push('/notice/detail', extra: siteData),
                         title: siteData.title,
                         content: Text(
-                          rows
-                                  .getElementsByClassName('info')[index]
-                                  .getElementsByClassName('date')[0]
-                                  .text
-                                  .trim() +
-                              '/' +
-                              rows
-                                  .getElementsByClassName('info')[index]
-                                  .getElementsByClassName('hit')[0]
-                                  .text
-                                  .trim(),
+                          '${rows.getElementsByClassName('info')[index].getElementsByClassName('date')[0].text.trim()}/${rows.getElementsByClassName('info')[index].getElementsByClassName('hit')[0].text.trim()}',
                           textAlign: TextAlign.left,
                           style: const TextStyle(fontSize: 16.0),
                         ));

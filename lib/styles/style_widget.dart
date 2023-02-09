@@ -680,7 +680,7 @@ class SuwonDialog extends StatelessWidget {
       required String title,
       required Widget content}) {
     return AlertDialog(
-      title: Row(
+      title: Column(
         children: [
           Icon(icon),
           const Padding(padding: EdgeInsets.only(right: 10.0)),
@@ -710,7 +710,7 @@ class SuwonDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Row(
+      title: Column(
         children: [
           Icon(_icon),
           const Padding(padding: EdgeInsets.only(right: 10.0)),
@@ -722,8 +722,8 @@ class SuwonDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: _onPressed,
-          child: const Text('확인'),
           style: okButtonStyle(),
+          child: const Text('확인'),
         ),
         TextButton(
             onPressed: () => Navigator.of(context).pop(),
