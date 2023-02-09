@@ -49,7 +49,7 @@ class FavoriteListView extends ConsumerWidget {
     return ListView.builder(
         itemCount: classInfo.length,
         itemBuilder: (BuildContext context, int index) {
-          return SimpleCardButton(
+          return SimpleCard(
             onPressed: () =>
                 context.push('/oclass/info', extra: classInfo[index]),
             title: classInfo[index].name,

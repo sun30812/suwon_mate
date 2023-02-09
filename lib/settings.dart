@@ -86,7 +86,6 @@ class _SettingPageState extends State<SettingPage> {
     return appVer.child('app_ver').once();
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -151,8 +150,7 @@ class _SettingPageState extends State<SettingPage> {
                     List<String> list = ['06993-001'];
                     await pref.setStringList('favorite', list);
                     if (mounted) {
-                    Navigator.of(context).pop();
-
+                      Navigator.of(context).pop();
                     }
                   }),
                   child: const Text('디버그: 이전 즐겨찾기 항목으로 설정')),
@@ -170,8 +168,7 @@ class _SettingPageState extends State<SettingPage> {
                                     await SharedPreferences.getInstance();
                                 pref.remove('favoritesMap');
                                 if (mounted) {
-                                Navigator.of(context).pop();
-
+                                  Navigator.of(context).pop();
                                 }
                               },
                             ));
@@ -191,8 +188,7 @@ class _SettingPageState extends State<SettingPage> {
                                     await SharedPreferences.getInstance();
                                 pref.remove('favoritesMap');
                                 if (mounted) {
-
-                                Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
                                 }
                               },
                             ));
