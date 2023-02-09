@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 /// 특정 강의에 대한 정보를 가지는 클래스이다.
 ///
@@ -58,6 +58,7 @@ class ClassInfo {
 
   /// 특정 강의에 대한 정보를 가지는 클래스이다.
   ///
+  /// 각 속성에 맞게 과목 정보를 기입하면 된다.
   const ClassInfo(
       {required this.name,
       required this.classLanguage,
@@ -77,6 +78,13 @@ class ClassInfo {
       required this.guestGrade});
 
   /// FirebaseDatabase로부터 과목 정보를 불러올 때 사용하는 메서드이다.
+  ///
+  /// `FirebaseDatabase`에서 반환한 값의 value를 [jsonList]로 전달하면
+  /// 리스트 내 원소 각각을 역직렬화 해준다.
+  ///
+  /// ## 같이보기
+  /// * [ClassInfo]
+  /// * [ClassInfo.fromFirebaseJson]
   static List<ClassInfo> fromFirebaseDatabase(List jsonList) {
     return jsonList
         .map((subject) => ClassInfo.fromFirebaseJson(subject))
@@ -84,6 +92,10 @@ class ClassInfo {
   }
 
   /// [ClassInfo]로 역직렬화 시 사용되는 메서드이다.(Firebase 전용)
+  ///
+  /// [json]으로 역직렬화가 필요한 값을 받아서 역직렬화를 시켜준다.
+  /// 해당 메서드는 **반드시** `Firebase`를 통해 데이터를 받는 경우에만 사용해야 하며
+  /// 즐겨찾는 과목 데이터에 저장같은 내부적인 처리 시에는 **반드시** [ClassInfo.fromJson]을 사용해야 한다.
   factory ClassInfo.fromFirebaseJson(Map json) {
     return ClassInfo(
         name: json['subjtNm'],
@@ -105,6 +117,8 @@ class ClassInfo {
   }
 
   /// [ClassInfo]로 역직렬화 시 사용되는 메서드이다.
+  ///
+  /// [json]으로 역직렬화가 필요한 값을 받아서 역직렬화를 시켜준다.
   factory ClassInfo.fromJson(Map json) {
     return ClassInfo(
         name: json['subjtNm'],
@@ -145,7 +159,6 @@ class ClassInfo {
         'trgtGrdeCd': guestGrade,
       };
 
-  /// 같은 과목 코드인 경우 같은 과목으로 취급하기 위한 메서드이다.
   @override
   bool operator ==(covariant ClassInfo other) =>
       subjectCode == other.subjectCode;
