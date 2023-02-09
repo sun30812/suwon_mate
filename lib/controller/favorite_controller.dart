@@ -8,7 +8,7 @@ import 'package:suwon_mate/model/class_info.dart';
 /// 즐겨찾는 과목에 대한 제어가 필요한 경우 [favoriteControllerNotifierProvider]
 /// 을 통해 접근하여 과목 제거 및 추가작업을 수행한다.
 /// 즐겨찾는 과목 메뉴에 처음 접근 시 기기 내 [SharedPreferences]에 접근하여 정보를 불러오기 때문에 로딩이 발생할 수 있다.
-/// 이 시간동안 얍이 정지된 것으로 보이는데, 그 대신 로딩 창을 띄우고 싶은 경우 [isLoading]필드를 통해 로딩 여부에 따라 로딩 창을
+/// 이 시간동안 앱이 정지된 것으로 보이는데, 그 대신 로딩 창을 띄우고 싶은 경우 [isLoading]속성를 통해 로딩 여부에 따라 로딩 창을
 /// 띄우는 것이 가능하다.
 /// 
 /// ## 같이보기
@@ -16,9 +16,9 @@ import 'package:suwon_mate/model/class_info.dart';
 /// * [StateNotifier]
 /// 
 class FavoriteControllerNotifier extends StateNotifier<List<ClassInfo>> {
-  /// [SharedPreferences]로부터 정보를 불러오는 중임을 나타내주는 필드이다.
+  /// [SharedPreferences]로부터 정보를 불러오는 중임을 나타내주는 속성이다.
   /// 
-  /// 데이터를 로딩 중 로딩 바를 표시하려면 해당 필드를 사용하면 된다.
+  /// 데이터를 로딩 중 로딩 바를 표시하려면 해당 속성를 사용하면 된다.
   bool isLoading = true;
   FavoriteControllerNotifier() : super([]) {
     SharedPreferences.getInstance().then((value) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
-
 import '../controller/favorite_controller.dart';
 
 /// 과목에 대한 세부정보를 표시하는 카드형태의 위젯들이 모여있는 페이지
@@ -50,7 +49,10 @@ class OpenClassInfo extends StatelessWidget {
 /// * [ClassDetailInfoCard]
 ///
 class OpenClassInfoPage extends StatefulWidget {
+  /// 과목 정보를 담고있는 속성
   final ClassInfo classData;
+
+  /// [classData]로부터 과목 정보를 담아서 과목의 세부 정보를 나타낸다.
   const OpenClassInfoPage({required this.classData, Key? key})
       : super(key: key);
 
@@ -78,7 +80,7 @@ class _OpenClassInfoPageState extends State<OpenClassInfoPage> {
 /// 즐겨찾기 등록 여부에 따라 다른 디자인을 제공하고 어떤 문제로 인해 즐겨찾기 기능을 사용할 수 없을 때
 /// 누를 수 없도록 하는 등의 기능을 제공한다.
 class FavoriteButton extends ConsumerWidget {
-  /// 과목에 대한 정보를 가진 필드이다.
+  /// 과목에 대한 정보를 가진 속성
   final ClassInfo _classData;
 
   /// 과목 세부정보 페이지에서 우하단에 위치한 즐겨찾기 등록 버튼이다.
@@ -93,13 +95,17 @@ class FavoriteButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     List<ClassInfo> classInfo = ref.watch(favoriteControllerNotifierProvider);
     return SuwonButton(
-      icon: classInfo.contains(_classData) ? Icons.star: Icons.star_outline,
-      buttonName: classInfo.contains(_classData) ? '즐겨찾기에서 제거': '즐겨찾기 추가',
+      icon: classInfo.contains(_classData) ? Icons.star : Icons.star_outline,
+      buttonName: classInfo.contains(_classData) ? '즐겨찾기에서 제거' : '즐겨찾기 추가',
       onPressed: () {
         if (classInfo.contains(_classData)) {
-          ref.read(favoriteControllerNotifierProvider.notifier).removeSubject(_classData.subjectCode);
+          ref
+              .read(favoriteControllerNotifierProvider.notifier)
+              .removeSubject(_classData.subjectCode);
         } else {
-          ref.read(favoriteControllerNotifierProvider.notifier).addSubject(_classData);
+          ref
+              .read(favoriteControllerNotifierProvider.notifier)
+              .addSubject(_classData);
         }
       },
     );
