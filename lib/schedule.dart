@@ -20,6 +20,8 @@ class SchedulePage extends StatelessWidget {
   const SchedulePage({Key? key}) : super(key: key);
 
   /// 현재 시행되고 있는 이벤트를 알려주는 메서드이다. 만일 오늘 해당되는 행사가 없을 시 없음 이라는 값을 반환한다.
+  ///
+  /// 현재 시행되는 이벤트 이름과 날짜 정보를 가진 [scheduleList]를 필요로 한다.
   String getNowEvent(List<Map<String, String>> scheduleList) {
     DateTime now = DateTime.now();
     for (Map dat in scheduleList) {
@@ -32,8 +34,7 @@ class SchedulePage extends StatelessWidget {
         if (now.millisecondsSinceEpoch >=
                 DateTime.parse(temp.substring(0, 8)).millisecondsSinceEpoch &&
             now.millisecondsSinceEpoch <=
-                DateTime.parse(temp.substring(11, 19))
-                    .millisecondsSinceEpoch) {
+                DateTime.parse(temp.substring(11, 19)).millisecondsSinceEpoch) {
           return dat.values.first.toString();
         }
       }
@@ -119,7 +120,7 @@ class SchedulePage extends StatelessWidget {
                     child: ListView.builder(
                         itemCount: scheduleList.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return SimpleCardButton(
+                          return SimpleCard(
                               title: scheduleList[index].values.first,
                               content: Text(scheduleList[index].keys.first));
                         }),

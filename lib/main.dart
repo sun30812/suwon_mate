@@ -29,6 +29,13 @@ void main() async {
 class App extends ConsumerWidget {
   App({Key? key}) : super(key: key);
 
+  /// 앱의 각 페이지를 나타낸다.
+  ///
+  /// 앱의 각 페이지를 정의해서 페이지 이동을 가능하게 한다.
+  ///
+  /// ## 같이보기
+  /// * [GoRoute]
+  /// * [GoRouter]
   final _routes = GoRouter(routes: <RouteBase>[
     GoRoute(
         path: '/',
@@ -111,6 +118,7 @@ class App extends ConsumerWidget {
 
 /// 앱을 실행할 때 제일 먼저 나타나는 페이지이다.
 class MainPage extends StatefulWidget {
+  /// 앱을 실행할 때 제일 먼저 나타나는 페이지이다.
   const MainPage({Key? key}) : super(key: key);
 
   @override
@@ -118,6 +126,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  /// 앱 하단에 표시되는 버튼
   List<BottomNavigationBarItem> shortcuts = const [
     BottomNavigationBarItem(icon: Icon(Icons.apps), label: '메인'),
     BottomNavigationBarItem(
@@ -132,6 +141,8 @@ class _MainPageState extends State<MainPage> {
         tooltip: '학교 공지사항'),
     BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: '설정'),
   ];
+
+  /// 앱 하단의 몇번째 버튼이 눌렸는지에 대한 정보를 가진 변수
   int _pageIndex = 0;
 
   /// 설정 저장소로부터 설정값을 가져오는 메서드이다. 앱 설정에 대한 값을 불러올 때 사용된다.
@@ -168,7 +179,7 @@ class _MainPageState extends State<MainPage> {
 
   /// 앱에 위차한 하단 탭에서 각 항목을 클릭할 때 이동할 페이지를 정의한다.
   ///
-  /// 클래스의 [_pageIndex]필드를 통해 현재 어느 탭을 선택했는지 판단해서 적절한 페이지를 반환한다.
+  /// 클래스의 [_pageIndex]속성를 통해 현재 어느 탭을 선택했는지 판단해서 적절한 페이지를 반환한다.
   Widget tabPageBody() {
     switch (_pageIndex) {
       case 0:
@@ -222,8 +233,16 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
+/// 앱 하단의 메인을 누른 경우 나타나는 메인 화면이다.
+///
+/// 도움말과 개설 강좌 조회 등이 포함된 메인 화면을 나타낸다.
 class MainMenu extends StatefulWidget {
+  /// 앱에서 필요한 설정값에 관한 속성
   final SharedPreferences _preferences;
+
+  /// 앱 하단의 메인을 누른 경우 나타나는 메인 화면
+  ///
+  /// [preferences]에 앱의 [SharedPreferences]저장소를 지정해서 앱 설정을 불러올 수 있도록 해야한다.
   const MainMenu({
     Key? key,
     required SharedPreferences preferences,
