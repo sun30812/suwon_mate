@@ -23,6 +23,9 @@ class OpenClass extends StatefulWidget {
   /// 설정 값에 대한 정보가 담긴 변수
   final Map<String, dynamic> settingsData;
 
+  /// 빠른 개설 강좌 조회 기능 여부를 확인하는 변수
+  final bool quickMode;
+
   /// 개설 강좌 조회 시 페이지이다.
   ///
   /// [myDept]에는 사용자의 학부가 들어가고, [myMajor]에는 사용자의 학과가 들어가야 한다.
@@ -32,6 +35,7 @@ class OpenClass extends StatefulWidget {
       required this.myDept,
       required this.myMajor,
       required this.myGrade,
+      required this.quickMode,
       Key? key})
       : super(key: key);
 
@@ -103,7 +107,8 @@ class _OpenClassState extends State<OpenClass> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref(widget.quickMode ? 'estbLectDtaiList_quick' : 'estbLectDtaiList');
 
     pref.setString('db_ver', versionInfo["db_ver"]);
     return ref.once();
@@ -142,14 +147,17 @@ class _OpenClassState extends State<OpenClass> {
     super.dispose();
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.remove('dp_set');
-    pref.setString('subjects', jsonEncode(subjects));
-    pref.setString('dpMap', jsonEncode(dpMap));
+    if (!widget.quickMode) {
+      pref.setString('subjects', jsonEncode(subjects));
+      pref.setString('dpMap', jsonEncode(dpMap));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('개설 강좌 조회')),
+        appBar:
+            AppBar(title: Text(widget.quickMode ? '빠른 개설 강좌 조회' : '개설 강좌 조회')),
         floatingActionButton: SuwonButton(
             isActivate: true,
             icon: Icons.search,
@@ -270,6 +278,10 @@ class _OpenClassState extends State<OpenClass> {
               classList.sort((a, b) => (a.name.compareTo(b.name)));
               return Column(
                 children: [
+                  if (widget.quickMode)
+                    const NotiCard(
+                        icon: Icons.info_outline,
+                        message: '학과 분류가 되어있지 않기 때문에 학과가 학부 목록에 같이 표시됩니다.'),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
