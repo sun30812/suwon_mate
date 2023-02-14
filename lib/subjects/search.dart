@@ -128,18 +128,15 @@ class _SearchPageState extends State<SearchPage> {
                           widget.classList[index].name
                               .toString()
                               .contains(_subjectNameController.text))) {
-                    return SimpleCardButton(
-                      onPressed: () => context.push('/oclass/info',
-                          extra: widget.classList[index]),
-                      title: widget.classList[index].name,
-                      subTitle: widget.classList[index].hostName ?? "이름 공개 안됨",
-                      content: Text((widget.classList[index].guestDept ??
-                              "학부 전체 대상(전공 없음)") +
-                          ", " +
-                          (widget.classList[index].subjectKind ?? '공개 안됨') +
-                          ', ' +
-                          (widget.classList[index].classLocation ?? "공개 안됨")),
-                    );
+                    return SimpleCard(
+                        onPressed: () => context.push('/oclass/info',
+                            extra: widget.classList[index]),
+                        title: widget.classList[index].name,
+                        subTitle:
+                            widget.classList[index].hostName ?? "이름 공개 안됨",
+                        content: Text(
+                          '${widget.classList[index].guestDept ?? '학부 전체 대상(전공 없음)'}, ${widget.classList[index].subjectKind ?? '공개 안됨'}, ${widget.classList[index].classLocation ?? '공개 안됨'}',
+                        ));
                   }
                   return Container();
                 }),
@@ -149,6 +146,10 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  /// 자동으로 검색을 시작하는지의 여부에 따라 상황에 맞는 과목 검색 상자를 제공하는 위젯이다.
+  ///
+  /// [widget.liveSearch]의 여부에 따라 `true`인 경우 자동으로 검색을 수행하는 검색 상자를 제공하고
+  /// 그렇지 않은 경우 검색 버튼을 사용자가 눌러서 검색이 가능하도록 하는 검색 상자를 제공하는 위젯이다.
   SearchBar smartSearchBar() {
     if (widget.liveSearch) {
       return SearchBar(
@@ -168,6 +169,9 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  /// 검색 시 아무 글자도 입력 안한 경우 검색 방법을 제공하는 위젯이다.
+  ///
+  /// [available]이 `false`로 설정되면 검색 방법이 나타나고 그렇지 않은 경우 나타나지 않는다.
   Widget searchHint(bool available) {
     if (available) {
       return Container();

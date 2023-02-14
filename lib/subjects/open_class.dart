@@ -26,6 +26,9 @@ class OpenClass extends StatefulWidget {
   final Map<String, dynamic> settingsData;
 
   /// 개설 강좌 조회 시 페이지이다.
+  ///
+  /// [myDept]에는 사용자의 학부가 들어가고, [myMajor]에는 사용자의 학과가 들어가야 한다.
+  /// 학년은 [myGrade]를 통해 전달되며 사용자의 개인 설정을 전달하기 위해 [settingsData]를 이용한다.
   const OpenClass(
       {required this.settingsData,
       required this.myDept,
@@ -42,10 +45,20 @@ class _OpenClassState extends State<OpenClass> {
   late String _myDept = widget.myDept;
   late String _myMajor = widget.myMajor;
   late String _myGrade = widget.myGrade;
+
+  /// 학년 목록
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
+
+  /// 학부 목록([DropdownMenuItem]용)
   List<DropdownMenuItem<String>> dpDropdownList = [];
+
+  /// 학과 목록([DropdownMenuItem]용)
   List<DropdownMenuItem<String>> subjectDropdownList = [];
+
+  /// 학년 목록([DropdownMenuItem]용)
   List<DropdownMenuItem<String>> gradeDownList = [];
+
+  /// 교양 영역 목록([DropdownMenuItem]용)
   List<DropdownMenuItem<String>> regionList = const [
     DropdownMenuItem(
       value: '전체',
@@ -351,7 +364,7 @@ class _OpenClassState extends State<OpenClass> {
                     child: ListView.builder(
                         itemCount: classList.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return SimpleCardButton(
+                          return SimpleCard(
                             onPressed: () => context.push('/oclass/info',
                                 extra: classList[index]),
                             title: classList[index].name,

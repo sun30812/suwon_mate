@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:html/dom.dart' as dom;
@@ -10,7 +9,7 @@ import '../styles/style_widget.dart';
 
 /// 수원대학교의 공지사항을 보여주는 페이지입니다.
 ///
-/// 수원대학교의 공지사항을 받아서 위젯([SimpleCardButton])으로 출력해줍니다.
+/// 수원대학교의 공지사항을 받아서 위젯([SimpleCard])으로 출력해줍니다.
 /// 만일 공지사항을 볼 수 없는 플랫폼인 경우 [NotSupportInPlatform]페이지를 출력한다.
 class NoticePage extends StatefulWidget {
   const NoticePage({Key? key}) : super(key: key);
@@ -87,7 +86,7 @@ class _NoticePageState extends State<NoticePage> {
                             .innerHtml
                             .split(',')[2]
                             .split(')')[0]);
-                    return SimpleCardButton(
+                    return SimpleCard(
                         onPressed: () =>
                             context.push('/notice/detail', extra: siteData),
                         title: siteData.title,

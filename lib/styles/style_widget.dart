@@ -1,11 +1,19 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:suwon_mate/model/class_info.dart';
 
 /// 강좌에 대한 세부 정보를 보여주는 페이지이다.
+///
+/// 강좌에 대한 상세 정보를 카드 형태의 위젯들을 통해 보여준다.
+/// [classInfo]로부터 강좌 정보를 받아서 [Card]를 통해 출력해준다.
 class ClassDetailInfoCard extends StatelessWidget {
+  /// 강의 정보에 관한 객체
   final ClassInfo classInfo;
+
+  /// [classInfo]로부터 강의 정보를 받아 세부 정보를 화면에 출력해준다.
   const ClassDetailInfoCard({required this.classInfo, Key? key})
       : super(key: key);
 
@@ -125,7 +133,10 @@ class ClassDetailInfoCard extends StatelessWidget {
 /// 데이터를 불러올 수 없을 시 출력되는 경고 메세지이다.
 ///
 /// 어떠한 이유로 인해 데이터를 불러올 수 없는 경우 메세지가 표시된다.
+/// 반환되는 오류 메세지는 [errorMessage]를 통해 전달하면 된다.
 class DataLoadingError extends StatelessWidget {
+  /// 오류 메세지. 보통 [FutureBuilder]에서 `snapshot`에서 오류 발생 시
+  /// 반환하는 `error`를 여기에 할당한다.
   final dynamic errorMessage;
   const DataLoadingError({required this.errorMessage, Key? key})
       : super(key: key);
@@ -146,6 +157,8 @@ class DataLoadingError extends StatelessWidget {
 }
 
 /// 앱에서 큼지막한 아이콘을 쓰는 메뉴 버튼에 쓰이는 위젯이다. 정사각형 형태를 보인다.
+///
+/// **추후 업데이트로 해당 위젯은 [SuwonButton]으로 통합될 예정이다.**
 class SuwonSquareButton extends StatefulWidget {
   /// 버튼의 활성화 여부를 지정한다.
   ///
@@ -181,7 +194,20 @@ class SuwonSquareButton extends StatefulWidget {
 }
 
 class _SuwonSquareButtonState extends State<SuwonSquareButton> {
+  /// 버튼의 클릭 여부를 판단하는 속성
   bool _isClicked = false;
+
+  /// 버튼을 누를 시 동작
+  ///
+  /// 버튼에 동작이 지정된 경우 버튼을 누를 때 동작을 수행하도록 한다.
+  ///
+  /// 아래의 경우에는 버튼을 눌러도 동작하지 않는다.
+  ///
+  /// * [onPressed]에 동작이 할당되지 않은 경우
+  /// * [isActivate]가 `false`이거나 지정되지 않은 경우
+  ///
+  /// ## 같이보기
+  /// * [SuwonSquareButton]
   void Function()? buttonAction() {
     if (widget.isActivate != null) {
       if (widget.isActivate == false) {
@@ -192,6 +218,9 @@ class _SuwonSquareButtonState extends State<SuwonSquareButton> {
   }
 
   /// 활성화 된 버튼일 경우 버튼을 누를 때 효과를 준다.
+  ///
+  /// [isActivate]가 `true`이면서 버튼을 누를 시 동작이 지정된 경우 버튼의 색을 진하게 표시한다.
+  /// 만일 그렇지 않은 경우 버튼의 색을 흐리게 표시하여 사용할 수 없는 버튼임을 알려주는 역할을 수행한다.
   Color smartColor() {
     if ((widget.isActivate ?? true) && (widget.onPressed != null)) {
       return Colors.grey[700]!;
@@ -267,6 +296,8 @@ class _SuwonSquareButtonState extends State<SuwonSquareButton> {
 }
 
 /// 아이콘과 글자가 가로로 같이 붙어있는 형태의 버튼이다.
+///
+/// 즐겨찾기에 추가 같은 버튼에 사용된다.
 class SuwonButton extends StatefulWidget {
   /// 버튼의 활성화 여부(`false`인 경우 버튼이 흐리게 표시되며 누를 수 없다.)
   final bool? isActivate;
@@ -279,6 +310,11 @@ class SuwonButton extends StatefulWidget {
 
   /// 버튼이 눌렸을 때 동작
   final void Function()? onPressed;
+
+  /// 아이콘([icon]을 통해 지정 가능)과 글자([buttonName]을 통해 지정 가능)가 가로로 배치된 형태의 버튼
+  ///
+  /// [isActivate]를 통해 버튼의 활성화 여부를 지정할 수 있다.
+  ///
   const SuwonButton({
     Key? key,
     this.isActivate,
@@ -293,7 +329,20 @@ class SuwonButton extends StatefulWidget {
 }
 
 class _SuwonButtonState extends State<SuwonButton> {
+  /// 버튼의 클릭 여부를 확인하는 속성
   bool _isClicked = false;
+
+  /// 버튼을 누를 시 동작
+  ///
+  /// 버튼에 동작이 지정된 경우 버튼을 누를 때 동작을 수행하도록 한다.
+  ///
+  /// 아래의 경우에는 버튼을 눌러도 동작하지 않는다.
+  ///
+  /// * [onPressed]에 동작이 할당되지 않은 경우
+  /// * [isActivate]가 `false`이거나 지정되지 않은 경우
+  ///
+  /// ## 같이보기
+  /// * [SuwonButton]
   void Function()? buttonAction() {
     if (widget.isActivate != null) {
       if (widget.isActivate == false) {
@@ -374,13 +423,16 @@ class _SuwonButtonState extends State<SuwonButton> {
   }
 }
 
-class SimpleCardButton extends StatefulWidget {
+/// 카드형태의 위젯으로 공지사항이나 개설 강좌 조회 시 나타나는 위젯
+///
+class SimpleCard extends StatefulWidget {
+  /// 카드의 제목으로 상단에 위치하고 굵게 표시됨
   final String title;
   final String? subTitle;
   final Widget content;
   final Function()? onPressed;
 
-  const SimpleCardButton(
+  const SimpleCard(
       {required this.title,
       this.subTitle,
       required this.content,
@@ -389,13 +441,18 @@ class SimpleCardButton extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<SimpleCardButton> createState() => _SimpleCardButtonState();
+  State<SimpleCard> createState() => _SimpleCardState();
 }
 
-class _SimpleCardButtonState extends State<SimpleCardButton> {
+class _SimpleCardState extends State<SimpleCard> {
   bool _isClicked = false;
   @override
   Widget build(BuildContext context) {
+    @Deprecated(("""
+    해당 함수는 더이상 사용되지 않습니다.
+    아래 스타일대로 사용하면 해당 위젯과 같은 스타일을 사용할 수 있습니다
+    TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
+    """))
     Widget subTitleWidget(String? text) {
       if (text != null) {
         return Text(
@@ -464,7 +521,13 @@ class _SimpleCardButtonState extends State<SimpleCardButton> {
                   style: const TextStyle(
                       fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
-                subTitleWidget(widget.subTitle),
+                if (widget.subTitle != null)
+                  Text(
+                    widget.subTitle!,
+                    semanticsLabel: widget.subTitle!,
+                    style: const TextStyle(
+                        fontSize: 15.0, fontWeight: FontWeight.bold),
+                  ),
                 widget.content
               ],
             ),
@@ -475,11 +538,11 @@ class _SimpleCardButtonState extends State<SimpleCardButton> {
   }
 }
 
-/// 어떠한 정보를 출력할 떄 사용되는 위젯
+/// 특정 정보를 출력할 때 사용되는 위젯
 ///
 /// [icon]으로 지정된 아이콘과 함께 어떤 정보를 출력하는데 사용된다. 아이콘 오른쪽에는
 /// [title]이 출력된다. 세부 내용은 [detail]에서 정할 수 있는데 [Widget]타입이기 때문에
-/// 글자를 출력할 수도 있고 임의의 위젯을 출력하는 것도 가능하다.
+/// 임의의 위젯을 출력하는 것이 가능하다.
 class InfoCard extends StatefulWidget {
   /// 카드 상단에 나타나는 아이콘
   final IconData icon;
@@ -490,11 +553,11 @@ class InfoCard extends StatefulWidget {
   /// 카드 내용
   final Widget detail;
 
-  /// 어떠한 정보를 출력할 떄 사용되는 위젯
+  /// 어떠한 정보를 출력할 때 사용되는 위젯
   ///
   /// [icon]으로 지정된 아이콘과 함께 어떤 정보를 출력하는데 사용된다. 아이콘 오른쪽에는
   /// [title]이 출력된다. 세부 내용은 [detail]에서 정할 수 있는데 [Widget]타입이기 때문에
-  /// 글자를 출력할 수도 있고 임의의 위젯을 출력하는 것도 가능하다.
+  /// 임의의 위젯을 출력하는 것이 가능하다.
   const InfoCard(
       {Key? key, required this.icon, required this.title, required this.detail})
       : super(key: key);
@@ -552,11 +615,18 @@ class _InfoCardState extends State<InfoCard> {
   }
 }
 
-/// 과목 검색 시 사용되는 검색창이다.
+/// 과목을 검색하는 검색 상자이다.
 class SearchBar extends StatefulWidget {
+  /// 검색 상자 내 입력값이 변경 시 수행할 작업
   final void Function(String)? _onChanged;
+
+  /// [_acceptIcon]클릭 시 수행할 작업
   final void Function()? _onAcceptPressed;
+
+  /// 검색 상자의 왼쪽에 표시되는 아이콘
   final IconData? _icon;
+
+  /// 검색 상자의 오른쪽에 표시되는 아이콘
   final IconData? _acceptIcon;
 
   /// 과목 검색 시 사용되는 검색창으로 보통 상단에 위치해있다.
@@ -674,13 +744,19 @@ class SuwonDialog extends StatelessWidget {
         _onPressed = onPressed,
         super(key: key);
 
+  /// 간단한 알림창에 해당하는 위젯으로 기존 알림창과 달리 단순 내용을 출력한다.
+  ///
+  /// 현재 화면의 `context`를 [context]로 넘겨주어야 한다.
+  ///
+  /// 알림창의 아이콘은 [icon]을 통해 지정 가능하며, [title]로 제목을 지정하고
+  /// 내용으로 출력하고픈 것을 [content]를 통해 지정하면 된다.
   static Widget simple(
       {required BuildContext context,
       required IconData icon,
       required String title,
       required Widget content}) {
     return AlertDialog(
-      title: Row(
+      title: Column(
         children: [
           Icon(icon),
           const Padding(padding: EdgeInsets.only(right: 10.0)),
@@ -697,7 +773,7 @@ class SuwonDialog extends StatelessWidget {
     );
   }
 
-  ButtonStyle okButtonStyle() {
+  ButtonStyle _okButtonStyle() {
     if (_isDestructive) {
       return ButtonStyle(
           overlayColor:
@@ -710,7 +786,7 @@ class SuwonDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Row(
+      title: Column(
         children: [
           Icon(_icon),
           const Padding(padding: EdgeInsets.only(right: 10.0)),
@@ -722,8 +798,8 @@ class SuwonDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: _onPressed,
+          style: _okButtonStyle(),
           child: const Text('확인'),
-          style: okButtonStyle(),
         ),
         TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -733,10 +809,25 @@ class SuwonDialog extends StatelessWidget {
   }
 }
 
+/// 간단한 내용을 띄울 수 있도록 만든 카드형태의 위젯이다.
+///
+/// 단순한 메세지를 띄우거나 경고 메세지를 띄울 때 사용이 가능한 위젯이다.
+/// 아이콘과 메세지 를 띄우며 *필요 시* 색상을 지정할 수 있다.
 class NotiCard extends StatelessWidget {
+  /// 메세지 왼쪽에 띄울 아이콘
   final IconData? icon;
+
+  /// 카드의 배경색(지정 안해도 됨)
   final Color? color;
+
+  /// 전달할 메세지
   final String message;
+
+  /// 간단한 내용을 띄울 수 있도록 만든 카드형태의 위젯이다.
+  ///
+  /// [icon]을 통해 아이콘 지정이 가능하며 아이콘 오른쪽에 나타낼 메세지는
+  /// [message]로 지정하면 된다.
+  /// *필요 시* 배경 색을 지정하고 싶은 경우 [color]를 통해 가능하다.
   const NotiCard({
     this.icon,
     this.color,
@@ -766,7 +857,7 @@ class NotiCard extends StatelessWidget {
 ///
 /// 만일 지원하지 않는 플랫폼의 경우 해당 플랫폼의 이름인 [platform]과 함께 지원되지 않는다는 화면을 표시한다.
 class NotSupportInPlatform extends StatelessWidget {
-  /// 플랫폼 이름을 명시하는 변수이다.
+  /// 플랫폼 이름을 명시하는 속성이다.
   final String _platform;
 
   /// 플랫폼에서 지원하지 않는 동작의 경우 표시되는 페이지이다.
@@ -794,6 +885,8 @@ class NotSupportInPlatform extends StatelessWidget {
   }
 }
 
+/// 특정 기능을 지원하지 않는 플랫폼의 경우 안되는 기능 설명을 위한 위젯이다.
+///
 class NotSupportPlatformMessage extends StatelessWidget {
   const NotSupportPlatformMessage({
     Key? key,

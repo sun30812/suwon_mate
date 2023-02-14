@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
@@ -8,14 +9,7 @@ import 'package:suwon_mate/styles/style_widget.dart';
 /// 수원대학교 주요행사 페이지의 내용을 파싱을 위해 html문서로 가져온다. 비동기적 작업으로 수행을 하고
 /// 작업이 완료되는 동안 사용자에게 로딩창을 띄울 수 있도록 [Future]를 반환한다.
 Future<http.Response> getData() {
-  return http.get(Uri.parse('https://www.suwon.ac.kr/index.html?menuno=727'),
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS, HEAD",
-        "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Headers":
-            "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
-      });
+  return http.get(Uri.parse('https://www.suwon.ac.kr/index.html?menuno=727'));
 }
 
 /// 학교의 주요 행사를 안내하는 페이지이다.
@@ -26,20 +20,21 @@ class SchedulePage extends StatelessWidget {
   const SchedulePage({Key? key}) : super(key: key);
 
   /// 현재 시행되고 있는 이벤트를 알려주는 메서드이다. 만일 오늘 해당되는 행사가 없을 시 없음 이라는 값을 반환한다.
+  ///
+  /// 현재 시행되는 이벤트 이름과 날짜 정보를 가진 [scheduleList]를 필요로 한다.
   String getNowEvent(List<Map<String, String>> scheduleList) {
     DateTime now = DateTime.now();
     for (Map dat in scheduleList) {
-      String _temp = (dat.keys.first as String)
+      String temp = (dat.keys.first as String)
           .replaceAll(RegExp(r'\([^)]*\)'), '')
           .replaceAll('.', '');
-      if (now == DateTime.parse(_temp.substring(0, 8))) {
+      if (now == DateTime.parse(temp.substring(0, 8))) {
         return dat.values.first.toString();
-      } else if (_temp.contains('~')) {
+      } else if (temp.contains('~')) {
         if (now.millisecondsSinceEpoch >=
-                DateTime.parse(_temp.substring(0, 8)).millisecondsSinceEpoch &&
+                DateTime.parse(temp.substring(0, 8)).millisecondsSinceEpoch &&
             now.millisecondsSinceEpoch <=
-                DateTime.parse(_temp.substring(11, 19))
-                    .millisecondsSinceEpoch) {
+                DateTime.parse(temp.substring(11, 19)).millisecondsSinceEpoch) {
           return dat.values.first.toString();
         }
       }
@@ -84,13 +79,13 @@ class SchedulePage extends StatelessWidget {
               var rows = doc
                   .getElementsByClassName('contents_table')[0]
                   .getElementsByTagName('tr');
-              List<Map<String, String>> _scheduleList = [];
+              List<Map<String, String>> scheduleList = [];
               for (int index = 0; index < rows.length - 1; index++) {
-                Map<String, String> _tempMap = {
+                Map<String, String> tempMap = {
                   (rows[1 + index].getElementsByTagName('td')[0]).text:
                       (rows[1 + index].getElementsByTagName('td')[1]).text
                 };
-                _scheduleList.add(_tempMap);
+                scheduleList.add(tempMap);
               }
               return Column(
                 children: [
@@ -105,7 +100,7 @@ class SchedulePage extends StatelessWidget {
                         ),
                         Flexible(
                           child: Text(
-                            '현재 일정: ${getNowEvent(_scheduleList)}',
+                            '현재 일정: ${getNowEvent(scheduleList)}',
                             softWrap: true,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -120,11 +115,11 @@ class SchedulePage extends StatelessWidget {
                   Flexible(
                     flex: 10,
                     child: ListView.builder(
-                        itemCount: _scheduleList.length,
+                        itemCount: scheduleList.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return SimpleCardButton(
-                              title: _scheduleList[index].values.first,
-                              content: Text(_scheduleList[index].keys.first));
+                          return SimpleCard(
+                              title: scheduleList[index].values.first,
+                              content: Text(scheduleList[index].keys.first));
                         }),
                   ),
                 ],

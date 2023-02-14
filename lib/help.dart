@@ -4,7 +4,11 @@ import 'styles/style_widget.dart';
 /// 도움말 페이지이다. 각 메뉴에 대한 설명을 확인할 수 있는 페이지이다.
 ///
 /// 메인 화면에서 도움말을 누른 경우 보여지는 페이지이며, 각 항목에 대한 설명은 [InfoCard]위젯을 통해 보여준다.
+///
+/// ## 같이보기
+/// * [InfoCard]
 class HelpPage extends StatelessWidget {
+  /// 도움말 페이지이다. 각 메뉴에 대한 설명을 확인할 수 있는 페이지이다.
   const HelpPage({Key? key}) : super(key: key);
 
   @override
