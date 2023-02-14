@@ -25,6 +25,9 @@ class OpenClass extends StatefulWidget {
   /// 설정 값에 대한 정보가 담긴 변수
   final Map<String, dynamic> settingsData;
 
+  /// 빠른 개설 강좌 조회 기능 여부를 확인하는 변수
+  final bool quickMode;
+
   /// 개설 강좌 조회 시 페이지이다.
   ///
   /// [myDept]에는 사용자의 학부가 들어가고, [myMajor]에는 사용자의 학과가 들어가야 한다.
@@ -34,6 +37,7 @@ class OpenClass extends StatefulWidget {
       required this.myDept,
       required this.myMajor,
       required this.myGrade,
+      required this.quickMode,
       Key? key})
       : super(key: key);
 
@@ -135,12 +139,13 @@ class _OpenClassState extends State<OpenClass> {
 
   /// DB버전을 [SharedPreferences]에 저장하고 과목에 대한 정보를 FirebaseDatabase로부터 가져오는 메서드이다.
   Future getData() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
+    SharedPreferences pref = await SharedPreferences.getInstance();
     DatabaseReference version = FirebaseDatabase.instance.ref('version');
     Map versionInfo = (await version.once()).snapshot.value as Map;
-    DatabaseReference ref = FirebaseDatabase.instance.ref('estbLectDtaiList');
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref(widget.quickMode ? 'estbLectDtaiList_quick' : 'estbLectDtaiList');
 
-    _pref.setString('db_ver', versionInfo["db_ver"]);
+    pref.setString('db_ver', versionInfo["db_ver"]);
     return ref.once();
   }
 
@@ -177,8 +182,10 @@ class _OpenClassState extends State<OpenClass> {
     super.dispose();
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.remove('dp_set');
-    pref.setString('subjects', jsonEncode(subjects));
-    pref.setString('dpMap', jsonEncode(dpMap));
+    if (!widget.quickMode) {
+      pref.setString('subjects', jsonEncode(subjects));
+      pref.setString('dpMap', jsonEncode(dpMap));
+    }
     _bannerAd?.dispose();
   }
 
@@ -189,7 +196,8 @@ class _OpenClassState extends State<OpenClass> {
       _loadBanner = true;
     }
     return Scaffold(
-        appBar: AppBar(title: const Text('개설 강좌 조회')),
+        appBar:
+            AppBar(title: Text(widget.quickMode ? '빠른 개설 강좌 조회' : '개설 강좌 조회')),
         floatingActionButton: SuwonButton(
             isActivate: true,
             icon: Icons.search,
@@ -218,8 +226,8 @@ class _OpenClassState extends State<OpenClass> {
                 errorMessage: snapshot.error,
               );
             } else {
-              DatabaseEvent _event = snapshot.data;
-              allClassList = _event.snapshot.value as Map;
+              DatabaseEvent event = snapshot.data;
+              allClassList = event.snapshot.value as Map;
               List<ClassInfo> classList = [];
               Set tempSet = {};
               dpSet = {};
@@ -246,7 +254,7 @@ class _OpenClassState extends State<OpenClass> {
                 }
               }
               if (_isFirstDp) {
-                List<String> _tempList = [];
+                List<String> tempList0 = [];
                 dpDropdownList.add(const DropdownMenuItem(
                   value: '교양',
                   child: Text('교양'),
@@ -256,10 +264,10 @@ class _OpenClassState extends State<OpenClass> {
                   child: Text('교양(야)'),
                 ));
                 for (String depart in dpSet) {
-                  _tempList.add(depart);
+                  tempList0.add(depart);
                 }
-                _tempList.sort((a, b) => a.compareTo(b));
-                for (String depart in _tempList) {
+                tempList0.sort((a, b) => a.compareTo(b));
+                for (String depart in tempList0) {
                   dpDropdownList.add(DropdownMenuItem(
                     value: depart,
                     child: Text(depart),
@@ -310,6 +318,10 @@ class _OpenClassState extends State<OpenClass> {
               classList.sort((a, b) => (a.name.compareTo(b.name)));
               return Column(
                 children: [
+                  if (widget.quickMode)
+                    const NotiCard(
+                        icon: Icons.info_outline,
+                        message: '학과 분류가 되어있지 않기 때문에 학과가 학부 목록에 같이 표시됩니다.'),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -369,12 +381,8 @@ class _OpenClassState extends State<OpenClass> {
                                 extra: classList[index]),
                             title: classList[index].name,
                             subTitle: classList[index].hostName ?? "이름 공개 안됨",
-                            content: Text((classList[index].guestMjor ??
-                                    "학부 전체 대상") +
-                                ", " +
-                                (classList[index].subjectKind ?? '공개 안됨') +
-                                ', ' +
-                                (classList[index].classLocation ?? "공개 안됨")),
+                            content: Text(
+                                '${classList[index].guestMjor ?? '학부 전체 대상'}, ${classList[index].subjectKind ?? '공개 안됨'} ,${classList[index].classLocation ?? '공개 안됨'}'),
                           );
                         }),
                   ),

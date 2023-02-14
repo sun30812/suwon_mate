@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,6 +82,7 @@ class App extends ConsumerWidget {
                     'liveSearch': true,
                     'liveSearchCount': 0.0
                   },
+            quickMode: params[4] ?? false,
           );
         },
         routes: <RouteBase>[
@@ -139,7 +141,7 @@ class _MainPageState extends State<MainPage> {
     BottomNavigationBarItem(
         icon: Icon(Icons.star_border_outlined),
         label: '즐겨찾기',
-        tooltip: '즐겨찾는 과목(베타)'),
+        tooltip: '즐겨찾는 과목'),
     BottomNavigationBarItem(
         icon: Icon(Icons.notifications_none_outlined),
         label: '공지사항',
@@ -152,6 +154,9 @@ class _MainPageState extends State<MainPage> {
 
   /// 설정 저장소로부터 설정값을 가져오는 메서드이다. 앱 설정에 대한 값을 불러올 때 사용된다.
   Future<SharedPreferences> getSettings() async {
+    var remoteConfig = FirebaseRemoteConfig.instance;
+    await remoteConfig.setDefaults(const {"quick_mode": false});
+    await remoteConfig.fetchAndActivate();
     return SharedPreferences.getInstance();
   }
 
@@ -202,7 +207,9 @@ class _MainPageState extends State<MainPage> {
             future: getSettings(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container();
+                return const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
               } else if (snapshot.hasError) {
                 return DataLoadingError(
                   errorMessage: snapshot.error,
@@ -275,10 +282,12 @@ class _MainMenuState extends State<MainMenu> {
                     child: const Text('무시(앱 종료)')),
                 TextButton(
                     onPressed: (() async {
-                      SharedPreferences _pref =
+                      SharedPreferences pref =
                           await SharedPreferences.getInstance();
-                      _pref.clear();
-                      Navigator.pop(context);
+                      pref.clear();
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
                     }),
                     child: const Text('확인')),
               ],
@@ -289,14 +298,6 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   Widget build(BuildContext context) {
-    // bool isActivated = true;
-    // if (widget._preferences.containsKey('settings')) {
-    //   setState(() {
-    //     isActivated = !(jsonDecode((widget._preferences.getString('settings'))!)
-    //         as Map)['offline'];
-    //   });
-    // }
-
     return Center(
       child: SingleChildScrollView(
         child: Column(
@@ -311,23 +312,45 @@ class _MainMenuState extends State<MainMenu> {
                   buttonName: '도움말',
                   onPressed: () => context.push('/help'),
                 ),
-                SuwonSquareButton(
-                  icon: Icons.date_range,
-                  buttonName: '개설 강좌 조회',
-                  onPressed: () async {
-                    migrationCheck();
-                    SharedPreferences pref =
-                        await SharedPreferences.getInstance();
-                    if (mounted) {
-                      context.push('/oclass', extra: [
-                        pref.getString('myDept') ?? '컴퓨터학부',
-                        pref.getString('mySubject') ?? '학부 공통',
-                        pref.getString('myGrade') ?? '1학년',
-                        pref.getString('settings'),
-                      ]);
-                    }
-                  },
-                ),
+                if (FirebaseRemoteConfig.instance.getBool('quick_mode')) ...[
+                  SuwonSquareButton(
+                    icon: Icons.date_range,
+                    buttonName: '빠른 개설 강좌 조회',
+                    onPressed: () async {
+                      migrationCheck();
+                      SharedPreferences pref =
+                          await SharedPreferences.getInstance();
+                      if (mounted) {
+                        context.push('/oclass', extra: [
+                          '컴퓨터학부',
+                          '전체',
+                          '1학년',
+                          pref.getString('settings'),
+                          true
+                        ]);
+                      }
+                    },
+                  ),
+                ] else ...[
+                  SuwonSquareButton(
+                    icon: Icons.date_range,
+                    buttonName: '개설 강좌 조회',
+                    onPressed: () async {
+                      migrationCheck();
+                      SharedPreferences pref =
+                          await SharedPreferences.getInstance();
+                      if (mounted) {
+                        context.push('/oclass', extra: [
+                          pref.getString('myDept') ?? '컴퓨터학부',
+                          pref.getString('mySubject') ?? '학부 공통',
+                          pref.getString('myGrade') ?? '1학년',
+                          pref.getString('settings'),
+                          false
+                        ]);
+                      }
+                    },
+                  ),
+                ],
                 SuwonSquareButton(
                   icon: Icons.favorite_border_outlined,
                   buttonName: '광고 보기',
