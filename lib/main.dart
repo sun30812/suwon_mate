@@ -112,7 +112,8 @@ class App extends ConsumerWidget {
             colorScheme: ThemeData().colorScheme.copyWith(
                 secondary: const Color.fromARGB(255, 0, 54, 112),
                 onSecondary: const Color.fromARGB(255, 0, 54, 112),
-                primary: const Color.fromARGB(255, 0, 54, 112))),
+                primary: const Color.fromARGB(255, 0, 54, 112))
+        ),
         title: '수원 메이트',
         routerConfig: _routes);
   }
@@ -129,19 +130,21 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   /// 앱 하단에 표시되는 버튼
-  List<BottomNavigationBarItem> shortcuts = const [
-    BottomNavigationBarItem(icon: Icon(Icons.apps), label: '메인'),
-    BottomNavigationBarItem(
+  List<Widget> shortcuts = const [
+    NavigationDestination(
+        icon: Icon(Icons.apps_outlined), label: '메인', tooltip: '메인'),
+    NavigationDestination(
         icon: Icon(Icons.schedule_outlined), label: '학사 일정', tooltip: '학사 일정'),
-    BottomNavigationBarItem(
+    NavigationDestination(
         icon: Icon(Icons.star_border_outlined),
+        selectedIcon: Icon(Icons.star),
         label: '즐겨찾기',
         tooltip: '즐겨찾는 과목'),
-    BottomNavigationBarItem(
+    NavigationDestination(
         icon: Icon(Icons.notifications_none_outlined),
+        selectedIcon: Icon(Icons.notifications),
         label: '공지사항',
         tooltip: '학교 공지사항'),
-    BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: '설정'),
   ];
 
   /// 앱 하단의 몇번째 버튼이 눌렸는지에 대한 정보를 가진 변수
@@ -170,12 +173,11 @@ class _MainPageState extends State<MainPage> {
                 icon: const Icon(Icons.clear_all))
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
+        bottomNavigationBar: NavigationBar(
           backgroundColor: Colors.grey[300],
-          items: shortcuts,
-          currentIndex: _pageIndex,
-          onTap: (value) => setState(() {
+          destinations: shortcuts,
+          selectedIndex: _pageIndex,
+          onDestinationSelected: (value) => setState(() {
             _pageIndex = value;
           }),
         ),
@@ -206,7 +208,7 @@ class _MainPageState extends State<MainPage> {
         return const SchedulePage();
       case 2:
         return const FavoriteSubjectPage();
-      case 3:
+      default:
         return FutureBuilder(
             future: getSettings(),
             builder: (context, snapshot) {
@@ -234,8 +236,6 @@ class _MainPageState extends State<MainPage> {
                 return const NoticePage();
               }
             });
-      default:
-        return const SettingsPage();
     }
   }
 }
@@ -353,7 +353,12 @@ class _MainMenuState extends State<MainMenu> {
                       }
                     },
                   ),
-                ]
+                ],
+                SuwonSquareButton(
+                  icon: Icons.settings_outlined,
+                  buttonName: '설정',
+                  onPressed: () => context.push('/settings'),
+                ),
               ],
             ),
           ],

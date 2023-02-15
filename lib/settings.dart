@@ -614,7 +614,8 @@ class _SettingPageState extends State<SettingPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const NotiCard(
-                icon: Icons.info_outline,
+                color: Colors.amber,
+                icon: Icons.warning_amber_outlined,
                 message: '이 설정을 숨기려면 settings.dart의 isDebug변수를 false로 지정합니다.',
               ),
               TextButton(
@@ -687,7 +688,6 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         title: const Text('설정'),
       ),
       body: FutureBuilder(
@@ -870,7 +870,7 @@ class _SettingPageState extends State<SettingPage> {
                         children: [
                           const Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text('각 항목의 제목 부분을 클릭하면 설명을 볼 수 있습니다.'),
+                            child: Text('각 항목을 클릭하면 설명을 볼 수 있습니다.'),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -878,7 +878,7 @@ class _SettingPageState extends State<SettingPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Material(
-                                  color: Theme.of(context).colorScheme.surfaceVariant,
+                                  color: Colors.grey[300],
                                   child: InkWell(
                                       onTap: () {
                                         showDialog(
@@ -912,6 +912,10 @@ class _SettingPageState extends State<SettingPage> {
                                       )),
                                 ),
                                 Switch(
+                                    activeTrackColor:
+                                        const Color.fromARGB(255, 0, 54, 112),
+                                    activeColor:
+                                        const Color.fromARGB(200, 0, 54, 112),
                                     value: functionSetting['offline']!,
                                     onChanged: (newValue) {
                                       if (kIsWeb) {
@@ -939,7 +943,7 @@ class _SettingPageState extends State<SettingPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Material(
-                                  color: Theme.of(context).colorScheme.surfaceVariant,
+                                  color: Colors.grey[300],
                                   child: InkWell(
                                       onTap: () {
                                         showDialog(
@@ -972,6 +976,10 @@ class _SettingPageState extends State<SettingPage> {
                                       )),
                                 ),
                                 Switch(
+                                    activeTrackColor:
+                                        const Color.fromARGB(255, 0, 54, 112),
+                                    activeColor:
+                                        const Color.fromARGB(200, 0, 54, 112),
                                     value:
                                         functionSetting['liveSearch'] ?? true,
                                     onChanged: (newValue) {
@@ -1033,17 +1041,9 @@ class _SettingPageState extends State<SettingPage> {
                                                     .getInstance();
                                             pref.clear().then((value) =>
                                                 ScaffoldMessenger.of(context)
-                                                    .showSnackBar( SnackBar(
-                                                        content: const Text(
-                                                            '앱의 모든 데이터를 초기화 하였습니다. 앱을 다시 시작해야 반영될 수 있습니다.', style: TextStyle(
-                                                          fontSize: 20.0
-                                                        ),),
-                                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(8.0)
-                                                  ),
-                                                  behavior: SnackBarBehavior.floating,
-                                                )));
+                                                    .showSnackBar(const SnackBar(
+                                                        content: Text(
+                                                            '앱의 모든 데이터를 초기화 하였습니다.'))));
                                             if (mounted) {
                                               Navigator.of(context).pop();
                                             }
@@ -1074,17 +1074,9 @@ class _SettingPageState extends State<SettingPage> {
                                                 .getInstance();
                                         pref.remove('db_ver').then((value) =>
                                             ScaffoldMessenger.of(context)
-                                                .showSnackBar( SnackBar(
-                                                  content: const Text(
-                                                    'DB 데이터를 초기화 하였습니다. 앱을 다시 시작해야 반영될 수 있습니다.', style: TextStyle(
-                                                      fontSize: 20.0
-                                                  ),),
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(8.0)
-                                                  ),
-                                                  behavior: SnackBarBehavior.floating,
-                                                )));
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        'DB 데이터를 지웠습니다.'))));
                                         if (mounted) {
                                           Navigator.of(context).pop();
                                         }
