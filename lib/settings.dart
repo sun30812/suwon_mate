@@ -211,6 +211,9 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('설정'),
+      ),
       body: FutureBuilder(
           future: getSettings(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
