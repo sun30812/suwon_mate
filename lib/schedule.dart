@@ -23,20 +23,20 @@ class SchedulePage extends StatelessWidget {
   ///
   /// 현재 시행되는 이벤트 이름과 날짜 정보를 가진 [scheduleList]를 필요로 한다.
   String getNowEvent(List<Map<String, String>> scheduleList) {
-    DateTime now = DateTime.now();
+    DateTime now = DateUtils.dateOnly(DateTime.now());
     for (Map dat in scheduleList) {
       String temp = (dat.keys.first as String)
           .replaceAll(RegExp(r'\([^)]*\)'), '')
           .replaceAll('.', '');
-      if (now == DateTime.parse(temp.substring(0, 8))) {
-        return dat.values.first.toString();
-      } else if (temp.contains('~')) {
+      if (temp.contains('~')) {
         if (now.millisecondsSinceEpoch >=
                 DateTime.parse(temp.substring(0, 8)).millisecondsSinceEpoch &&
             now.millisecondsSinceEpoch <=
                 DateTime.parse(temp.substring(11, 19)).millisecondsSinceEpoch) {
           return dat.values.first.toString();
         }
+      } else if (now == DateTime.parse(temp)) {
+        return dat.values.first.toString();
       }
     }
     return '없음';
