@@ -26,6 +26,7 @@ class OpenClassInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(classInfo.name),
       ),
       body: OpenClassInfoPage(

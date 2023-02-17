@@ -138,8 +138,7 @@ class _SettingPageState extends State<SettingPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const NotiCard(
-                color: Colors.amber,
-                icon: Icons.warning_amber_outlined,
+                icon: Icons.info_outline,
                 message: '이 설정을 숨기려면 settings.dart의 isDebug변수를 false로 지정합니다.',
               ),
               TextButton(
@@ -212,6 +211,7 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('설정'),
       ),
       body: FutureBuilder(
@@ -436,10 +436,6 @@ class _SettingPageState extends State<SettingPage> {
                                       )),
                                 ),
                                 Switch(
-                                    activeTrackColor:
-                                        const Color.fromARGB(255, 0, 54, 112),
-                                    activeColor:
-                                        const Color.fromARGB(200, 0, 54, 112),
                                     value: functionSetting['offline']!,
                                     onChanged: (newValue) {
                                       if (kIsWeb) {
@@ -500,10 +496,6 @@ class _SettingPageState extends State<SettingPage> {
                                       )),
                                 ),
                                 Switch(
-                                    activeTrackColor:
-                                        const Color.fromARGB(255, 0, 54, 112),
-                                    activeColor:
-                                        const Color.fromARGB(200, 0, 54, 112),
                                     value:
                                         functionSetting['liveSearch'] ?? true,
                                     onChanged: (newValue) {

@@ -157,7 +157,7 @@ class _OpenClassState extends State<OpenClass> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar:
-            AppBar(title: Text(widget.quickMode ? '빠른 개설 강좌 조회' : '개설 강좌 조회')),
+            AppBar(centerTitle: true, title: Text(widget.quickMode ? '빠른 개설 강좌 조회' : '개설 강좌 조회')),
         floatingActionButton: SuwonButton(
             isActivate: true,
             icon: Icons.search,
