@@ -103,17 +103,18 @@ class App extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
-        theme: ThemeData().copyWith(
-            useMaterial3: true,
-            scaffoldBackgroundColor: Colors.grey[300]!,
-            appBarTheme: AppBarTheme(
-                titleTextStyle: const TextStyle().copyWith(color: Colors.white),
-                color: const Color.fromARGB(255, 0, 54, 112)),
-            colorScheme: ThemeData().colorScheme.copyWith(
-                secondary: const Color.fromARGB(255, 0, 54, 112),
-                onSecondary: const Color.fromARGB(255, 0, 54, 112),
-                primary: const Color.fromARGB(255, 0, 54, 112))
-        ),
+        // theme: ThemeData().copyWith(
+        //     useMaterial3: true,
+        //     scaffoldBackgroundColor: Colors.grey[300]!,
+        //     appBarTheme: AppBarTheme(
+        //         titleTextStyle: const TextStyle().copyWith(color: Colors.white),
+        //         color: const Color.fromARGB(255, 0, 54, 112)),
+        // ),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: const Color.fromARGB(255, 0, 54, 112),
+        scaffoldBackgroundColor: Colors.grey[300]!
+      ),
         title: '수원 메이트',
         routerConfig: _routes);
   }
@@ -162,7 +163,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('수원 메이트'),
+          title: const Center(child: Text('수원 메이트')),
           actions: [
             IconButton(
                 onPressed: () async {
