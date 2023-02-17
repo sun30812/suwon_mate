@@ -163,7 +163,8 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text('수원 메이트')),
+          centerTitle: true,
+          title: const Text('수원 메이트'),
           actions: [
             IconButton(
                 onPressed: () async {
