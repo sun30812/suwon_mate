@@ -53,12 +53,7 @@ class FavoriteListView extends ConsumerWidget {
             onPressed: () =>
                 context.push('/oclass/info', extra: classInfo[index]),
             title: classInfo[index].name,
-            subTitle: classInfo[index].hostName ?? "이름 공개 안됨",
-            // content: Text((classInfo[index].guestMjor ?? '학부 전체 대상') +
-            //     ", " +
-            //     (classInfo[index].subjectKind ?? '공개 안됨') +
-            //     ', ' +
-            //     (classInfo[index].classLocation ?? "공개 안됨")),
+            subTitle: classInfo[index].hostName ?? '이름 공개 안됨',
             content: Text(
                 '${classInfo[index].guestMjor ?? '학부 전체 대상'}, ${classInfo[index].subjectKind ?? '공개 안됨'}, ${classInfo[index].classLocation ?? '공개 안됨'}'),
           );

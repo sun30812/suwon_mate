@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+
+@immutable
 class Notice {
   /// 공지사항의 제목
   final String title;
@@ -8,5 +11,5 @@ class Notice {
   ///
   /// [title]에 공지사항의 제목을 기입하고, [siteCode]에 수원대학교 사이트로
   /// 이동 시 제공되는 매개변수를 입력해야 한다.
-  Notice({required this.title, required this.siteCode});
+  const Notice({required this.title, required this.siteCode});
 }
