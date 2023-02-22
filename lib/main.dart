@@ -106,22 +106,19 @@ class App extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
-        // theme: ThemeData().copyWith(
-        //     useMaterial3: true,
-        //     scaffoldBackgroundColor: Colors.grey[300]!,
-        //     appBarTheme: AppBarTheme(
-        //         titleTextStyle: const TextStyle().copyWith(color: Colors.white),
-        //         color: const Color.fromARGB(255, 0, 54, 112)),
-        // ),
         theme: ThemeData(
             useMaterial3: true,
             colorSchemeSeed: const Color.fromARGB(255, 0, 54, 112),
-            navigationBarTheme: NavigationBarThemeData().copyWith(
-              backgroundColor: Color.fromARGB(255, 0, 54, 112),
-              surfaceTintColor: Color.fromARGB(255, 0, 54, 112),
-              indicatorColor: Color.fromARGB(105, 0, 54, 112),
-            ),
-            scaffoldBackgroundColor: Colors.grey[300]!),
+            navigationBarTheme: const NavigationBarThemeData().copyWith(
+              backgroundColor: const Color.fromARGB(255, 0, 54, 112),
+              surfaceTintColor: const Color.fromARGB(255, 0, 54, 112),
+              indicatorColor: const Color.fromARGB(255, 0, 54, 112),
+              iconTheme: MaterialStateProperty.resolveWith((states) {
+                if (states.contains(MaterialState.selected)) {
+                  return const IconThemeData(color: Color.fromARGB(255, 233, 184, 0));
+                }
+              })
+            ),),
         title: '수원 메이트',
         routerConfig: _routes);
   }

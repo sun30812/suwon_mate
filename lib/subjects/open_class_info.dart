@@ -28,6 +28,7 @@ class OpenClassInfo extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: Text(classInfo.name),
+
       ),
       body: OpenClassInfoPage(
         classData: classInfo,
