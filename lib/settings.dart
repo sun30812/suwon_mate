@@ -557,9 +557,17 @@ class _SettingPageState extends State<SettingPage> {
                                                     .getInstance();
                                             pref.clear().then((value) =>
                                                 ScaffoldMessenger.of(context)
-                                                    .showSnackBar(const SnackBar(
-                                                        content: Text(
-                                                            '앱의 모든 데이터를 초기화 하였습니다.'))));
+                                                    .showSnackBar( SnackBar(
+                                                        content: const Text(
+                                                            '앱의 모든 데이터를 초기화 하였습니다. 앱을 다시 시작해야 반영될 수 있습니다.', style: TextStyle(
+                                                          fontSize: 20.0
+                                                        ),),
+                                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(8.0)
+                                                  ),
+                                                  behavior: SnackBarBehavior.floating,
+                                                )));
                                             if (mounted) {
                                               Navigator.of(context).pop();
                                             }
@@ -590,9 +598,17 @@ class _SettingPageState extends State<SettingPage> {
                                                 .getInstance();
                                         pref.remove('db_ver').then((value) =>
                                             ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                                    content: Text(
-                                                        'DB 데이터를 지웠습니다.'))));
+                                                .showSnackBar( SnackBar(
+                                                  content: const Text(
+                                                    'DB 데이터를 초기화 하였습니다. 앱을 다시 시작해야 반영될 수 있습니다.', style: TextStyle(
+                                                      fontSize: 20.0
+                                                  ),),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(8.0)
+                                                  ),
+                                                  behavior: SnackBarBehavior.floating,
+                                                )));
                                         if (mounted) {
                                           Navigator.of(context).pop();
                                         }
