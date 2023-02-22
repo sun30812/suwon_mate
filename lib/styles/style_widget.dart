@@ -392,7 +392,6 @@ class SimpleCard extends StatefulWidget {
 }
 
 class _SimpleCardState extends State<SimpleCard> {
-  bool _isClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -414,50 +413,14 @@ class _SimpleCardState extends State<SimpleCard> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTapCancel: () => setState(() {
-          if (widget.onPressed == null) {
-            return;
-          }
-          _isClicked = false;
-        }),
-        onTapDown: (_) => setState(() {
-          if (widget.onPressed == null) {
-            return;
-          }
-          _isClicked = !_isClicked;
-        }),
-        onTapUp: (_) => setState(() {
-          if (widget.onPressed == null) {
-            return;
-          }
-          _isClicked = !_isClicked;
-        }),
-        onTap: () {
-          if (widget.onPressed != null) {
-            widget.onPressed!();
-          }
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              color: Colors.grey[300],
-              boxShadow: !_isClicked
-                  ? [
-                      BoxShadow(
-                          offset: const Offset(3, 3),
-                          blurRadius: 15,
-                          spreadRadius: 0.5,
-                          color: Colors.grey[500]!),
-                      const BoxShadow(
-                          offset: Offset(-3, -3),
-                          blurRadius: 15,
-                          spreadRadius: 0.5,
-                          color: Colors.white)
-                    ]
-                  : null),
+      padding: const EdgeInsets.all(2.0),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(12.0)),
+        color: Theme.of(context).colorScheme.surfaceVariant,
+        child: InkWell(
+          onTap: widget.onPressed,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -519,41 +482,26 @@ class _InfoCardState extends State<InfoCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Colors.grey[300],
-            boxShadow: [
-              BoxShadow(
-                  offset: const Offset(3, 3),
-                  blurRadius: 15,
-                  spreadRadius: 0.5,
-                  color: Colors.grey[500]!),
-              const BoxShadow(
-                  offset: Offset(-3, -3),
-                  blurRadius: 25,
-                  spreadRadius: 0.5,
-                  color: Colors.white)
-            ]),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(12.0)),
+        color: Theme.of(context).colorScheme.surfaceVariant,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Icon(widget.icon),
-                  const Padding(padding: EdgeInsets.only(right: 10.0)),
-                  Text(
-                    widget.title,
-                    semanticsLabel: widget.title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 18.0),
-                  ),
-                ],
+              ListTile(
+                title: Text(
+                  widget.title,
+                  semanticsLabel: widget.title,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18.0),
+                ),
+                leading: Icon(widget.icon),
               ),
-              const Divider(),
               widget.detail
             ],
           ),

@@ -394,7 +394,7 @@ class _SettingPageState extends State<SettingPage> {
                         children: [
                           const Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text('각 항목을 클릭하면 설명을 볼 수 있습니다.'),
+                            child: Text('각 항목의 제목 부분을 클릭하면 설명을 볼 수 있습니다.'),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -402,7 +402,7 @@ class _SettingPageState extends State<SettingPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Material(
-                                  color: Colors.grey[300],
+                                  color: Theme.of(context).colorScheme.surfaceVariant,
                                   child: InkWell(
                                       onTap: () {
                                         showDialog(
@@ -463,7 +463,7 @@ class _SettingPageState extends State<SettingPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Material(
-                                  color: Colors.grey[300],
+                                  color: Theme.of(context).colorScheme.surfaceVariant,
                                   child: InkWell(
                                       onTap: () {
                                         showDialog(
