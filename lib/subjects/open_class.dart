@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/model/class_info.dart';
@@ -156,12 +157,12 @@ class _OpenClassState extends State<OpenClass> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar:
-            AppBar(centerTitle: true, title: Text(widget.quickMode ? '빠른 개설 강좌 조회' : '개설 강좌 조회')),
-        floatingActionButton: SuwonButton(
-            isActivate: true,
-            icon: Icons.search,
-            buttonName: '검색',
+        appBar: AppBar(
+            centerTitle: true,
+            title: Text(widget.quickMode ? '빠른 개설 강좌 조회' : '개설 강좌 조회')),
+        floatingActionButton: FloatingActionButton.extended(
+            icon: const Icon(Icons.search),
+            label: const Text('검색'),
             onPressed: () {
               List<ClassInfo> classList = [];
               for (List data in allClassList.values) {

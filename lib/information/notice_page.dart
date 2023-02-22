@@ -29,9 +29,9 @@ class _NoticePageState extends State<NoticePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: SuwonButton(
-          icon: Icons.screen_share_outlined,
-          buttonName: '브라우저로 보기',
+      floatingActionButton: FloatingActionButton.extended(
+          icon: const Icon(Icons.screen_share_outlined),
+          label: const Text('브라우저로 보기'),
           onPressed: () async {
             await launchUrl(
                 Uri(

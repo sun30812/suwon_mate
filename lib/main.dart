@@ -1,24 +1,27 @@
 import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/help.dart';
-import 'package:suwon_mate/information/notice_page.dart';
 import 'package:suwon_mate/information/notice_detail_page.dart';
+import 'package:suwon_mate/information/notice_page.dart';
 import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/model/notice.dart';
 import 'package:suwon_mate/schedule.dart';
 import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/subjects/favorite_subject.dart';
 import 'package:suwon_mate/subjects/search.dart';
+
 import 'firebase_options.dart';
 import 'styles/style_widget.dart';
 import 'subjects/open_class.dart';
 import 'subjects/open_class_info.dart';
-import 'package:go_router/go_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -110,11 +113,15 @@ class App extends ConsumerWidget {
         //         titleTextStyle: const TextStyle().copyWith(color: Colors.white),
         //         color: const Color.fromARGB(255, 0, 54, 112)),
         // ),
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: const Color.fromARGB(255, 0, 54, 112),
-        scaffoldBackgroundColor: Colors.grey[300]!
-      ),
+        theme: ThemeData(
+            useMaterial3: true,
+            colorSchemeSeed: const Color.fromARGB(255, 0, 54, 112),
+            navigationBarTheme: NavigationBarThemeData().copyWith(
+              backgroundColor: Color.fromARGB(255, 0, 54, 112),
+              surfaceTintColor: Color.fromARGB(255, 0, 54, 112),
+              indicatorColor: Color.fromARGB(105, 0, 54, 112),
+            ),
+            scaffoldBackgroundColor: Colors.grey[300]!),
         title: '수원 메이트',
         routerConfig: _routes);
   }
@@ -164,7 +171,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('수원 메이트'),
+          title: const Text('수원 메이트${kIsWeb ? ' (Web버전)' : ''}'),
           actions: [
             IconButton(
                 onPressed: () async {
@@ -305,11 +312,12 @@ class _MainMenuState extends State<MainMenu> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const NotSupportPlatformMessage(),
-            Row(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SuwonSquareButton(
@@ -363,8 +371,8 @@ class _MainMenuState extends State<MainMenu> {
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
