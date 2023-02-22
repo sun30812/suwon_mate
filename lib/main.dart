@@ -58,7 +58,7 @@ class App extends ConsumerWidget {
               ]),
           GoRoute(
             path: 'settings',
-            builder: (context, state) => const SettingPage(),
+            builder: (context, state) => const SettingsPage(),
           ),
           GoRoute(path: 'help', builder: (context, state) => const HelpPage())
         ]),
@@ -235,7 +235,7 @@ class _MainPageState extends State<MainPage> {
               }
             });
       default:
-        return const SettingPage();
+        return const SettingsPage();
     }
   }
 }
