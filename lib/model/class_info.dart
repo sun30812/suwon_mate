@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:suwon_mate/interfaces.dart';
 
 /// 특정 강의에 대한 정보를 가지는 클래스이다.
 ///
@@ -6,8 +7,9 @@ import 'package:flutter/foundation.dart';
 ///
 /// ## 같이보기
 /// - [ClassDetailInfoCard]
+/// - [Savable]
 @immutable
-class ClassInfo {
+class ClassInfo implements Savable {
   /// 과목 이름
   final String name;
 
@@ -140,6 +142,7 @@ class ClassInfo {
   }
 
   /// [ClassInfo]를 직렬화 시 사용되는 메서드이다.
+  @override
   Map<String, dynamic> toJson() => {
         'subjtNm': name,
         'lssnLangNm': classLanguage,
