@@ -392,7 +392,6 @@ class SimpleCard extends StatefulWidget {
 }
 
 class _SimpleCardState extends State<SimpleCard> {
-
   @override
   Widget build(BuildContext context) {
     @Deprecated(("""
@@ -417,7 +416,8 @@ class _SimpleCardState extends State<SimpleCard> {
       child: Card(
         elevation: 0,
         shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(12.0)),
+            side: BorderSide(color: Theme.of(context).colorScheme.outline),
+            borderRadius: BorderRadius.circular(12.0)),
         color: Theme.of(context).colorScheme.surfaceVariant,
         child: InkWell(
           onTap: widget.onPressed,
@@ -485,7 +485,8 @@ class _InfoCardState extends State<InfoCard> {
       child: Card(
         elevation: 0,
         shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.circular(12.0)),
+            side: BorderSide(color: Theme.of(context).colorScheme.outline),
+            borderRadius: BorderRadius.circular(12.0)),
         color: Theme.of(context).colorScheme.surfaceVariant,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -693,13 +694,13 @@ class SuwonDialog extends StatelessWidget {
       scrollable: true,
       actions: [
         TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('취소')),
+        TextButton(
           onPressed: _onPressed,
           style: _okButtonStyle(),
           child: const Text('확인'),
         ),
-        TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('취소'))
       ],
     );
   }
