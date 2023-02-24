@@ -1,9 +1,14 @@
 // ignore_for_file: unused_element
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:suwon_mate/controller/login_controller.dart';
 import 'package:suwon_mate/model/class_info.dart';
+
+import '../model/contact.dart';
 
 /// 강좌에 대한 세부 정보를 보여주는 페이지이다.
 ///
@@ -16,6 +21,15 @@ class ClassDetailInfoCard extends StatelessWidget {
   /// [classInfo]로부터 강의 정보를 받아 세부 정보를 화면에 출력해준다.
   const ClassDetailInfoCard({required this.classInfo, Key? key})
       : super(key: key);
+
+  Future<Contact?>? getContact(String? department, String? name) async {
+    if ((department == null) || (name == null)) {
+      return null;
+    }
+    var database = FirebaseDatabase.instance.ref('contacts');
+    var result = await database.child('$department/$name').once();
+    return Contact.fromFirebaseDatabase(result.snapshot.value as Map);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +120,89 @@ class ClassDetailInfoCard extends StatelessWidget {
                   ),
                 ],
               )),
+          if (FirebaseAuth.instance.currentUser != null) ...[
+            FutureBuilder<Contact?>(
+                future: getContact(classInfo.guestDept, classInfo.hostName),
+                builder: (context, snapshot) {
+                  return InfoCard(
+                      icon: Icons.call_outlined,
+                      title: '강의자 연락사항',
+                      detail: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) ...[
+                            const CircularProgressIndicator.adaptive()
+                          ] else if (snapshot.hasError) ...[
+                            Text(
+                                '연락처 정보를 가져오는데 문제가 발생했습니다.(오류 내용: ${snapshot.error})')
+                          ] else ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '이메일: ${snapshot.data?.email ?? '공개되지 않음'}',
+                                  semanticsLabel:
+                                      '이메일은 ${snapshot.data?.email ?? '공개되지 않은 상태'} 입니다.',
+                                  style: const TextStyle(fontSize: 17.0),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    if (snapshot.data?.email == null) {
+                                      return;
+                                    }
+                                    Clipboard.setData(ClipboardData(
+                                            text: classInfo.hostName))
+                                        .then((value) => ScaffoldMessenger.of(
+                                                context)
+                                            .showSnackBar(const SnackBar(
+                                                content:
+                                                    Text('이메일 주소가 복사되었습니다.'))));
+                                  },
+                                  icon: const Icon(Icons.copy),
+                                  tooltip: '이메일 주소 복사',
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '전화번호: ${snapshot.data?.phoneNumber ?? '공개되지 않음'}',
+                                  semanticsLabel:
+                                      '전화번호는 ${snapshot.data?.phoneNumber ?? '공개되지 않은 상태'} 입니다.',
+                                  style: const TextStyle(fontSize: 17.0),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    if (snapshot.data?.phoneNumber == null) {
+                                      return;
+                                    }
+                                    Clipboard.setData(ClipboardData(
+                                            text: classInfo.hostName))
+                                        .then((value) => ScaffoldMessenger.of(
+                                                context)
+                                            .showSnackBar(const SnackBar(
+                                                content:
+                                                    Text('전화번호가 복사되었습니다.'))));
+                                  },
+                                  icon: const Icon(Icons.copy),
+                                  tooltip: '전화번호 복사',
+                                )
+                              ],
+                            ),
+                          ]
+                        ],
+                      ));
+                })
+          ] else ...[
+            InfoCard(
+                icon: Icons.call_outlined,
+                title: '강의자 연락사항',
+                detail: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [Text('해당 정보를 확인하기 위해서는 로그인이 필요합니다.')]))
+          ],
           InfoCard(
               icon: Icons.school_outlined,
               title: '수업 관련 사항',
@@ -138,6 +235,7 @@ class DataLoadingError extends StatelessWidget {
   /// 오류 메세지. 보통 [FutureBuilder]에서 `snapshot`에서 오류 발생 시
   /// 반환하는 `error`를 여기에 할당한다.
   final dynamic errorMessage;
+
   const DataLoadingError({required this.errorMessage, Key? key})
       : super(key: key);
 
@@ -446,6 +544,7 @@ class SimpleCard extends StatefulWidget {
 
 class _SimpleCardState extends State<SimpleCard> {
   bool _isClicked = false;
+
   @override
   Widget build(BuildContext context) {
     @Deprecated(("""
@@ -942,6 +1041,115 @@ class DataSaveAlert extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+/// 설정 창 맨 상단에 존재하는 로그인 위젯이다.
+///
+/// 이메일 링크를 통한 로그인을 지원하는 위젯이며, 로그인이 필요할 시 이메일을 받아
+/// 로그인을 위한 링크를 전송하고, 로그인 되어있을 시 사용자의 이메일을 출력한다.
+class LoginWidget extends StatefulWidget {
+  const LoginWidget({Key? key}) : super(key: key);
+
+  @override
+  State<LoginWidget> createState() => _LoginWidgetState();
+}
+
+class _LoginWidgetState extends State<LoginWidget> {
+  @override
+  Widget build(BuildContext context) {
+    var loginController = LoginController();
+
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator.adaptive();
+        } else if (snapshot.hasError) {
+          return InfoCard(
+              icon: Icons.error_outline,
+              title: '오류',
+              detail: Text(snapshot.error.toString()));
+        } else {
+          if (FirebaseAuth.instance.currentUser != null) {
+            return InfoCard(
+                icon: Icons.login_outlined,
+                title: '로그인',
+                detail: Column(
+                  children: [
+                    Text(
+                        '로그인된 계정: ${FirebaseAuth.instance.currentUser!.email ?? '이메일 공개 안됨'}'),
+                    TextButton(
+                        onPressed: () => showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('로그아웃'),
+                                content: const Text('로그아웃 하시겠습니까?'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('취소')),
+                                  TextButton(
+                                      onPressed: () {
+                                        FirebaseAuth.instance.signOut().then(
+                                            (value) => Navigator.pop(context));
+                                      },
+                                      child: const Text('확인')),
+                                ],
+                              ),
+                            ),
+                        child: const Text('로그아웃'))
+                  ],
+                ));
+          } else {
+            return InfoCard(
+                icon: Icons.login_outlined,
+                title: '로그인',
+                detail: Column(
+                  children: [
+                    const Text('로그인을 하면 강의자의 이메일이나 전화번호를 확인할 수 있습니다.'),
+                    TextButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('이메일로 로그인'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text('수원대 포털 이메일 계정이 필요합니다.'),
+                                  TextField(
+                                    controller: loginController.emailController,
+                                    decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary,
+                                        labelText: '포털 이메일'),
+                                  )
+                                ],
+                              ),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      loginController.onLogin(context);
+                                    },
+                                    child: const Text('로그인')),
+                                TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: const Text('취소'))
+                              ],
+                            ),
+                          );
+                        },
+                        child: const Text('수원대 이메일로 로그인')),
+                  ],
+                ));
+          }
+        }
+      },
     );
   }
 }
