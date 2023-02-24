@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/model/class_info.dart';
@@ -110,7 +111,7 @@ class _OpenClassState extends State<OpenClass> {
     DatabaseReference ref = FirebaseDatabase.instance
         .ref(widget.quickMode ? 'estbLectDtaiList_quick' : 'estbLectDtaiList');
 
-    pref.setString('db_ver', versionInfo["db_ver"]);
+    pref.setString('db_ver', versionInfo['db_ver']);
     return ref.once();
   }
 
@@ -339,7 +340,7 @@ class _OpenClassState extends State<OpenClass> {
                             onPressed: () => context.push('/oclass/info',
                                 extra: classList[index]),
                             title: classList[index].name,
-                            subTitle: classList[index].hostName ?? "이름 공개 안됨",
+                            subTitle: classList[index].hostName ?? '이름 공개 안됨',
                             content: Text(
                                 '${classList[index].guestMjor ?? '학부 전체 대상'}, ${classList[index].subjectKind ?? '공개 안됨'} ,${classList[index].classLocation ?? '공개 안됨'}'),
                           );
