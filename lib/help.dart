@@ -57,17 +57,6 @@ class HelpPage extends StatelessWidget {
                   ),
                 ],
               )),
-          InfoCard(
-              icon: Icons.favorite_outline_outlined,
-              title: '광고 보기',
-              detail: Column(
-                children: const [
-                  Text(
-                    '광고배너가 달린 페이지 입니다. 광고 빼고는 아무 기능 없습니다.\n대신 개발자에게 도움을 줄 수 있습니다:)',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                ],
-              )),
           const InfoCard(
               icon: Icons.settings_outlined,
               title: '설정',

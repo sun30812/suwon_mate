@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:suwon_mate/donation/donation_page.dart';
 import 'package:suwon_mate/help.dart';
 import 'package:suwon_mate/information/notice_page.dart';
 import 'package:suwon_mate/information/notice_detail_page.dart';
@@ -43,10 +42,6 @@ class App extends ConsumerWidget {
         path: '/',
         builder: (context, state) => const MainPage(),
         routes: <RouteBase>[
-          GoRoute(
-            path: 'donation',
-            builder: (context, state) => const DonationPage(),
-          ),
           GoRoute(
             path: 'schedule',
             builder: (context, state) => const SchedulePage(),
@@ -351,11 +346,6 @@ class _MainMenuState extends State<MainMenu> {
                     },
                   ),
                 ],
-                SuwonSquareButton(
-                  icon: Icons.favorite_border_outlined,
-                  buttonName: '광고 보기',
-                  onPressed: () => context.push('/donation'),
-                )
               ],
             ),
           ],
