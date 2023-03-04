@@ -52,7 +52,7 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
     return const NotiCard(
         icon: Icons.warning_amber,
         color: Colors.amber,
-        message: '아직 개설 강좌 조회를 들어가지 않은 경우 기본 전공을 지정할 수 있는 범위가 좁습니다.');
+        message: '아직 개설 강좌 조회를 들어가지 않은 경우 해당 설정 변경이 불가능 합니다.');
   }
 
   /// 현재 앱의 패키지 정보 및 설정 값을 가져오는 메서드이다.
@@ -106,6 +106,24 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
           if ((snapshot.data as SharedPreferences).containsKey('dpMap')) {
             Map subMap = jsonDecode(
                 (snapshot.data as SharedPreferences).getString('dpMap')!);
+            if (subMap.isEmpty) {
+              return InfoCard(
+                  icon: Icons.school_outlined,
+                  title: '학생 정보',
+                  detail: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('개설 강좌메뉴에서 기본으로 보여질 학부 및 학년을 선택합니다.'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: noSyncWarning(),
+                      ),
+                    ],
+                  ));
+            }
             subDropdownList = (subMap.keys.toList() as List<String>)
                 .map((dat) => DropdownMenuItem(
                       value: dat,
