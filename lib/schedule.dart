@@ -59,7 +59,7 @@ class SchedulePage extends StatelessWidget {
                 child: Row(
                   children: const [
                     Icon(Icons.announcement),
-                    Text("오류가 발생했습니다."),
+                    Text('오류가 발생했습니다.'),
                   ],
                 ),
               );
