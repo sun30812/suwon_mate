@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 class Notice {
   /// 공지사항의 제목
   final String title;
+
   /// 공지사항의 고유 코드(사이트 이동 시 수원대학교 사이트에서 필요한 매개변수)
   final String siteCode;
 

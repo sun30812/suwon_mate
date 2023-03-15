@@ -1,24 +1,27 @@
 import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/help.dart';
-import 'package:suwon_mate/information/notice_page.dart';
 import 'package:suwon_mate/information/notice_detail_page.dart';
+import 'package:suwon_mate/information/notice_page.dart';
 import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/model/notice.dart';
 import 'package:suwon_mate/schedule.dart';
 import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/subjects/favorite_subject.dart';
 import 'package:suwon_mate/subjects/search.dart';
+
 import 'firebase_options.dart';
 import 'styles/style_widget.dart';
 import 'subjects/open_class.dart';
 import 'subjects/open_class_info.dart';
-import 'package:go_router/go_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -103,16 +106,20 @@ class App extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
-        theme: ThemeData().copyWith(
-            useMaterial3: true,
-            scaffoldBackgroundColor: Colors.grey[300]!,
-            appBarTheme: AppBarTheme(
-                titleTextStyle: const TextStyle().copyWith(color: Colors.white),
-                color: const Color.fromARGB(255, 0, 54, 112)),
-            colorScheme: ThemeData().colorScheme.copyWith(
-                secondary: const Color.fromARGB(255, 0, 54, 112),
-                onSecondary: const Color.fromARGB(255, 0, 54, 112),
-                primary: const Color.fromARGB(255, 0, 54, 112))),
+        theme: ThemeData(
+          useMaterial3: true,
+          colorSchemeSeed: const Color.fromARGB(255, 0, 54, 112),
+          navigationBarTheme: const NavigationBarThemeData().copyWith(
+              backgroundColor: const Color.fromARGB(255, 0, 54, 112),
+              surfaceTintColor: const Color.fromARGB(255, 0, 54, 112),
+              indicatorColor: const Color.fromARGB(255, 0, 54, 112),
+              iconTheme: MaterialStateProperty.resolveWith((states) {
+                if (states.contains(MaterialState.selected)) {
+                  return const IconThemeData(
+                      color: Color.fromARGB(255, 233, 184, 0));
+                }
+              })),
+        ),
         title: '수원 메이트',
         routerConfig: _routes);
   }
@@ -129,19 +136,21 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   /// 앱 하단에 표시되는 버튼
-  List<BottomNavigationBarItem> shortcuts = const [
-    BottomNavigationBarItem(icon: Icon(Icons.apps), label: '메인'),
-    BottomNavigationBarItem(
+  List<Widget> shortcuts = const [
+    NavigationDestination(
+        icon: Icon(Icons.apps_outlined), label: '메인', tooltip: '메인'),
+    NavigationDestination(
         icon: Icon(Icons.schedule_outlined), label: '학사 일정', tooltip: '학사 일정'),
-    BottomNavigationBarItem(
+    NavigationDestination(
         icon: Icon(Icons.star_border_outlined),
+        selectedIcon: Icon(Icons.star),
         label: '즐겨찾기',
         tooltip: '즐겨찾는 과목'),
-    BottomNavigationBarItem(
+    NavigationDestination(
         icon: Icon(Icons.notifications_none_outlined),
+        selectedIcon: Icon(Icons.notifications),
         label: '공지사항',
         tooltip: '학교 공지사항'),
-    BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: '설정'),
   ];
 
   /// 앱 하단의 몇번째 버튼이 눌렸는지에 대한 정보를 가진 변수
@@ -159,23 +168,24 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('수원 메이트'),
+          centerTitle: true,
+          title: const Text('수원 메이트${kIsWeb ? ' (Web버전)' : ''}'),
           actions: [
             IconButton(
+                tooltip: '긴급 데이터 초기화',
                 onPressed: () async {
                   SharedPreferences pref =
                       await SharedPreferences.getInstance();
                   pref.clear();
                 },
-                icon: const Icon(Icons.clear_all))
+                icon: const Icon(Icons.restart_alt_outlined))
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
+        bottomNavigationBar: NavigationBar(
           backgroundColor: Colors.grey[300],
-          items: shortcuts,
-          currentIndex: _pageIndex,
-          onTap: (value) => setState(() {
+          destinations: shortcuts,
+          selectedIndex: _pageIndex,
+          onDestinationSelected: (value) => setState(() {
             _pageIndex = value;
           }),
         ),
@@ -206,7 +216,7 @@ class _MainPageState extends State<MainPage> {
         return const SchedulePage();
       case 2:
         return const FavoriteSubjectPage();
-      case 3:
+      default:
         return FutureBuilder(
             future: getSettings(),
             builder: (context, snapshot) {
@@ -234,8 +244,6 @@ class _MainPageState extends State<MainPage> {
                 return const NoticePage();
               }
             });
-      default:
-        return const SettingsPage();
     }
   }
 }
@@ -303,11 +311,12 @@ class _MainMenuState extends State<MainMenu> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const NotSupportPlatformMessage(),
-            Row(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SuwonSquareButton(
@@ -353,11 +362,16 @@ class _MainMenuState extends State<MainMenu> {
                       }
                     },
                   ),
-                ]
+                ],
+                SuwonSquareButton(
+                  icon: Icons.settings_outlined,
+                  buttonName: '설정',
+                  onPressed: () => context.push('/settings'),
+                ),
               ],
             ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

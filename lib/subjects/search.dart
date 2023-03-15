@@ -55,6 +55,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('강의자 및 과목명 검색'),
         actions: [
           IconButton(

@@ -6,6 +6,7 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:suwon_mate/model/notice.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../styles/style_widget.dart';
 
 /// 수원대학교의 공지사항을 보여주는 페이지입니다.
@@ -29,9 +30,9 @@ class _NoticePageState extends State<NoticePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: SuwonButton(
-          icon: Icons.screen_share_outlined,
-          buttonName: '브라우저로 보기',
+      floatingActionButton: FloatingActionButton.extended(
+          icon: const Icon(Icons.screen_share_outlined),
+          label: const Text('브라우저로 보기'),
           onPressed: () async {
             await launchUrl(
                 Uri(
