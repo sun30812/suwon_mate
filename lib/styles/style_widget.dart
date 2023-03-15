@@ -593,17 +593,17 @@ class _InfoCardState extends State<InfoCard> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Icon(widget.icon),
-                  const Padding(padding: EdgeInsets.only(right: 10.0)),
-                  Text(
-                    widget.title,
-                    semanticsLabel: widget.title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 18.0),
-                  ),
-                ],
+              ListTile(
+                title: Text(
+                  widget.title,
+                  semanticsLabel: widget.title,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18.0),
+                ),
+                leading: Icon(
+                  widget.icon,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
               const Divider(),
               widget.detail
