@@ -394,11 +394,11 @@ class SimpleCard extends StatefulWidget {
 class _SimpleCardState extends State<SimpleCard> {
   @override
   Widget build(BuildContext context) {
-    @Deprecated(("""
+    @Deprecated(('''
     해당 함수는 더이상 사용되지 않습니다.
     아래 스타일대로 사용하면 해당 위젯과 같은 스타일을 사용할 수 있습니다
     TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
-    """))
+    '''))
     Widget subTitleWidget(String? text) {
       if (text != null) {
         return Text(
@@ -569,7 +569,7 @@ class _SearchBarState extends State<SearchBar> {
                 controller: widget._controller,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: "입력하여 검색",
+                  hintText: '입력하여 검색',
                   icon: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: Icon(widget._icon),

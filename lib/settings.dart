@@ -255,7 +255,7 @@ class FunctionSettingWidget extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Material(
-                      color: Colors.grey[300],
+                      color: Theme.of(context).colorScheme.surfaceVariant,
                       child: InkWell(
                           onTap: () {
                             showDialog(
@@ -310,7 +310,7 @@ class FunctionSettingWidget extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Material(
-                      color: Colors.grey[300],
+                      color: Theme.of(context).colorScheme.surfaceVariant,
                       child: InkWell(
                           onTap: () {
                             showDialog(
