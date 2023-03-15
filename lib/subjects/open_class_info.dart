@@ -26,7 +26,9 @@ class OpenClassInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(classInfo.name),
+
       ),
       body: OpenClassInfoPage(
         classData: classInfo,
@@ -94,9 +96,9 @@ class FavoriteButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     List<ClassInfo> classInfo = ref.watch(favoriteControllerNotifierProvider);
-    return SuwonButton(
-      icon: classInfo.contains(_classData) ? Icons.star : Icons.star_outline,
-      buttonName: classInfo.contains(_classData) ? '즐겨찾기에서 제거' : '즐겨찾기 추가',
+    return FloatingActionButton.extended(
+      icon: Icon(classInfo.contains(_classData) ? Icons.star : Icons.star_outline),
+      label: Text(classInfo.contains(_classData) ? '즐겨찾기에서 제거' : '즐겨찾기 추가'),
       onPressed: () {
         if (classInfo.contains(_classData)) {
           ref
