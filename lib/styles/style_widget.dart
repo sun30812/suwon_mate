@@ -501,7 +501,7 @@ class _InfoCardState extends State<InfoCard> {
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 18.0),
                 ),
-                leading: Icon(widget.icon),
+                leading: Icon(widget.icon, color: Theme.of(context).primaryColor,),
               ),
               widget.detail
             ],
