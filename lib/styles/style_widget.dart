@@ -158,7 +158,6 @@ class DataLoadingError extends StatelessWidget {
 
 /// 앱에서 큼지막한 아이콘을 쓰는 메뉴 버튼에 쓰이는 위젯이다. 정사각형 형태를 보인다.
 ///
-/// **추후 업데이트로 해당 위젯은 [SuwonButton]으로 통합될 예정이다.**
 class SuwonSquareButton extends StatefulWidget {
   /// 버튼의 활성화 여부를 지정한다.
   ///
@@ -194,18 +193,9 @@ class SuwonSquareButton extends StatefulWidget {
 }
 
 class _SuwonSquareButtonState extends State<SuwonSquareButton> {
-  /// 버튼의 클릭 여부를 판단하는 속성
-  bool _isClicked = false;
-
   /// 버튼을 누를 시 동작
   ///
   /// 버튼에 동작이 지정된 경우 버튼을 누를 때 동작을 수행하도록 한다.
-  ///
-  /// 아래의 경우에는 버튼을 눌러도 동작하지 않는다.
-  ///
-  /// * [onPressed]에 동작이 할당되지 않은 경우
-  /// * [isActivate]가 `false`이거나 지정되지 않은 경우
-  ///
   /// ## 같이보기
   /// * [SuwonSquareButton]
   void Function()? buttonAction() {
@@ -217,87 +207,43 @@ class _SuwonSquareButtonState extends State<SuwonSquareButton> {
     return widget.onPressed;
   }
 
-  /// 활성화 된 버튼일 경우 버튼을 누를 때 효과를 준다.
-  ///
-  /// [isActivate]가 `true`이면서 버튼을 누를 시 동작이 지정된 경우 버튼의 색을 진하게 표시한다.
-  /// 만일 그렇지 않은 경우 버튼의 색을 흐리게 표시하여 사용할 수 없는 버튼임을 알려주는 역할을 수행한다.
-  Color smartColor() {
-    if ((widget.isActivate ?? true) && (widget.onPressed != null)) {
-      return Colors.grey[700]!;
-    }
-    return Colors.grey;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapCancel: () => setState(() {
-        _isClicked = false;
-      }),
-      onTapDown: (_) => setState(() {
-        if (widget.isActivate ?? true) {
-          _isClicked = !_isClicked;
-        }
-      }),
-      onTapUp: (_) => setState(() {
-        if (widget.isActivate ?? true) {
-          _isClicked = !_isClicked;
-        }
-      }),
-      onTap: () {
-        if ((widget.onPressed != null) && (widget.isActivate ?? true)) {
-          widget.onPressed!();
-        }
-      },
-      child: Column(
-        children: [
-          Padding(
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return Column(
+      children: [
+        Padding(
             padding: const EdgeInsets.all(12.0),
-            child: AnimatedContainer(
-              decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: !_isClicked && (widget.isActivate ?? true)
-                      ? [
-                          BoxShadow(
-                              offset: const Offset(3, 3),
-                              blurRadius: 15,
-                              spreadRadius: 0.5,
-                              color: Colors.grey[500]!),
-                          const BoxShadow(
-                              offset: Offset(-3, -3),
-                              blurRadius: 15,
-                              spreadRadius: 0.5,
-                              color: Colors.white)
-                        ]
-                      : null),
-              duration: const Duration(milliseconds: 200),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(
-                    widget.icon,
-                    size: 45.0,
-                    color: smartColor(),
-                  ),
-                ]),
+            child: IconButton(
+              style: IconButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                foregroundColor: colors.onPrimary,
+                backgroundColor: colors.primary,
+                disabledBackgroundColor: colors.onSurface.withOpacity(0.12),
+                hoverColor: colors.onPrimary.withOpacity(0.08),
+                focusColor: colors.onPrimary.withOpacity(0.12),
+                highlightColor: colors.onPrimary.withOpacity(0.12),
               ),
-            ),
-          ),
-          Text(
-            widget.btnName,
-            semanticsLabel: widget.btnName,
-            style: TextStyle(color: smartColor(), fontWeight: FontWeight.bold),
-          )
-        ],
-      ),
+              onPressed: buttonAction(),
+              icon: Icon(widget.icon),
+              iconSize: 60.0,
+              padding: const EdgeInsets.all(22.0),
+            )),
+        Text(
+          widget.btnName,
+          style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          semanticsLabel: widget.btnName,
+        )
+      ],
     );
   }
 }
 
-/// 아이콘과 글자가 가로로 같이 붙어있는 형태의 버튼이다.
+/// 더 이상 사용되지 않는 이전 버전의 디자인으로 아이콘과 글자가 가로로 같이 붙어있는 형태의 버튼이다.
 ///
 /// 즐겨찾기에 추가 같은 버튼에 사용된다.
+@Deprecated('더 이상 해당 위젯은 사용되지 않습니다. 대신 `FloatingActionButton.extended`를 사용하세요')
 class SuwonButton extends StatefulWidget {
   /// 버튼의 활성화 여부(`false`인 경우 버튼이 흐리게 표시되며 누를 수 없다.)
   final bool? isActivate;
@@ -445,14 +391,13 @@ class SimpleCard extends StatefulWidget {
 }
 
 class _SimpleCardState extends State<SimpleCard> {
-  bool _isClicked = false;
   @override
   Widget build(BuildContext context) {
-    @Deprecated(("""
+    @Deprecated(('''
     해당 함수는 더이상 사용되지 않습니다.
     아래 스타일대로 사용하면 해당 위젯과 같은 스타일을 사용할 수 있습니다
     TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
-    """))
+    '''))
     Widget subTitleWidget(String? text) {
       if (text != null) {
         return Text(
@@ -466,50 +411,15 @@ class _SimpleCardState extends State<SimpleCard> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTapCancel: () => setState(() {
-          if (widget.onPressed == null) {
-            return;
-          }
-          _isClicked = false;
-        }),
-        onTapDown: (_) => setState(() {
-          if (widget.onPressed == null) {
-            return;
-          }
-          _isClicked = !_isClicked;
-        }),
-        onTapUp: (_) => setState(() {
-          if (widget.onPressed == null) {
-            return;
-          }
-          _isClicked = !_isClicked;
-        }),
-        onTap: () {
-          if (widget.onPressed != null) {
-            widget.onPressed!();
-          }
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              color: Colors.grey[300],
-              boxShadow: !_isClicked
-                  ? [
-                      BoxShadow(
-                          offset: const Offset(3, 3),
-                          blurRadius: 15,
-                          spreadRadius: 0.5,
-                          color: Colors.grey[500]!),
-                      const BoxShadow(
-                          offset: Offset(-3, -3),
-                          blurRadius: 15,
-                          spreadRadius: 0.5,
-                          color: Colors.white)
-                    ]
-                  : null),
+      padding: const EdgeInsets.all(2.0),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).colorScheme.outline),
+            borderRadius: BorderRadius.circular(12.0)),
+        color: Theme.of(context).colorScheme.surfaceVariant,
+        child: InkWell(
+          onTap: widget.onPressed,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -571,22 +481,12 @@ class _InfoCardState extends State<InfoCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Colors.grey[300],
-            boxShadow: [
-              BoxShadow(
-                  offset: const Offset(3, 3),
-                  blurRadius: 15,
-                  spreadRadius: 0.5,
-                  color: Colors.grey[500]!),
-              const BoxShadow(
-                  offset: Offset(-3, -3),
-                  blurRadius: 25,
-                  spreadRadius: 0.5,
-                  color: Colors.white)
-            ]),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).colorScheme.outline),
+            borderRadius: BorderRadius.circular(12.0)),
+        color: Theme.of(context).colorScheme.surfaceVariant,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -605,7 +505,6 @@ class _InfoCardState extends State<InfoCard> {
                   color: Theme.of(context).primaryColor,
                 ),
               ),
-              const Divider(),
               widget.detail
             ],
           ),
@@ -672,7 +571,7 @@ class _SearchBarState extends State<SearchBar> {
                 controller: widget._controller,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: "입력하여 검색",
+                  hintText: '입력하여 검색',
                   icon: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: Icon(widget._icon),
@@ -797,13 +696,13 @@ class SuwonDialog extends StatelessWidget {
       scrollable: true,
       actions: [
         TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('취소')),
+        TextButton(
           onPressed: _onPressed,
           style: _okButtonStyle(),
           child: const Text('확인'),
         ),
-        TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('취소'))
       ],
     );
   }
@@ -887,6 +786,8 @@ class NotSupportInPlatform extends StatelessWidget {
 
 /// 특정 기능을 지원하지 않는 플랫폼의 경우 안되는 기능 설명을 위한 위젯이다.
 ///
+@Deprecated(
+    '해당 위젯은 다음 업데이트에서 제거될 예정입니다. 해당 기능은 Web버전 여부를 Appbar에서 표시되는 것으로 대체됩니다.')
 class NotSupportPlatformMessage extends StatelessWidget {
   const NotSupportPlatformMessage({
     Key? key,
@@ -911,7 +812,7 @@ class NotSupportPlatformMessage extends StatelessWidget {
                         content: const Text(
                           'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.',
                           semanticsLabel:
-                              'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.',
+                          'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.',
                         ))),
                 child: const Text(
                   '설명 보기',

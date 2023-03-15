@@ -264,7 +264,7 @@ class FunctionSettingWidget extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Material(
-                      color: Colors.grey[300],
+                      color: Theme.of(context).colorScheme.surfaceVariant,
                       child: InkWell(
                           onTap: () {
                             showDialog(
@@ -313,7 +313,7 @@ class FunctionSettingWidget extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Material(
-                      color: Colors.grey[300],
+                      color: Theme.of(context).colorScheme.surfaceVariant,
                       child: InkWell(
                           onTap: () {
                             showDialog(
@@ -443,6 +443,10 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('설정'),
+        centerTitle: true,
+      ),
       body: ListView(
         shrinkWrap: true,
         children: [
@@ -476,7 +480,7 @@ class SettingsPage extends StatelessWidget {
                         overlayColor: MaterialStateProperty.all(
                             Colors.redAccent.withAlpha(30)),
                         foregroundColor:
-                            MaterialStateProperty.all(Colors.redAccent)),
+                        MaterialStateProperty.all(Colors.redAccent)),
                     child: const Text(
                       '전체 데이터 초기화',
                     )),
@@ -489,8 +493,8 @@ class SettingsPage extends StatelessWidget {
                             return SuwonDialog(
                               icon: Icons.restart_alt_outlined,
                               title: 'DB 데이터를 다시 받을까요?',
-                              content:
-                                  const Text('서버에서 최신 DB의 데이터를 다시 받습니다. 계속하시겠습니까?'),
+                              content: const Text(
+                                  '서버에서 최신 DB의 데이터를 다시 받습니다. 계속하시겠습니까?'),
                               onPressed: () {
                                 SharedPreferences.getInstance()
                                     .then((value) => value.remove('db_ver'));
@@ -508,8 +512,6 @@ class SettingsPage extends StatelessWidget {
               ],
             ),
           ),
-          // debugWidget(),
-          // versionInfo(snapshot),
           InfoCard(
               icon: Icons.help_outline,
               title: '문의하기',

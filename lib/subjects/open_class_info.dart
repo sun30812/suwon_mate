@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
+
 import '../controller/favorite_controller.dart';
 
 /// 과목에 대한 세부정보를 표시하는 카드형태의 위젯들이 모여있는 페이지
@@ -26,6 +27,7 @@ class OpenClassInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(classInfo.name),
       ),
       body: OpenClassInfoPage(
@@ -94,9 +96,10 @@ class FavoriteButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     List<ClassInfo> classInfo = ref.watch(favoriteControllerNotifierProvider);
-    return SuwonButton(
-      icon: classInfo.contains(_classData) ? Icons.star : Icons.star_outline,
-      buttonName: classInfo.contains(_classData) ? '즐겨찾기에서 제거' : '즐겨찾기 추가',
+    return FloatingActionButton.extended(
+      icon: Icon(
+          classInfo.contains(_classData) ? Icons.star : Icons.star_outline),
+      label: Text(classInfo.contains(_classData) ? '즐겨찾기에서 제거' : '즐겨찾기 추가'),
       onPressed: () {
         if (classInfo.contains(_classData)) {
           ref

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
+
 import '../model/class_info.dart';
 
 /// 검색 버튼 누를 시 나타나는 검색 페이지이다.
@@ -55,6 +56,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('강의자 및 과목명 검색'),
         actions: [
           IconButton(
@@ -66,39 +68,39 @@ class _SearchPageState extends State<SearchPage> {
                   title: '과목 코드로 검색',
                   content: Column(
                     children: [
-                      const Text('과목코드를 입력하여 검색할 수 있습니다.'),
-                      TextField(
-                        key: const Key('subject_code_field'),
-                        controller: _subjectCodeController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            hintText: '과목 코드 입력',
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () => setState(() {
-                                _subjectCodeController.text = '';
-                              }),
-                            )),
-                      )
-                    ],
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    if (_subjectCodeController.text.contains('-')) {
-                      ClassInfo? searchResult = searchSubject(
-                          _subjectCodeController.text, widget.classList);
-                      if (searchResult != null) {
-                        context.push('/oclass/info', extra: searchResult);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('존재하지 않는 과목 코드입니다.')));
-                      }
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('과목코드 전체를 입력해주십시요.')));
-                    }
-                  },
-                ),
+                          const Text('과목코드를 입력하여 검색할 수 있습니다.'),
+                          TextField(
+                            key: const Key('subject_code_field'),
+                            controller: _subjectCodeController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                hintText: '과목 코드 입력',
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () => setState(() {
+                                    _subjectCodeController.text = '';
+                                  }),
+                                )),
+                          )
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        if (_subjectCodeController.text.contains('-')) {
+                          ClassInfo? searchResult = searchSubject(
+                              _subjectCodeController.text, widget.classList);
+                          if (searchResult != null) {
+                            context.push('/oclass/info', extra: searchResult);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('존재하지 않는 과목 코드입니다.')));
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('과목코드 전체를 입력해주십시요.')));
+                        }
+                      },
+                    ),
               );
             },
             icon: const Icon(Icons.manage_search_outlined),

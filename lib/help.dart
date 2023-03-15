@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'styles/style_widget.dart';
 
 /// 도움말 페이지이다. 각 메뉴에 대한 설명을 확인할 수 있는 페이지이다.
@@ -15,6 +16,7 @@ class HelpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('도움말'),
       ),
       body: ListView(

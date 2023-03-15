@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
@@ -56,7 +55,7 @@ class SchedulePage extends StatelessWidget {
                 child: Row(
                   children: const [
                     Icon(Icons.announcement),
-                    Text("오류가 발생했습니다."),
+                    Text('오류가 발생했습니다.'),
                   ],
                 ),
               );
