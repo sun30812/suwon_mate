@@ -461,8 +461,8 @@ class SettingsPage extends StatelessWidget {
                           barrierDismissible: false,
                           context: context,
                           builder: (BuildContext context) => SuwonDialog(
-                              icon: Icons.error_outline,
-                              title: '경고',
+                              icon: Icons.restart_alt_outlined,
+                              title: '전체 데이터를 초기화 할까요?',
                               content: const Text(
                                   '학생 정보를 포함한 앱의 모든 데이터를 초기화합니다. 계속하시겠습니까?(이 작업은 되돌릴 수 없습니다.)'),
                               isDestructive: true,
@@ -487,10 +487,10 @@ class SettingsPage extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             return SuwonDialog(
-                              icon: Icons.error_outline,
-                              title: '경고',
+                              icon: Icons.restart_alt_outlined,
+                              title: 'DB 데이터를 다시 받을까요?',
                               content:
-                                  const Text('DB의 데이터를 다시 받습니다. 계속하시겠습니까?'),
+                                  const Text('서버에서 최신 DB의 데이터를 다시 받습니다. 계속하시겠습니까?'),
                               onPressed: () {
                                 SharedPreferences.getInstance()
                                     .then((value) => value.remove('db_ver'));
