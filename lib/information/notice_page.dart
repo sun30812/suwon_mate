@@ -1,13 +1,11 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:suwon_mate/model/notice.dart';
+import 'package:suwon_mate/styles/style_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../styles/style_widget.dart';
 
 /// 수원대학교의 공지사항을 보여주는 페이지입니다.
 ///
@@ -94,8 +92,18 @@ class _NoticePageState extends State<NoticePage> {
                             .split(',')[2]
                             .split(')')[0]);
                     return SimpleCard(
-                        onPressed: () =>
-                            context.push('/notice/detail', extra: siteData),
+                        onPressed: () async => launchUrl(
+                            Uri(
+                                scheme: 'https',
+                                host: 'suwon.ac.kr',
+                                queryParameters: {
+                                  'menuno': 674.toString(),
+                                  'bbsno': siteData.siteCode,
+                                  'boardno': siteData.siteCode,
+                                  'siteno': 37.toString(),
+                                  'act': 'view'
+                                }),
+                            mode: LaunchMode.externalApplication),
                         title: siteData.title,
                         content: Text(
                           '${rows.getElementsByClassName('info')[index].getElementsByClassName('date')[0].text.trim()}/${rows.getElementsByClassName('info')[index].getElementsByClassName('hit')[0].text.trim()}',

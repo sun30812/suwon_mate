@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 ///
 /// 공지사항 페이지에서 특정 위젯을 클릭 시 상세 공지사항을 출력하는 페이지이다.
 /// [notice]를 통해 게시글의 제목과 해당 게시글의 사이트 코드를 받아서 상세정보를 가져와서 보여주는 페이지이다.
+@Deprecated('해당 위젯은 추후 업데이트에서 제거될 예정입니다.')
 class NoticeDetailPage extends StatelessWidget {
   /// 특정 공지사항 게시글의 일부 정보를 가진 변수이다.
   ///
@@ -40,7 +41,7 @@ class NoticeDetailPage extends StatelessWidget {
                 Uri(
                     scheme: 'https',
                     host:
-                        'www.suwon.ac.kr/index.html?menuno=674&bbsno=${notice.siteCode}&boardno=${notice.siteCode}&siteno=37&act=view'),
+                        'suwon.ac.kr/index.html?menuno=674&bbsno=${notice.siteCode}&boardno=${notice.siteCode}&siteno=37&act=view'),
                 mode: LaunchMode.externalApplication);
           }),
       appBar: AppBar(title: Text(notice.title)),
@@ -57,13 +58,6 @@ class NoticeDetailPage extends StatelessWidget {
             var body = parse((snapshot.data as http.Response).body);
             return SingleChildScrollView(
               child: Html(
-                  customRender: {
-                    "table": (context, child) => SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: (context.tree as TableLayoutElement)
-                              .toWidget(context),
-                        )
-                  },
                   data: body
                       .getElementsByClassName('board_viewcont')[0]
                       .innerHtml),
