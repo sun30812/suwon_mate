@@ -81,6 +81,9 @@ jobs:
       - name: Pod Repository Update
         run: pod repo update
 
+      - name: Pod update
+        run: pod update
+
       - name: Build macOS App
         run: flutter build macos
 
