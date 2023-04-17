@@ -26,10 +26,10 @@ class ClassDetailInfoCard extends StatelessWidget {
               icon: Icons.account_circle_outlined,
               title: '수업 대상자',
               detail: Text(
-                '대상 학년: ${classInfo.guestGrade}\n대상 학부: ${classInfo.guestDept}\n'
-                '대상 학과: ${classInfo.guestMjor}',
+                '대상 학년: ${classInfo.guestGrade ?? '공개 안됨'}\n대상 학부: ${classInfo.guestDept ?? '공개 안됨'}\n'
+                '대상 학과: ${classInfo.guestMjor ?? '학부 공통'}',
                 semanticsLabel:
-                    '대상 학년은 ${classInfo.guestGrade} 이고 대상 학부는 ${classInfo.guestDept} 이며 대상 학과는 ${classInfo.guestMjor} 입니다.',
+                    '대상 학년은 ${classInfo.guestGrade ?? '공개 안됨'} 이고 대상 학부는 ${classInfo.guestDept ?? '공개 안됨'} 이며 대상 학과는 ${classInfo.guestMjor ?? '학부 공통'} 입니다.',
                 style: const TextStyle(fontSize: 17.0),
               )),
           InfoCard(
@@ -76,21 +76,22 @@ class ClassDetailInfoCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '성별: ${classInfo.sex}',
-                    semanticsLabel: '성별은 ${classInfo.sex}성 입니다.',
+                    '성별: ${classInfo.sex ?? '공개 안됨'}',
+                    semanticsLabel: '성별은 ${classInfo.sex ?? '공개 안됨'} 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '성함: ${classInfo.hostName}',
-                        semanticsLabel: '성함은 ${classInfo.hostName} 입니다.',
+                        '성함: ${classInfo.hostName ?? '공개 안됨'}',
+                        semanticsLabel:
+                            '성함은 ${classInfo.hostName ?? '공개 안됨'} 입니다.',
                         style: const TextStyle(fontSize: 17.0),
                       ),
                       IconButton(
-                        onPressed: () => Clipboard.setData(
-                                ClipboardData(text: classInfo.hostName))
+                        onPressed: () => Clipboard.setData(ClipboardData(
+                                text: classInfo.hostName ?? '공개 안됨'))
                             .then((value) => ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
                                     content: Text('강의자 이름이 복사되었습니다.')))),
@@ -100,8 +101,9 @@ class ClassDetailInfoCard extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    '직책: ${classInfo.hostGrade}',
-                    semanticsLabel: '직책은 ${classInfo.hostGrade} 입니다.',
+                    '직책: ${classInfo.hostGrade ?? '공개 안됨'}',
+                    semanticsLabel:
+                        '직책은 ${classInfo.hostGrade ?? '공개 안됨'} 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
@@ -110,19 +112,19 @@ class ClassDetailInfoCard extends StatelessWidget {
               icon: Icons.school_outlined,
               title: '수업 관련 사항',
               detail: Text(
-                '수업 장소 및 요일: ${classInfo.classLocation}\n교양 영역: ${classInfo.region ?? '해당 없음'}\n수업 언어: ${classInfo.classLanguage}',
+                '수업 장소 및 요일: ${classInfo.classLocation ?? '공개 안됨'}\n교양 영역: ${classInfo.region ?? '해당 없음'}\n수업 언어: ${classInfo.classLanguage ?? '공개 안됨'}',
                 style: const TextStyle(fontSize: 17.0),
                 semanticsLabel:
-                    '수업 장소 및 요일은 ${classInfo.classLocation} 이며, 교양 영역은 ${classInfo.region ?? '해당 없음'} 이며, 수업 언어는 ${classInfo.classLanguage} 입니다.',
+                    '수업 장소 및 요일은 ${classInfo.classLocation ?? '공개 안됨'} 이며, 교양 영역은 ${classInfo.region ?? '해당 없음'} 이며, 수업 언어는 ${classInfo.classLanguage ?? '공개 안됨'} 입니다.',
               )),
           InfoCard(
               icon: Icons.info_outline,
               title: '추가 정보',
               detail: Text(
-                '강의자 계약 정보: ${classInfo.promise}\n수업 방식: ${classInfo.extra}',
+                '강의자 계약 정보: ${classInfo.promise ?? '공개 안됨'}\n수업 방식: ${classInfo.extra ?? '공개 안됨'}',
                 style: const TextStyle(fontSize: 17.0),
                 semanticsLabel:
-                    '강의자는 계약 종류는 ${classInfo.promise} 이며 ${classInfo.extra} 의 수업 방식을 따릅니다.',
+                    '강의자는 계약 종류는 ${classInfo.promise ?? '공개 안됨'} 이며 ${classInfo.extra ?? '공개 안됨'} 의 수업 방식을 따릅니다.',
               ))
         ],
       ),
