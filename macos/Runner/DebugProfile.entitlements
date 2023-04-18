@@ -10,5 +10,9 @@
 	<true/>
 	<key>com.apple.security.network.server</key>
 	<true/>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.sn30.suwonuniv.info.suwonMate</string>
+	</array>
 </dict>
 </plist>
