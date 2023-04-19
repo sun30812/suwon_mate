@@ -1,6 +1,3 @@
-// ignore_for_file: unused_element
-
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:suwon_mate/model/class_info.dart';
@@ -243,135 +240,6 @@ class _SuwonSquareButtonState extends State<SuwonSquareButton> {
   }
 }
 
-/// 더 이상 사용되지 않는 이전 버전의 디자인으로 아이콘과 글자가 가로로 같이 붙어있는 형태의 버튼이다.
-///
-/// 즐겨찾기에 추가 같은 버튼에 사용된다.
-@Deprecated('더 이상 해당 위젯은 사용되지 않습니다. 대신 `FloatingActionButton.extended`를 사용하세요')
-class SuwonButton extends StatefulWidget {
-  /// 버튼의 활성화 여부(`false`인 경우 버튼이 흐리게 표시되며 누를 수 없다.)
-  final bool? isActivate;
-
-  /// 버튼의 왼쪽 부분에 위치한 아이콘
-  final IconData icon;
-
-  /// 버튼의 오른쪽 부분에 위치한 버튼의 이름 및 설명
-  final String btnName;
-
-  /// 버튼이 눌렸을 때 동작
-  final void Function()? onPressed;
-
-  /// 아이콘([icon]을 통해 지정 가능)과 글자([buttonName]을 통해 지정 가능)가 가로로 배치된 형태의 버튼
-  ///
-  /// [isActivate]를 통해 버튼의 활성화 여부를 지정할 수 있다.
-  ///
-  const SuwonButton({
-    Key? key,
-    this.isActivate,
-    required this.icon,
-    required String buttonName,
-    required this.onPressed,
-  })  : btnName = buttonName,
-        super(key: key);
-
-  @override
-  State<SuwonButton> createState() => _SuwonButtonState();
-}
-
-class _SuwonButtonState extends State<SuwonButton> {
-  /// 버튼의 클릭 여부를 확인하는 속성
-  bool _isClicked = false;
-
-  /// 버튼을 누를 시 동작
-  ///
-  /// 버튼에 동작이 지정된 경우 버튼을 누를 때 동작을 수행하도록 한다.
-  ///
-  /// 아래의 경우에는 버튼을 눌러도 동작하지 않는다.
-  ///
-  /// * [onPressed]에 동작이 할당되지 않은 경우
-  /// * [isActivate]가 `false`이거나 지정되지 않은 경우
-  ///
-  /// ## 같이보기
-  /// * [SuwonButton]
-  void Function()? buttonAction() {
-    if (widget.isActivate != null) {
-      if (widget.isActivate == false) {
-        return null;
-      }
-    }
-    return widget.onPressed;
-  }
-
-  Color smartColor() {
-    if ((widget.isActivate ?? true) && (widget.onPressed != null)) {
-      return Colors.grey[800]!;
-    }
-    return Colors.grey;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapCancel: () => setState(() {
-        _isClicked = false;
-      }),
-      onTapDown: (_) => setState(() {
-        if (widget.isActivate ?? true) {
-          _isClicked = !_isClicked;
-        }
-      }),
-      onTapUp: (_) => setState(() {
-        if (widget.isActivate ?? true) {
-          _isClicked = !_isClicked;
-        }
-      }),
-      onTap: () {
-        if ((widget.onPressed != null) && (widget.isActivate ?? true)) {
-          widget.onPressed!();
-        }
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: AnimatedContainer(
-          decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: !_isClicked && (widget.isActivate ?? true)
-                  ? [
-                      BoxShadow(
-                          offset: const Offset(3, 3),
-                          blurRadius: 15,
-                          spreadRadius: 0.5,
-                          color: Colors.grey[500]!),
-                      const BoxShadow(
-                          offset: Offset(-3, -3),
-                          blurRadius: 15,
-                          spreadRadius: 0.5,
-                          color: Colors.white)
-                    ]
-                  : null),
-          duration: const Duration(milliseconds: 200),
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(
-                widget.icon,
-                color: smartColor(),
-              ),
-              const Padding(padding: EdgeInsets.only(right: 3.0)),
-              Text(
-                widget.btnName,
-                semanticsLabel: widget.btnName,
-                style:
-                    TextStyle(color: smartColor(), fontWeight: FontWeight.bold),
-              )
-            ]),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// 카드형태의 위젯으로 공지사항이나 개설 강좌 조회 시 나타나는 위젯
 ///
 class SimpleCard extends StatefulWidget {
@@ -396,23 +264,6 @@ class SimpleCard extends StatefulWidget {
 class _SimpleCardState extends State<SimpleCard> {
   @override
   Widget build(BuildContext context) {
-    @Deprecated(('''
-    해당 함수는 더이상 사용되지 않습니다.
-    아래 스타일대로 사용하면 해당 위젯과 같은 스타일을 사용할 수 있습니다
-    TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
-    '''))
-    Widget subTitleWidget(String? text) {
-      if (text != null) {
-        return Text(
-          text,
-          semanticsLabel: text,
-          style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-        );
-      } else {
-        return Container();
-      }
-    }
-
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Card(
@@ -503,7 +354,10 @@ class _InfoCardState extends State<InfoCard> {
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 18.0),
                 ),
-                leading: Icon(widget.icon, color: Theme.of(context).primaryColor,),
+                leading: Icon(
+                  widget.icon,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
               widget.detail
             ],
@@ -781,46 +635,6 @@ class NotSupportInPlatform extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-/// 특정 기능을 지원하지 않는 플랫폼의 경우 안되는 기능 설명을 위한 위젯이다.
-///
-@Deprecated(
-    '해당 위젯은 다음 업데이트에서 제거될 예정입니다. 해당 기능은 Web버전 여부를 Appbar에서 표시되는 것으로 대체됩니다.')
-class NotSupportPlatformMessage extends StatelessWidget {
-  const NotSupportPlatformMessage({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if (kIsWeb) {
-      return MaterialBanner(
-          content: const Text(
-            'Web 플랫폼의 경우 일부 기능이 동작하지 않습니다.',
-            semanticsLabel: 'Web 플랫폼의 경우 일부 기능이 동작하지 않습니다.',
-          ),
-          actions: [
-            TextButton(
-                onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => SuwonDialog.simple(
-                        context: context,
-                        icon: Icons.help_outline,
-                        title: '안내',
-                        content: const Text(
-                          'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.',
-                          semanticsLabel:
-                              'Web 플랫폼에서는 [학사 일정]이나 [공지사항] 기능을 사용할 수 없습니다.',
-                        ))),
-                child: const Text(
-                  '설명 보기',
-                  semanticsLabel: '설명 보기',
-                ))
-          ]);
-    }
-    return Container();
   }
 }
 

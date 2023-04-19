@@ -11,4 +11,4 @@ PRODUCT_NAME = suwon_mate
 PRODUCT_BUNDLE_IDENTIFIER = com.sn30.suwonuniv.info.suwonMate
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2022 com.sn30.suwonuniv.info. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2023 com.sn30.suwonuniv.info. All rights reserved.
