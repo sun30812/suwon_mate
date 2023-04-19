@@ -8,10 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/help.dart';
-import 'package:suwon_mate/information/notice_detail_page.dart';
 import 'package:suwon_mate/information/notice_page.dart';
 import 'package:suwon_mate/model/class_info.dart';
-import 'package:suwon_mate/model/notice.dart';
 import 'package:suwon_mate/schedule.dart';
 import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/subjects/favorite_subject.dart';
@@ -49,15 +47,9 @@ class App extends ConsumerWidget {
             builder: (context, state) => const SchedulePage(),
           ),
           GoRoute(
-              path: 'notice',
-              builder: (context, state) => const NoticePage(),
-              routes: <RouteBase>[
-                GoRoute(
-                  path: 'detail',
-                  builder: (context, state) =>
-                      NoticeDetailPage(notice: state.extra as Notice),
-                )
-              ]),
+            path: 'notice',
+            builder: (context, state) => const NoticePage(),
+          ),
           GoRoute(
             path: 'settings',
             builder: (context, state) => const SettingsPage(),
@@ -117,6 +109,7 @@ class App extends ConsumerWidget {
                   return const IconThemeData(
                       color: Color.fromARGB(255, 233, 184, 0));
                 }
+                return null;
               })),
         ),
         title: '수원 메이트',
@@ -158,7 +151,7 @@ class _MainPageState extends State<MainPage> {
   /// 설정 저장소로부터 설정값을 가져오는 메서드이다. 앱 설정에 대한 값을 불러올 때 사용된다.
   Future<SharedPreferences> getSettings() async {
     var remoteConfig = FirebaseRemoteConfig.instance;
-    await remoteConfig.setDefaults(const {"quick_mode": false});
+    await remoteConfig.setDefaults(const {'quick_mode': false});
     await remoteConfig.fetchAndActivate();
     return SharedPreferences.getInstance();
   }
