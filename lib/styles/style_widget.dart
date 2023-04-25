@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:suwon_mate/controller/login_controller.dart';
 import 'package:suwon_mate/model/class_info.dart';
+
 import '../model/contact.dart';
 
 /// 강좌에 대한 세부 정보를 보여주는 페이지이다.
@@ -37,9 +40,9 @@ class ClassDetailInfoCard extends StatelessWidget {
               title: '수업 대상자',
               detail: Text(
                 '대상 학년: ${classInfo.guestGrade ?? '공개 안됨'}\n대상 학부: ${classInfo.guestDept ?? '공개 안됨'}\n'
-                '대상 학과: ${classInfo.guestMjor ?? '학부 공통'}',
+                    '대상 학과: ${classInfo.guestMjor ?? '학부 공통'}',
                 semanticsLabel:
-                    '대상 학년은 ${classInfo.guestGrade ?? '공개 안됨'} 이고 대상 학부는 ${classInfo.guestDept ?? '공개 안됨'} 이며 대상 학과는 ${classInfo.guestMjor ?? '학부 공통'} 입니다.',
+                '대상 학년은 ${classInfo.guestGrade ?? '공개 안됨'} 이고 대상 학부는 ${classInfo.guestDept ?? '공개 안됨'} 이며 대상 학과는 ${classInfo.guestMjor ?? '학부 공통'} 입니다.',
                 style: const TextStyle(fontSize: 17.0),
               )),
           InfoCard(
@@ -53,20 +56,20 @@ class ClassDetailInfoCard extends StatelessWidget {
                     children: [
                       Text('과목 코드: ${classInfo.subjectCode}',
                           semanticsLabel:
-                              '과목 코드는 ${classInfo.subjectCode} 입니다.',
+                          '과목 코드는 ${classInfo.subjectCode} 입니다.',
                           style: const TextStyle(fontSize: 17.0)),
                       IconButton(
                           tooltip: '과목 코드 복사',
                           onPressed: () {
                             Clipboard.setData(
-                                    ClipboardData(text: classInfo.subjectCode))
+                                ClipboardData(text: classInfo.subjectCode))
                                 .then((value) => {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text('과목 코드가 복사되었습니다.'),
-                                        duration: Duration(seconds: 1),
-                                      ))
-                                    });
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text('과목 코드가 복사되었습니다.'),
+                                duration: Duration(seconds: 1),
+                              ))
+                            });
                           },
                           icon: const Icon(Icons.copy)),
                     ],
@@ -74,7 +77,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                   Text(
                     '개설년도: ${classInfo.openYear}\n교과 종류: ${classInfo.subjectKind}\n학점: ${classInfo.point}',
                     semanticsLabel:
-                        '개설 년도는 ${classInfo.openYear}년 이고 교과 종류는 ${classInfo.subjectKind}이며 학점은 ${classInfo.point}점 입니다.',
+                    '개설 년도는 ${classInfo.openYear}년 이고 교과 종류는 ${classInfo.subjectKind}이며 학점은 ${classInfo.point}점 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
@@ -96,15 +99,15 @@ class ClassDetailInfoCard extends StatelessWidget {
                       Text(
                         '성함: ${classInfo.hostName ?? '공개 안됨'}',
                         semanticsLabel:
-                            '성함은 ${classInfo.hostName ?? '공개 안됨'} 입니다.',
+                        '성함은 ${classInfo.hostName ?? '공개 안됨'} 입니다.',
                         style: const TextStyle(fontSize: 17.0),
                       ),
                       IconButton(
                         onPressed: () => Clipboard.setData(ClipboardData(
-                                text: classInfo.hostName ?? '공개 안됨'))
+                            text: classInfo.hostName ?? '공개 안됨'))
                             .then((value) => ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                    content: Text('강의자 이름이 복사되었습니다.')))),
+                            .showSnackBar(const SnackBar(
+                            content: Text('강의자 이름이 복사되었습니다.')))),
                         icon: const Icon(Icons.copy),
                         tooltip: '강의자 이름 복사',
                       )
@@ -113,7 +116,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                   Text(
                     '직책: ${classInfo.hostGrade ?? '공개 안됨'}',
                     semanticsLabel:
-                        '직책은 ${classInfo.hostGrade ?? '공개 안됨'} 입니다.',
+                    '직책은 ${classInfo.hostGrade ?? '공개 안됨'} 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
@@ -141,7 +144,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                                 Text(
                                   '이메일: ${snapshot.data?.email ?? '공개되지 않음'}',
                                   semanticsLabel:
-                                      '이메일은 ${snapshot.data?.email ?? '공개되지 않은 상태'} 입니다.',
+                                  '이메일은 ${snapshot.data?.email ?? '공개되지 않은 상태'} 입니다.',
                                   style: const TextStyle(fontSize: 17.0),
                                 ),
                                 IconButton(
@@ -153,9 +156,17 @@ class ClassDetailInfoCard extends StatelessWidget {
                                             text: classInfo.hostName))
                                         .then((value) => ScaffoldMessenger.of(
                                                 context)
-                                            .showSnackBar(const SnackBar(
-                                                content:
-                                                    Text('이메일 주소가 복사되었습니다.'))));
+                                            .showSnackBar(SnackBar(
+                                                content: const Text(
+                                                    '이메일 주소가 복사되었습니다.'),
+                                                duration:
+                                                    const Duration(seconds: 1),
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.0)))));
                                   },
                                   icon: const Icon(Icons.copy),
                                   tooltip: '이메일 주소 복사',
@@ -168,7 +179,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                                 Text(
                                   '전화번호: ${snapshot.data?.phoneNumber ?? '공개되지 않음'}',
                                   semanticsLabel:
-                                      '전화번호는 ${snapshot.data?.phoneNumber ?? '공개되지 않은 상태'} 입니다.',
+                                  '전화번호는 ${snapshot.data?.phoneNumber ?? '공개되지 않은 상태'} 입니다.',
                                   style: const TextStyle(fontSize: 17.0),
                                 ),
                                 IconButton(
@@ -180,9 +191,17 @@ class ClassDetailInfoCard extends StatelessWidget {
                                             text: classInfo.hostName))
                                         .then((value) => ScaffoldMessenger.of(
                                                 context)
-                                            .showSnackBar(const SnackBar(
-                                                content:
-                                                    Text('전화번호가 복사되었습니다.'))));
+                                            .showSnackBar(SnackBar(
+                                                content: const Text(
+                                                    '전화번호가 복사되었습니다.'),
+                                                duration:
+                                                    const Duration(seconds: 1),
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.0)))));
                                   },
                                   icon: const Icon(Icons.copy),
                                   tooltip: '전화번호 복사',
@@ -208,7 +227,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                 '수업 장소 및 요일: ${classInfo.classLocation ?? '공개 안됨'}\n교양 영역: ${classInfo.region ?? '해당 없음'}\n수업 언어: ${classInfo.classLanguage ?? '공개 안됨'}',
                 style: const TextStyle(fontSize: 17.0),
                 semanticsLabel:
-                    '수업 장소 및 요일은 ${classInfo.classLocation ?? '공개 안됨'} 이며, 교양 영역은 ${classInfo.region ?? '해당 없음'} 이며, 수업 언어는 ${classInfo.classLanguage ?? '공개 안됨'} 입니다.',
+                '수업 장소 및 요일은 ${classInfo.classLocation ?? '공개 안됨'} 이며, 교양 영역은 ${classInfo.region ?? '해당 없음'} 이며, 수업 언어는 ${classInfo.classLanguage ?? '공개 안됨'} 입니다.',
               )),
           InfoCard(
               icon: Icons.info_outline,
@@ -217,7 +236,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                 '강의자 계약 정보: ${classInfo.promise ?? '공개 안됨'}\n수업 방식: ${classInfo.extra ?? '공개 안됨'}',
                 style: const TextStyle(fontSize: 17.0),
                 semanticsLabel:
-                    '강의자는 계약 종류는 ${classInfo.promise ?? '공개 안됨'} 이며 ${classInfo.extra ?? '공개 안됨'} 의 수업 방식을 따릅니다.',
+                '강의자는 계약 종류는 ${classInfo.promise ?? '공개 안됨'} 이며 ${classInfo.extra ?? '공개 안됨'} 의 수업 방식을 따릅니다.',
               ))
         ],
       ),
@@ -345,12 +364,11 @@ class SimpleCard extends StatefulWidget {
   final Widget content;
   final Function()? onPressed;
 
-  const SimpleCard(
-      {required this.title,
-      this.subTitle,
-      required this.content,
-      Key? key,
-      this.onPressed})
+  const SimpleCard({required this.title,
+    this.subTitle,
+    required this.content,
+    Key? key,
+    this.onPressed})
       : super(key: key);
 
   @override
@@ -418,8 +436,7 @@ class InfoCard extends StatefulWidget {
   /// [icon]으로 지정된 아이콘과 함께 어떤 정보를 출력하는데 사용된다. 아이콘 오른쪽에는
   /// [title]이 출력된다. 세부 내용은 [detail]에서 정할 수 있는데 [Widget]타입이기 때문에
   /// 임의의 위젯을 출력하는 것이 가능하다.
-  const InfoCard(
-      {Key? key, required this.icon, required this.title, required this.detail})
+  const InfoCard({Key? key, required this.icon, required this.title, required this.detail})
       : super(key: key);
 
   @override
@@ -483,13 +500,12 @@ class SearchBar extends StatefulWidget {
   /// [onAcceptPressed]를 통해 검색 버튼이 눌릴 시의 동작을 정의할 수 있다.
   /// 또한 검색창 왼쪽의 아이콘인 [icon]을 지정하는 것이 가능하며
   /// 텍스트를 수정할 때 마다 수행할 동작을 지정하는 경우 [onChanged]를 사용할 수 있다.
-  const SearchBar(
-      {Key? key,
-      IconData? acceptIcon,
-      void Function()? onAcceptPressed,
-      required TextEditingController controller,
-      IconData? icon,
-      void Function(String)? onChanged})
+  const SearchBar({Key? key,
+    IconData? acceptIcon,
+    void Function()? onAcceptPressed,
+    required TextEditingController controller,
+    IconData? icon,
+    void Function(String)? onChanged})
       : _onChanged = onChanged,
         _icon = icon,
         _acceptIcon = acceptIcon,
@@ -599,11 +615,10 @@ class SuwonDialog extends StatelessWidget {
   ///
   /// 알림창의 아이콘은 [icon]을 통해 지정 가능하며, [title]로 제목을 지정하고
   /// 내용으로 출력하고픈 것을 [content]를 통해 지정하면 된다.
-  static Widget simple(
-      {required BuildContext context,
-      required IconData icon,
-      required String title,
-      required Widget content}) {
+  static Widget simple({required BuildContext context,
+    required IconData icon,
+    required String title,
+    required Widget content}) {
     return AlertDialog(
       title: Column(
         children: [
@@ -626,7 +641,7 @@ class SuwonDialog extends StatelessWidget {
     if (_isDestructive) {
       return ButtonStyle(
           overlayColor:
-              MaterialStateProperty.all(Colors.redAccent.withAlpha(30)),
+          MaterialStateProperty.all(Colors.redAccent.withAlpha(30)),
           foregroundColor: MaterialStateProperty.all(Colors.redAccent));
     }
     return const ButtonStyle();
@@ -710,8 +725,7 @@ class NotSupportInPlatform extends StatelessWidget {
   final String _platform;
 
   /// 플랫폼에서 지원하지 않는 동작의 경우 표시되는 페이지이다.
-  const NotSupportInPlatform(
-    String platform, {
+  const NotSupportInPlatform(String platform, {
     Key? key,
   })  : _platform = platform,
         super(key: key);
@@ -768,10 +782,26 @@ class LoginWidget extends StatefulWidget {
   State<LoginWidget> createState() => _LoginWidgetState();
 }
 
-class _LoginWidgetState extends State<LoginWidget> {
+class _LoginWidgetState extends State<LoginWidget> with WidgetsBindingObserver {
+  var loginController = LoginController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
   @override
   Widget build(BuildContext context) {
-    var loginController = LoginController();
+    if (kIsWeb) {
+      return const InfoCard(
+          icon: Icons.browser_not_supported,
+          title: '로그인',
+          detail: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text('Web버전에서는 로그인을 지원하지 않습니다.'),
+          ));
+    }
 
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
@@ -788,80 +818,130 @@ class _LoginWidgetState extends State<LoginWidget> {
             return InfoCard(
                 icon: Icons.login_outlined,
                 title: '로그인',
-                detail: Column(
-                  children: [
-                    Text(
-                        '로그인된 계정: ${FirebaseAuth.instance.currentUser!.email ?? '이메일 공개 안됨'}'),
-                    TextButton(
-                        onPressed: () => showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('로그아웃'),
-                                content: const Text('로그아웃 하시겠습니까?'),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: const Text('취소')),
-                                  TextButton(
-                                      onPressed: () {
-                                        FirebaseAuth.instance.signOut().then(
-                                            (value) => Navigator.pop(context));
-                                      },
-                                      child: const Text('확인')),
-                                ],
-                              ),
-                            ),
-                        child: const Text('로그아웃'))
-                  ],
+                detail: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                            '로그인된 계정: ${FirebaseAuth.instance.currentUser!.email ?? '이메일 공개 안됨'}'),
+                        TextButton(
+                            onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('로그아웃'),
+                                    content: const Text('로그아웃 하시겠습니까?'),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: const Text('취소')),
+                                      TextButton(
+                                          onPressed: () {
+                                            FirebaseAuth.instance
+                                                .signOut()
+                                                .then((value) =>
+                                                    Navigator.pop(context));
+                                          },
+                                          child: const Text('확인')),
+                                    ],
+                                  ),
+                                ),
+                            child: const Text('로그아웃'))
+                      ],
+                    ),
+                  ),
                 ));
           } else {
             return InfoCard(
                 icon: Icons.login_outlined,
                 title: '로그인',
-                detail: Column(
-                  children: [
-                    const Text('로그인을 하면 강의자의 이메일이나 전화번호를 확인할 수 있습니다.'),
-                    TextButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('이메일로 로그인'),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Text('수원대 포털 이메일 계정이 필요합니다.'),
-                                  TextField(
-                                    controller: loginController.emailController,
-                                    decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary,
-                                        labelText: '포털 이메일'),
-                                  )
+                detail: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      const Text('로그인을 하면 강의자의 이메일이나 전화번호를 확인할 수 있습니다.'),
+                      TextButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('이메일로 로그인'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text('수원대 포털 이메일 계정이 필요합니다.'),
+                                    TextField(
+                                      controller:
+                                          loginController.emailController,
+                                      decoration: const InputDecoration(
+                                          filled: true, labelText: '포털 이메일'),
+                                    )
+                                  ],
+                                ),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        loginController.onLogin(context);
+                                      },
+                                      child: const Text('로그인')),
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text('취소'))
                                 ],
                               ),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      loginController.onLogin(context);
-                                    },
-                                    child: const Text('로그인')),
-                                TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: const Text('취소'))
-                              ],
-                            ),
-                          );
-                        },
-                        child: const Text('수원대 이메일로 로그인')),
-                  ],
+                            );
+                          },
+                          child: const Text('수원대 이메일로 로그인')),
+                    ],
+                  ),
                 ));
           }
         }
       },
     );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (!kIsWeb) {
+      FirebaseDynamicLinks.instance.onLink.listen((event) async {
+        final Uri deepLink = event.link;
+        if (FirebaseAuth.instance.isSignInWithEmailLink(deepLink.toString())) {
+          try {
+            FirebaseAuth.instance
+                .signInWithEmailLink(
+                    email: loginController.emailController.text,
+                    emailLink: deepLink.toString())
+                .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: const Text('로그인 되었습니다.'),
+                        duration: const Duration(seconds: 1),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)))));
+          } catch (e) {
+            showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                      title: const Text('오류'),
+                      content: Text(e.toString()),
+                      actions: [
+                        TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('확인'))
+                      ],
+                    ));
+          }
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 }
