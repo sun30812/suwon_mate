@@ -31,8 +31,20 @@ class LoginController {
   /// ## 같이 보기
   /// * [LoginWidget]
   void onLogin(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            CircularProgressIndicator(),
+            Text('로그인 링크를 보내는 중..')
+          ],
+        ),
+      ),
+    );
     var acs = ActionCodeSettings(
-        url: 'https://suwon-mate.web.app',
+        url: 'https://suwonmate00.page.link/Fc4u',
         handleCodeInApp: true,
         androidMinimumVersion: '12',
         androidInstallApp: true,
@@ -40,22 +52,28 @@ class LoginController {
     FirebaseAuth.instance
         .sendSignInLinkToEmail(
             email: _emailController.text, actionCodeSettings: acs)
-        .catchError((error) => {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('오류'),
-                  content: Text(error.toString()),
-                  actions: [
-                    TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('확인'))
-                  ],
-                ),
-              )
-            })
-        .then((value) {
+        .catchError((error) {
       Navigator.pop(context);
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('오류'),
+          content: Text(error.toString()),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('확인'))
+          ],
+        ),
+      );
+    }).then((value) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('로그인을 위한 이메일이 전송되었습니다.'),
+          duration: const Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0))));
     });
   }
 }
