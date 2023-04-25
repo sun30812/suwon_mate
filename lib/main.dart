@@ -1,9 +1,6 @@
 import 'dart:convert';
 
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -27,36 +24,6 @@ import 'subjects/open_class_info.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-  final PendingDynamicLinkData? initialLink =
-      await FirebaseDynamicLinks.instance.getInitialLink();
-
-  if (initialLink != null) {
-    print('deep link detected');
-    final Uri deepLink = initialLink.link;
-    if (FirebaseAuth.instance.isSignInWithEmailLink(deepLink.toString())) {
-      try {
-        await FirebaseAuth.instance
-            .signInWithEmailLink(email: '', emailLink: deepLink.toString());
-        print('success login with ${FirebaseAuth.instance.currentUser!.email}');
-      } catch (e) {
-        print('can not login');
-      }
-    }
-  }
-  FirebaseDynamicLinks.instance.onLink.listen((event) async {
-    final Uri deepLink = event.link;
-    print('deep link detected');
-    if (FirebaseAuth.instance.isSignInWithEmailLink(deepLink.toString())) {
-      try {
-        await FirebaseAuth.instance
-            .signInWithEmailLink(email: '', emailLink: deepLink.toString());
-        print('success login with ${FirebaseAuth.instance.currentUser!.email}');
-      } catch (e) {
-        print('can not login');
-      }
-    }
-  });
   runApp(ProviderScope(child: App()));
 }
 
