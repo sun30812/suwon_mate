@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'styles/style_widget.dart';
 
 /// 도움말 페이지이다. 각 메뉴에 대한 설명을 확인할 수 있는 페이지이다.
@@ -34,8 +35,7 @@ class HelpPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Text(
-                    '학부와 전공을 선택하여 과목들을 확인할 수 있습니다.\n'
-                    '과목을 클릭하면 해당 과목의 상세정보도 확인할 수 있습니다.\n교양 영역의 경우 학부를 교양으로 선택하면 고를 수 있습니다.\n',
+                    '과목에 대한 정보를 확인할 수 있습니다. 강의자의 연락사항 정보는 로그인 시 확인이 가능합니다.\n교양 영역의 경우 학부를 교양으로 선택하면 고를 수 있습니다.\n',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],
@@ -62,7 +62,7 @@ class HelpPage extends StatelessWidget {
               icon: Icons.settings_outlined,
               title: '설정',
               detail: Text(
-                '앱과 관련된 설정들을 변경할 수 있습니다.',
+                '로그인을 하거나 앱과 관련된 설정들을 변경할 수 있습니다.',
                 style: TextStyle(fontSize: 16.0),
               )),
         ],
