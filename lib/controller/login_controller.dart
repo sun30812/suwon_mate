@@ -32,7 +32,7 @@ class LoginController {
   /// * [LoginWidget]
   void onLogin(BuildContext context) {
     var acs = ActionCodeSettings(
-        url: 'https://suwon-mate.web.app',
+        url: 'https://suwonmate00.page.link/Fc4u',
         handleCodeInApp: true,
         androidMinimumVersion: '12',
         androidInstallApp: true,
