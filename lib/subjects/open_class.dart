@@ -54,48 +54,48 @@ class _OpenClassState extends State<OpenClass> {
   /// 학년 목록
   List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
 
-  /// 학부 목록([DropdownMenuItem]용)
-  List<DropdownMenuItem<String>> dpDropdownList = [];
+  /// 학부 목록([DropdownMenuEntry]용)
+  List<DropdownMenuEntry<String>> dpDropdownList = [];
 
-  /// 학과 목록([DropdownMenuItem]용)
-  List<DropdownMenuItem<String>> subjectDropdownList = [];
+  /// 학과 목록([DropdownMenuEntry]용)
+  List<DropdownMenuEntry<String>> subjectDropdownList = [];
 
-  /// 학년 목록([DropdownMenuItem]용)
-  List<DropdownMenuItem<String>> gradeDownList = [];
+  /// 학년 목록([DropdownMenuEntry]용)
+  List<DropdownMenuEntry<String>> gradeDownList = [];
 
-  /// 교양 영역 목록([DropdownMenuItem]용)
-  List<DropdownMenuItem<String>> regionList = const [
-    DropdownMenuItem(
+  /// 교양 영역 목록([DropdownMenuEntry]용)
+  List<DropdownMenuEntry<String>> regionList = const [
+    DropdownMenuEntry(
       value: '전체',
-      child: Text('전체'),
+      label: '전체',
     ),
-    DropdownMenuItem(
+    DropdownMenuEntry(
       value: '언어와 소통',
-      child: Text('1영역'),
+      label: '1영역',
     ),
-    DropdownMenuItem(
+    DropdownMenuEntry(
       value: '세계와 문명',
-      child: Text('2영역'),
+      label: '2영역',
     ),
-    DropdownMenuItem(
+    DropdownMenuEntry(
       value: '역사와 사회',
-      child: Text('3영역'),
+      label: '3영역',
     ),
-    DropdownMenuItem(
+    DropdownMenuEntry(
       value: '문화와 철학',
-      child: Text('4영역'),
+      label: '4영역',
     ),
-    DropdownMenuItem(
+    DropdownMenuEntry(
       value: '기술과 정보',
-      child: Text('5영역'),
+      label: '5영역',
     ),
-    DropdownMenuItem(
+    DropdownMenuEntry(
       value: '건강과 예술',
-      child: Text('6영역'),
+      label: '6영역',
     ),
-    DropdownMenuItem(
+    DropdownMenuEntry(
       value: '자연과 과학',
-      child: Text('7영역'),
+      label: '7영역',
     )
   ];
   Map allClassList = {};
@@ -155,14 +155,16 @@ class _OpenClassState extends State<OpenClass> {
   /// [dept]가 교양인 경우 영역을 고를 수 있는 [DropdownButton]이 나타나고, 아닌경우 나타나지 않는다.
   Widget regionSelector(String dept) {
     if (dept == '교양') {
-      return DropdownButton(
-          items: regionList,
-          onChanged: (String? value) {
+      return DropdownMenu(
+          dropdownMenuEntries: regionList,
+          label: Text('교양 영역'),
+          inputDecorationTheme: InputDecorationTheme(filled: true),
+          onSelected: (String? value) {
             setState(() {
               _region = value!;
             });
           },
-          value: _region);
+          initialSelection: _region);
     }
     return Container();
   }
@@ -171,9 +173,9 @@ class _OpenClassState extends State<OpenClass> {
   void initState() {
     super.initState();
     for (var dat in gradeList) {
-      gradeDownList.add(DropdownMenuItem(
+      gradeDownList.add(DropdownMenuEntry(
         value: dat,
-        child: Text(dat),
+        label: dat,
       ));
     }
   }
@@ -256,22 +258,22 @@ class _OpenClassState extends State<OpenClass> {
               }
               if (_isFirstDp) {
                 List<String> tempList0 = [];
-                dpDropdownList.add(const DropdownMenuItem(
+                dpDropdownList.add(const DropdownMenuEntry(
                   value: '교양',
-                  child: Text('교양'),
+                  label: '교양',
                 ));
-                dpDropdownList.add(const DropdownMenuItem(
+                dpDropdownList.add(const DropdownMenuEntry(
                   value: '교양(야)',
-                  child: Text('교양(야)'),
+                  label: '교양(야)',
                 ));
                 for (String depart in dpSet) {
                   tempList0.add(depart);
                 }
                 tempList0.sort((a, b) => a.compareTo(b));
                 for (String depart in tempList0) {
-                  dpDropdownList.add(DropdownMenuItem(
+                  dpDropdownList.add(DropdownMenuEntry(
                     value: depart,
-                    child: Text(depart),
+                    label: depart,
                   ));
                 }
 
@@ -279,22 +281,22 @@ class _OpenClassState extends State<OpenClass> {
               }
               List tempList = [];
               subjectDropdownList.clear();
-              subjectDropdownList.add(const DropdownMenuItem(
+              subjectDropdownList.add(const DropdownMenuEntry(
                 value: '전체',
-                child: Text('전체'),
+                label: '전체',
               ));
-              subjectDropdownList.add(const DropdownMenuItem(
+              subjectDropdownList.add(const DropdownMenuEntry(
                 value: '학부 공통',
-                child: Text('학부 공통'),
+                label: '학부 공통',
               ));
               for (String subject in tempSet) {
                 tempList.add(subject);
               }
               tempList.sort((a, b) => a.compareTo(b));
               for (String subject in tempList) {
-                subjectDropdownList.add(DropdownMenuItem(
+                subjectDropdownList.add(DropdownMenuEntry(
                   value: subject,
-                  child: Text(subject),
+                  label: subject,
                 ));
               }
               for (var classData
@@ -334,39 +336,51 @@ class _OpenClassState extends State<OpenClass> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: DropdownButton(
-                            items: dpDropdownList,
-                            onChanged: (String? value) {
+                          child: DropdownMenu<String>(
+                            label: Text('학부'),
+                            controller: TextEditingController(),
+                            enableFilter: true,
+                            dropdownMenuEntries: dpDropdownList,
+                            inputDecorationTheme: InputDecorationTheme(
+                              filled: true,
+                            ),
+                            onSelected: (String? value) {
                               setState(() {
                                 _myDept = value!;
                                 _myMajor = '학부 공통';
                               });
                             },
-                            value: _myDept,
+                            initialSelection: _myDept,
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: DropdownButton(
-                            items: subjectDropdownList,
-                            onChanged: (String? value) {
+                          child: DropdownMenu<String>(
+                            label: Text('학과'),
+                            dropdownMenuEntries: subjectDropdownList,
+                            inputDecorationTheme:
+                                InputDecorationTheme(filled: true),
+                            onSelected: (String? value) {
                               setState(() {
                                 _myMajor = value!;
                               });
                             },
-                            value: _myMajor,
+                            initialSelection: _myMajor,
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: DropdownButton(
-                            items: gradeDownList,
-                            onChanged: (String? value) {
+                          child: DropdownMenu<String>(
+                            label: Text('학년'),
+                            dropdownMenuEntries: gradeDownList,
+                            inputDecorationTheme:
+                                InputDecorationTheme(filled: true),
+                            onSelected: (String? value) {
                               setState(() {
                                 _myGrade = value!;
                               });
                             },
-                            value: _myGrade,
+                            initialSelection: _myGrade,
                           ),
                         ),
                       ],
