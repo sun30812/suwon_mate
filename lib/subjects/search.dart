@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
-import '../model/class_info.dart';
 
 /// 검색 버튼 누를 시 나타나는 검색 페이지이다.
 class SearchPage extends StatefulWidget {
@@ -73,7 +73,8 @@ class _SearchPageState extends State<SearchPage> {
                         controller: _subjectCodeController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            hintText: '과목 코드 입력',
+                            filled: true,
+                            label: const Text('과목 코드 입력'),
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear),
                               onPressed: () => setState(() {
@@ -91,12 +92,21 @@ class _SearchPageState extends State<SearchPage> {
                       if (searchResult != null) {
                         context.push('/oclass/info', extra: searchResult);
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('존재하지 않는 과목 코드입니다.')));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: const Text('존재하지 않는 과목 코드입니다.'),
+                          duration: const Duration(seconds: 1),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)),
+                        ));
                       }
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('과목코드 전체를 입력해주십시요.')));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: const Text('과목코드 전체를 입력해주십시요.'),
+                          duration: const Duration(seconds: 1),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0))));
                     }
                   },
                 ),
@@ -134,7 +144,7 @@ class _SearchPageState extends State<SearchPage> {
                             extra: widget.classList[index]),
                         title: widget.classList[index].name,
                         subTitle:
-                            widget.classList[index].hostName ?? "이름 공개 안됨",
+                            widget.classList[index].hostName ?? '이름 공개 안됨',
                         content: Text(
                           '${widget.classList[index].guestDept ?? '학부 전체 대상(전공 없음)'}, ${widget.classList[index].subjectKind ?? '공개 안됨'}, ${widget.classList[index].classLocation ?? '공개 안됨'}',
                         ));
