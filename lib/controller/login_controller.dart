@@ -38,7 +38,7 @@ class LoginController {
           mainAxisSize: MainAxisSize.min,
           children: const [
             CircularProgressIndicator(),
-            Text('로그인 링크를 보내는 중..')
+            Text('  로그인 링크를 보내는 중..')
           ],
         ),
       ),
@@ -67,6 +67,7 @@ class LoginController {
         ),
       );
     }).then((value) {
+      Navigator.pop(context);
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: const Text('로그인을 위한 이메일이 전송되었습니다.'),
