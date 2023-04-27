@@ -33,16 +33,30 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
   /// 현재 가진 데이터가 동기화된 데이터인지 판단하는 변수이다.
   bool _isSynced = false;
 
-  List<DropdownMenuItem<String>> subDropdownList = [];
-  List<DropdownMenuItem<String>> majorDropdownList = [];
-  final List<DropdownMenuItem<String>> gradeDropdownList = [
-    const DropdownMenuItem(value: '1학년', child: Text('1학년')),
-    const DropdownMenuItem(value: '2학년', child: Text('2학년')),
-    const DropdownMenuItem(value: '3학년', child: Text('3학년')),
-    const DropdownMenuItem(value: '4학년', child: Text('4학년')),
+  /// 학부에 관한 `DropdownMenuEntry`리스트
+  List<DropdownMenuEntry<String>> subDropdownList = [];
+
+  /// 학부의 전공에 관한 `DropdownMenuEntry`리스트
+  List<DropdownMenuEntry<String>> majorDropdownList = [];
+
+  /// 학년 정보에 관한 `ButtonSegment`리스트
+  final List<ButtonSegment<String>> gradeList = [
+    const ButtonSegment<String>(value: '1학년', label: Text('1학년')),
+    const ButtonSegment<String>(value: '2학년', label: Text('2학년')),
+    const ButtonSegment<String>(value: '3학년', label: Text('3학년')),
+    const ButtonSegment<String>(value: '4학년', label: Text('4학년')),
   ];
+
+  /// 앱 버전 확인을 위해 사용되는 변수
   late PackageInfo packageInfo;
 
+  /// 아직 DB업데이트가 진행되지 않은 경우 경고를 띄우는 위젯
+  ///
+  /// 아직 개설 강좌 조회를 진행하지 않아서 DB를 받아온 이력이 없는 경우
+  /// 선택의 폭이 좁기 때문에 노란색 배경의 경고창을 띄우는 위젯이다.
+  ///
+  /// ## 같이 보기
+  /// * [NotiCard]
   Widget noSyncWarning() {
     if (_isSynced) {
       return Container();
@@ -81,13 +95,13 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
           return DataLoadingError(errorMessage: snapshot.error);
         } else {
           majorDropdownList.clear();
-          majorDropdownList.add(const DropdownMenuItem(
+          majorDropdownList.add(const DropdownMenuEntry(
             value: '전체',
-            child: Text('전체'),
+            label: '전체',
           ));
-          majorDropdownList.add(const DropdownMenuItem(
+          majorDropdownList.add(const DropdownMenuEntry(
             value: '학부 공통',
-            child: Text('학부 공통'),
+            label: '학부 공통',
           ));
           if ((snapshot.data as SharedPreferences).containsKey('dpMap')) {
             Map subMap = jsonDecode(
@@ -111,18 +125,18 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
                   ));
             }
             subDropdownList = (subMap.keys.toList() as List<String>)
-                .map((dat) => DropdownMenuItem(
+                .map((dat) => DropdownMenuEntry(
                       value: dat,
-                      child: Text(dat),
+                      label: dat,
                     ))
                 .toList();
-            subDropdownList.sort((a, b) => a.value!.compareTo(b.value!));
+            subDropdownList.sort((a, b) => a.value.compareTo(b.value));
             List tempList = subMap[_myDp] as List;
             tempList.sort((a, b) => a.compareTo(b));
             majorDropdownList.addAll((tempList)
-                .map((dat) => DropdownMenuItem(
+                .map((dat) => DropdownMenuEntry(
                       value: dat.toString(),
-                      child: Text(dat.toString()),
+                      label: dat.toString(),
                     ))
                 .toList());
             _isSynced = true;
@@ -154,61 +168,45 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('기본 학부: '),
-                        DropdownButton<String>(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10.0)),
-                            items: subDropdownList,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _myDp = value!;
-                                _mySub = '학부 공통';
-                              });
-                            },
-                            value: _myDp),
-                      ],
-                    ),
+                    child: DropdownMenu<String>(
+                        label: const Text('기본 학부'),
+                        inputDecorationTheme:
+                            const InputDecorationTheme(filled: true),
+                        enableFilter: true,
+                        dropdownMenuEntries: subDropdownList,
+                        onSelected: (String? value) {
+                          setState(() {
+                            _myDp = value!;
+                            _mySub = '학부 공통';
+                          });
+                        },
+                        initialSelection: _myDp),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('기본 전공: '),
-                        DropdownButton<String>(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10.0)),
-                            items: majorDropdownList,
-                            onChanged: (String? value) {
-                              setState(() {
-                                _mySub = value!;
-                              });
-                            },
-                            value: _mySub),
-                      ],
-                    ),
+                    child: DropdownMenu<String>(
+                        inputDecorationTheme:
+                            const InputDecorationTheme(filled: true),
+                        dropdownMenuEntries: majorDropdownList,
+                        label: const Text('기본 전공'),
+                        onSelected: (String? value) {
+                          setState(() {
+                            _mySub = value!;
+                          });
+                        },
+                        initialSelection: _mySub),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('기본 학년: '),
-                        DropdownButton<String>(
-                            items: gradeDropdownList,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10.0)),
-                            onChanged: (String? value) {
-                              setState(() {
-                                _grade = value!;
-                              });
-                            },
-                            value: _grade),
-                      ],
-                    ),
+                    child: SegmentedButton<String>(
+                        showSelectedIcon: false,
+                        segments: gradeList,
+                        onSelectionChanged: (value) {
+                          setState(() {
+                            _grade = value.first;
+                          });
+                        },
+                        selected: {_grade}),
                   ),
                 ],
               ));
@@ -261,7 +259,6 @@ class FunctionSettingWidget extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Material(
-                      color: Theme.of(context).colorScheme.surfaceVariant,
                       child: InkWell(
                           onTap: () {
                             showDialog(
@@ -292,8 +289,6 @@ class FunctionSettingWidget extends ConsumerWidget {
                           )),
                     ),
                     Switch(
-                        activeTrackColor: const Color.fromARGB(255, 0, 54, 112),
-                        activeColor: const Color.fromARGB(200, 0, 54, 112),
                         value: functionSetting.offline,
                         onChanged: (newValue) {
                           if (kIsWeb) {
@@ -317,7 +312,6 @@ class FunctionSettingWidget extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Material(
-                      color: Theme.of(context).colorScheme.surfaceVariant,
                       child: InkWell(
                           onTap: () {
                             showDialog(
@@ -348,8 +342,6 @@ class FunctionSettingWidget extends ConsumerWidget {
                           )),
                     ),
                     Switch(
-                        activeTrackColor: const Color.fromARGB(255, 0, 54, 112),
-                        activeColor: const Color.fromARGB(200, 0, 54, 112),
                         value: functionSetting.liveSearch,
                         onChanged: ref
                             .read(functionSettingControllerNotifierProvider
