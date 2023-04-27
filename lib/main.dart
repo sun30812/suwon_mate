@@ -13,13 +13,13 @@ import 'package:suwon_mate/information/notice_page.dart';
 import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/schedule.dart';
 import 'package:suwon_mate/settings.dart';
+import 'package:suwon_mate/styles/style_widget.dart';
 import 'package:suwon_mate/subjects/favorite_subject.dart';
+import 'package:suwon_mate/subjects/open_class.dart';
+import 'package:suwon_mate/subjects/open_class_info.dart';
 import 'package:suwon_mate/subjects/search.dart';
 
 import 'firebase_options.dart';
-import 'styles/style_widget.dart';
-import 'subjects/open_class.dart';
-import 'subjects/open_class_info.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

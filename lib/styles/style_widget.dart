@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:suwon_mate/controller/login_controller.dart';
 import 'package:suwon_mate/model/class_info.dart';
-
-import '../model/contact.dart';
+import 'package:suwon_mate/model/contact.dart';
 
 /// 강좌에 대한 세부 정보를 보여주는 페이지이다.
 ///
@@ -62,14 +61,21 @@ class ClassDetailInfoCard extends StatelessWidget {
                           tooltip: '과목 코드 복사',
                           onPressed: () {
                             Clipboard.setData(
-                                ClipboardData(text: classInfo.subjectCode))
+                                    ClipboardData(text: classInfo.subjectCode))
                                 .then((value) => {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text('과목 코드가 복사되었습니다.'),
-                                duration: Duration(seconds: 1),
-                              ))
-                            });
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content:
+                                                  const Text('과목 코드가 복사되었습니다.'),
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0))))
+                                    });
                           },
                           icon: const Icon(Icons.copy)),
                     ],
@@ -104,10 +110,15 @@ class ClassDetailInfoCard extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: () => Clipboard.setData(ClipboardData(
-                            text: classInfo.hostName ?? '공개 안됨'))
+                                text: classInfo.hostName ?? '공개 안됨'))
                             .then((value) => ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                            content: Text('강의자 이름이 복사되었습니다.')))),
+                                .showSnackBar(SnackBar(
+                                    content: const Text('강의자 이름이 복사되었습니다.'),
+                                    duration: const Duration(seconds: 1),
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0))))),
                         icon: const Icon(Icons.copy),
                         tooltip: '강의자 이름 복사',
                       )
@@ -342,12 +353,12 @@ class _SuwonSquareButtonState extends State<SuwonSquareButton> {
               ),
               onPressed: buttonAction(),
               icon: Icon(widget.icon),
-              iconSize: 60.0,
+              iconSize: 30.0,
               padding: const EdgeInsets.all(22.0),
             )),
         Text(
           widget.btnName,
-          style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
           semanticsLabel: widget.btnName,
         )
       ],
@@ -453,7 +464,6 @@ class _InfoCardState extends State<InfoCard> {
         shape: RoundedRectangleBorder(
             side: BorderSide(color: Theme.of(context).colorScheme.outline),
             borderRadius: BorderRadius.circular(12.0)),
-        color: Theme.of(context).colorScheme.surfaceVariant,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
