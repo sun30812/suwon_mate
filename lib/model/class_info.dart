@@ -81,16 +81,26 @@ class ClassInfo implements Savable {
 
   /// FirebaseDatabase로부터 과목 정보를 불러올 때 사용하는 메서드이다.
   ///
-  /// `FirebaseDatabase`에서 반환한 값의 value를 [jsonList]로 전달하면
+  /// `FirebaseDatabase`에서 반환한 값의 value를 [response]로 전달하면
   /// 리스트 내 원소 각각을 역직렬화 해준다.
   ///
   /// ## 같이보기
   /// * [ClassInfo]
   /// * [ClassInfo.fromFirebaseJson]
-  static List<ClassInfo> fromFirebaseDatabase(List jsonList) {
-    return jsonList
-        .map((subject) => ClassInfo.fromFirebaseJson(subject))
-        .toList();
+  static List<ClassInfo> fromFirebaseDatabase(dynamic response) {
+    if (response is Map) {
+      return response.values
+          .where((element) => element != null)
+          .map((subject) => ClassInfo.fromFirebaseJson(subject))
+          .toList();
+    } else if (response is List) {
+      return response
+          .where((element) => element != null)
+          .map((subject) => ClassInfo.fromFirebaseJson(subject))
+          .toList();
+    } else {
+      return [];
+    }
   }
 
   /// [ClassInfo]로 역직렬화 시 사용되는 메서드이다.(Firebase 전용)

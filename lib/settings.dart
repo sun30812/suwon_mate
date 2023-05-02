@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,25 +18,21 @@ class StudentInfoSettingWidget extends StatefulWidget {
 
 class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
   /// 현재 학부를 나타내는 변수이다.
-  String _myDp = '컴퓨터학부';
+  late String _myDepartment;
 
   /// 현재 학과를 나타내는 변수이다.
-  String _mySub = '전체';
+  late String _myMajor;
 
   /// 현재 학년을 나타내는 변수이다.
-  String _grade = '1학년';
-
-  /// 학과 목록과 같이 추후 파싱이 필요할 시 한 번만 파싱을 수행하도록 도와주는 변수이다.
-  bool _isFirst = true;
-
-  /// 현재 가진 데이터가 동기화된 데이터인지 판단하는 변수이다.
-  bool _isSynced = false;
+  late String _grade;
 
   /// 학부에 관한 `DropdownMenuEntry`리스트
-  List<DropdownMenuEntry<String>> subDropdownList = [];
+  List<DropdownMenuEntry<String>> departmentDropdownList = [];
 
   /// 학부의 전공에 관한 `DropdownMenuEntry`리스트
   List<DropdownMenuEntry<String>> majorDropdownList = [];
+
+  var getDepartment = FirebaseDatabase.instance.ref('departments').once();
 
   /// 학년 정보에 관한 `ButtonSegment`리스트
   final List<ButtonSegment<String>> gradeList = [
@@ -50,23 +45,6 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
   /// 앱 버전 확인을 위해 사용되는 변수
   late PackageInfo packageInfo;
 
-  /// 아직 DB업데이트가 진행되지 않은 경우 경고를 띄우는 위젯
-  ///
-  /// 아직 개설 강좌 조회를 진행하지 않아서 DB를 받아온 이력이 없는 경우
-  /// 선택의 폭이 좁기 때문에 노란색 배경의 경고창을 띄우는 위젯이다.
-  ///
-  /// ## 같이 보기
-  /// * [NotiCard]
-  Widget noSyncWarning() {
-    if (_isSynced) {
-      return Container();
-    }
-    return const NotiCard(
-        icon: Icons.warning_amber,
-        color: Colors.amber,
-        message: '아직 개설 강좌 조회를 들어가지 않은 경우 기본 전공을 지정할 수 있는 범위가 좁습니다.');
-  }
-
   /// 현재 앱의 설정 값을 가져오는 메서드이다.
   Future<SharedPreferences> getSettings() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -74,9 +52,19 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getSettings().then((pref) {
+      _myDepartment = pref.getString('myDept') ?? '컴퓨터학부';
+      _myMajor = pref.getString('mySubject') ?? '학부 공통';
+      _grade = pref.getString('myGrade') ?? '1학년';
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getSettings(),
+    return FutureBuilder<DatabaseEvent>(
+      future: getDepartment,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return InfoCard(
@@ -94,63 +82,20 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
         } else if (snapshot.hasError) {
           return DataLoadingError(errorMessage: snapshot.error);
         } else {
+          var data = snapshot.data?.snapshot.value as Map;
+          departmentDropdownList.clear();
+          for (var department in data.keys) {
+            departmentDropdownList.add(DropdownMenuEntry(
+                value: department.toString(), label: department.toString()));
+          }
           majorDropdownList.clear();
-          majorDropdownList.add(const DropdownMenuEntry(
-            value: '전체',
-            label: '전체',
-          ));
           majorDropdownList.add(const DropdownMenuEntry(
             value: '학부 공통',
             label: '학부 공통',
           ));
-          if ((snapshot.data as SharedPreferences).containsKey('dpMap')) {
-            Map subMap = jsonDecode(
-                (snapshot.data as SharedPreferences).getString('dpMap')!);
-            if (subMap.isEmpty) {
-              return InfoCard(
-                  icon: Icons.school_outlined,
-                  title: '학생 정보',
-                  detail: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('개설 강좌메뉴에서 기본으로 보여질 학부 및 학년을 선택합니다.'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: noSyncWarning(),
-                      ),
-                    ],
-                  ));
-            }
-            subDropdownList = (subMap.keys.toList() as List<String>)
-                .map((dat) => DropdownMenuEntry(
-                      value: dat,
-                      label: dat,
-                    ))
-                .toList();
-            subDropdownList.sort((a, b) => a.value.compareTo(b.value));
-            List tempList = subMap[_myDp] as List;
-            tempList.sort((a, b) => a.compareTo(b));
-            majorDropdownList.addAll((tempList)
-                .map((dat) => DropdownMenuEntry(
-                      value: dat.toString(),
-                      label: dat.toString(),
-                    ))
-                .toList());
-            _isSynced = true;
-          }
-          if (_isFirst) {
-            _grade =
-                (snapshot.data as SharedPreferences).getString('myGrade') ??
-                    '1학년';
-            _myDp = (snapshot.data as SharedPreferences).getString('myDept') ??
-                '컴퓨터학부';
-            _mySub =
-                (snapshot.data as SharedPreferences).getString('mySubject') ??
-                    '학부 공통';
-            _isFirst = false;
+          for (var major in data[_myDepartment]) {
+            majorDropdownList.add(DropdownMenuEntry(
+                value: major.toString(), label: major.toString()));
           }
           return InfoCard(
               icon: Icons.school_outlined,
@@ -164,23 +109,28 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: noSyncWarning(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
                     child: DropdownMenu<String>(
                         label: const Text('기본 학부'),
                         inputDecorationTheme:
                             const InputDecorationTheme(filled: true),
-                        enableFilter: true,
-                        dropdownMenuEntries: subDropdownList,
+                        dropdownMenuEntries: departmentDropdownList,
                         onSelected: (String? value) {
                           setState(() {
-                            _myDp = value!;
-                            _mySub = '학부 공통';
+                            _myDepartment = value!;
+                            _myMajor = '학부 공통';
+                            majorDropdownList.clear();
+                            majorDropdownList.add(const DropdownMenuEntry(
+                              value: '학부 공통',
+                              label: '학부 공통',
+                            ));
+                            for (var major in data[_myDepartment]) {
+                              majorDropdownList.add(DropdownMenuEntry(
+                                  value: major.toString(),
+                                  label: major.toString()));
+                            }
                           });
                         },
-                        initialSelection: _myDp),
+                        initialSelection: _myDepartment),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -191,10 +141,10 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
                         label: const Text('기본 전공'),
                         onSelected: (String? value) {
                           setState(() {
-                            _mySub = value!;
+                            _myMajor = value!;
                           });
                         },
-                        initialSelection: _mySub),
+                        initialSelection: _myMajor),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -219,8 +169,8 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
   void dispose() async {
     super.dispose();
     SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setString('myDept', _myDp);
-    pref.setString('mySubject', _mySub);
+    pref.setString('myDept', _myDepartment);
+    pref.setString('mySubject', _myMajor);
     pref.setString('myGrade', _grade);
   }
 }
@@ -294,7 +244,7 @@ class FunctionSettingWidget extends ConsumerWidget {
                           if (kIsWeb) {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  behavior: SnackBarBehavior.floating,
+                                    behavior: SnackBarBehavior.floating,
                                     content: Text('해당 플랫폼에서는 지원하지 않습니다.')));
                             return;
                           }
@@ -306,72 +256,6 @@ class FunctionSettingWidget extends ConsumerWidget {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Material(
-                      child: InkWell(
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(),
-                                          child: const Text('확인'))
-                                    ],
-                                    title: const Text('입력하여 바로 검색'),
-                                    content: const Text(
-                                        '과목을 검색할 때 입력하는 즉시 검색을 바로 시작합니다.\n'
-                                        '검색 시 동작이 많이 끊기는 경우 해당 설정을 조절하여 개선할 수 있습니다.'),
-                                  );
-                                });
-                          },
-                          child: Row(
-                            children: const [
-                              Padding(
-                                padding: EdgeInsets.only(right: 10.0),
-                                child: Icon(Icons.search),
-                              ),
-                              Text('입력하여 바로 검색'),
-                            ],
-                          )),
-                    ),
-                    Switch(
-                        value: functionSetting.liveSearch,
-                        onChanged: ref
-                            .read(functionSettingControllerNotifierProvider
-                                .notifier)
-                            .onLiveSearchSettingChanged),
-                  ],
-                ),
-              ),
-              if (functionSetting.liveSearch)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      const Text('슬라이더를 조절하여 자동으로 검색을 시작할 글자 수 지정'),
-                      Slider(
-                        divisions: 3,
-                        label: '${functionSetting.liveSearchCount.round()} 자',
-                        min: 0,
-                        max: 3,
-                        value: functionSetting.liveSearchCount,
-                        onChanged: ref
-                            .read(functionSettingControllerNotifierProvider
-                                .notifier)
-                            .onLiveSearchCountSettingChanged,
-                      ),
-                      Text(
-                          '현재 설정된 글자 수: ${functionSetting.liveSearchCount.round()}자')
-                    ],
-                  ),
-                )
             ],
           ));
     }
