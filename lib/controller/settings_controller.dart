@@ -40,16 +40,6 @@ class FunctionSettingControllerNotifier extends StateNotifier<FunctionSetting>
     setValue('settings', state);
   }
 
-  void onLiveSearchSettingChanged(bool newValue) {
-    state = state.copyWith(liveSearch: newValue);
-    setValue('settings', state);
-  }
-
-  void onLiveSearchCountSettingChanged(double newValue) {
-    state = state.copyWith(liveSearchCount: newValue);
-    setValue('settings', state);
-  }
-
   void onBottomBannerSettingChanged(bool newValue) {
     state = state.copyWith(bottomBanner: newValue);
     setValue('settings', state);

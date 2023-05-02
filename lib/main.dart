@@ -66,11 +66,7 @@ class App extends ConsumerWidget {
             myGrade: params[2],
             settingsData: params[3] != null
                 ? jsonDecode(params[3]) as Map<String, dynamic>
-                : {
-                    'offline': false,
-                    'liveSearch': true,
-                    'liveSearchCount': 0.0
-                  },
+                : {'offline': false},
             quickMode: params[4] ?? false,
           );
         },
@@ -78,11 +74,7 @@ class App extends ConsumerWidget {
           GoRoute(
             path: 'search',
             builder: (context, state) {
-              final List params = state.extra as List;
-              return SearchPage(
-                  classList: params[0],
-                  liveSearch: params[1]['liveSearch'] ?? true,
-                  liveSearchCount: params[1]['liveSearchCount'] ?? 0.0);
+              return SearchPage();
             },
           ),
           GoRoute(
@@ -151,7 +143,6 @@ class _MainPageState extends State<MainPage> {
   /// 설정 저장소로부터 설정값을 가져오는 메서드이다. 앱 설정에 대한 값을 불러올 때 사용된다.
   Future<SharedPreferences> getSettings() async {
     var remoteConfig = FirebaseRemoteConfig.instance;
-    await remoteConfig.setDefaults(const {'quick_mode': false});
     await remoteConfig.fetchAndActivate();
     return SharedPreferences.getInstance();
   }
@@ -316,7 +307,7 @@ class _MainMenuState extends State<MainMenu> {
                       if (mounted) {
                         context.push('/oclass', extra: [
                           '컴퓨터학부',
-                          '전체',
+                          '학부 공통',
                           '1학년',
                           pref.getString('settings'),
                           true
