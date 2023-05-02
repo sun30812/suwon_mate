@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -49,17 +47,19 @@ class _OpenClassState extends State<OpenClass> {
   late String _myMajor = widget.myMajor;
   late String _myGrade = widget.myGrade;
 
-  /// 학년 목록
-  List<String> gradeList = ['1학년', '2학년', '3학년', '4학년'];
-
   /// 학부 목록([DropdownMenuEntry]용)
-  List<DropdownMenuEntry<String>> dpDropdownList = [];
+  List<DropdownMenuEntry<String>> departmentDropdownList = [];
 
   /// 학과 목록([DropdownMenuEntry]용)
   List<DropdownMenuEntry<String>> subjectDropdownList = [];
 
   /// 학년 목록([DropdownMenuEntry]용)
-  List<DropdownMenuEntry<String>> gradeDownList = [];
+  List<DropdownMenuEntry<String>> gradeDownList = const [
+    DropdownMenuEntry(value: '1학년', label: '1학년'),
+    DropdownMenuEntry(value: '2학년', label: '2학년'),
+    DropdownMenuEntry(value: '3학년', label: '3학년'),
+    DropdownMenuEntry(value: '4학년', label: '4학년'),
+  ];
 
   /// 교양 영역 목록([DropdownMenuEntry]용)
   List<DropdownMenuEntry<String>> regionList = const [
@@ -98,21 +98,24 @@ class _OpenClassState extends State<OpenClass> {
   ];
   Map allClassList = {};
   String _region = '전체';
-  Set<String> dpSet = {};
-  Map<String, List> dpMap = {};
-  Map subjects = {};
-  bool _isFirstDp = true;
+  var getDepartment = FirebaseDatabase.instance.ref('departments').once();
 
-  /// DB버전을 [SharedPreferences]에 저장하고 과목에 대한 정보를 FirebaseDatabase로부터 가져오는 메서드이다.
-  Future getData() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    DatabaseReference version = FirebaseDatabase.instance.ref('version');
-    Map versionInfo = (await version.once()).snapshot.value as Map;
+  /// 과목에 대한 정보를 FirebaseDatabase로부터 가져오는 메서드이다.
+  Stream<DatabaseEvent> getData() {
     DatabaseReference ref = FirebaseDatabase.instance
         .ref(widget.quickMode ? 'estbLectDtaiList_quick' : 'estbLectDtaiList');
-
-    pref.setString('db_ver', versionInfo['db_ver']);
-    return ref.once();
+    if (_myDept == '교양') {
+      return ref
+          .child(_myDept)
+          .orderByChild('cltTerrNm')
+          .equalTo(_region)
+          .onValue;
+    }
+    return ref
+        .child(_myDept)
+        .orderByChild('estbMjorNm')
+        .equalTo(_myMajor != '학부 공통' ? _myMajor : null)
+        .onValue;
   }
 
   /// 어떤 영역인지 고르는 [DropdownButton]이다.
@@ -122,8 +125,8 @@ class _OpenClassState extends State<OpenClass> {
     if (dept == '교양') {
       return DropdownMenu(
           dropdownMenuEntries: regionList,
-          label: Text('교양 영역'),
-          inputDecorationTheme: InputDecorationTheme(filled: true),
+          label: const Text('교양 영역'),
+          inputDecorationTheme: const InputDecorationTheme(filled: true),
           onSelected: (String? value) {
             setState(() {
               _region = value!;
@@ -135,25 +138,10 @@ class _OpenClassState extends State<OpenClass> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    for (var dat in gradeList) {
-      gradeDownList.add(DropdownMenuEntry(
-        value: dat,
-        label: dat,
-      ));
-    }
-  }
-
-  @override
   void dispose() async {
     super.dispose();
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.remove('dp_set');
-    if (!widget.quickMode) {
-      pref.setString('subjects', jsonEncode(subjects));
-      pref.setString('dpMap', jsonEncode(dpMap));
-    }
   }
 
   @override
@@ -166,204 +154,159 @@ class _OpenClassState extends State<OpenClass> {
             icon: const Icon(Icons.search),
             label: const Text('검색'),
             onPressed: () {
-              List<ClassInfo> classList = [];
-              for (List data in allClassList.values) {
-                classList.addAll(ClassInfo.fromFirebaseDatabase(data));
-              }
-              context.push('/oclass/search',
-                  extra: [classList, widget.settingsData]);
+              context.push('/oclass/search');
             }),
-        body: FutureBuilder(
-          future: getData(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Center(child: CircularProgressIndicator.adaptive()),
-                  Text('DB 버전 확인 및 갱신 중')
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return DataLoadingError(
-                errorMessage: snapshot.error,
-              );
-            } else {
-              DatabaseEvent event = snapshot.data;
-              allClassList = event.snapshot.value as Map;
-              List<ClassInfo> classList = [];
-              Set tempSet = {};
-              dpSet = {};
-
-              for (var department in allClassList.keys) {
-                Set subSet = {};
-                for (var dat2 in ClassInfo.fromFirebaseDatabase(
-                    allClassList[department])) {
-                  if (dat2.guestMjor != null) {
-                    subSet.add(dat2.guestMjor);
-                  }
-                }
-                dpMap[department.toString()] = subSet.toList();
-              }
-              for (var department in allClassList.keys) {
-                if ((department != '교양') && (department != '교양(야)')) {
-                  dpSet.add(department.toString());
-                }
-              }
-              for (var dat
-                  in ClassInfo.fromFirebaseDatabase(allClassList[_myDept])) {
-                if (dat.guestMjor != null) {
-                  tempSet.add(dat.guestMjor);
-                }
-              }
-              if (_isFirstDp) {
-                List<String> tempList0 = [];
-                dpDropdownList.add(const DropdownMenuEntry(
-                  value: '교양',
-                  label: '교양',
-                ));
-                dpDropdownList.add(const DropdownMenuEntry(
-                  value: '교양(야)',
-                  label: '교양(야)',
-                ));
-                for (String depart in dpSet) {
-                  tempList0.add(depart);
-                }
-                tempList0.sort((a, b) => a.compareTo(b));
-                for (String depart in tempList0) {
-                  dpDropdownList.add(DropdownMenuEntry(
-                    value: depart,
-                    label: depart,
-                  ));
-                }
-
-                _isFirstDp = false;
-              }
-              List tempList = [];
-              subjectDropdownList.clear();
-              subjectDropdownList.add(const DropdownMenuEntry(
-                value: '전체',
-                label: '전체',
-              ));
-              subjectDropdownList.add(const DropdownMenuEntry(
-                value: '학부 공통',
-                label: '학부 공통',
-              ));
-              for (String subject in tempSet) {
-                tempList.add(subject);
-              }
-              tempList.sort((a, b) => a.compareTo(b));
-              for (String subject in tempList) {
-                subjectDropdownList.add(DropdownMenuEntry(
-                  value: subject,
-                  label: subject,
-                ));
-              }
-              for (var classData
-                  in ClassInfo.fromFirebaseDatabase(allClassList[_myDept])) {
-                if (_myDept == '교양') {
-                  if (('${classData.guestGrade}학년' == _myGrade) &&
-                      ((_region == '전체' ||
-                          _region == (classData.region ?? 'none')))) {
-                    classList.add(classData);
-                  }
-                } else if (_myMajor == '학부 공통') {
-                  if ((classData.guestMjor == null) &&
-                      (('${classData.guestGrade}학년') == _myGrade)) {
-                    classList.add(classData);
-                  }
-                } else if ((_myMajor == '전체' ||
-                        (classData.guestMjor == _myMajor)) &&
-                    (('${classData.guestGrade}학년') == _myGrade)) {
-                  classList.add(classData);
-                }
-              }
-              classList.sort((a, b) => (a.name.compareTo(b.name)));
-              return Column(
-                children: [
-                  if (widget.quickMode)
-                    const NotiCard(
-                        icon: Icons.info_outline,
-                        message: '학과 분류가 되어있지 않기 때문에 학과가 학부 목록에 같이 표시됩니다.'),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: regionSelector(_myDept),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: DropdownMenu<String>(
-                            label: Text('학부'),
-                            controller: TextEditingController(),
-                            enableFilter: true,
-                            dropdownMenuEntries: dpDropdownList,
-                            inputDecorationTheme: InputDecorationTheme(
-                              filled: true,
+        body: Column(
+          children: [
+            FutureBuilder<DatabaseEvent>(
+                future: getDepartment,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const LinearProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return DataLoadingError(errorMessage: snapshot.error);
+                  } else {
+                    var data = snapshot.data?.snapshot.value as Map;
+                    departmentDropdownList.clear();
+                    departmentDropdownList
+                        .add(const DropdownMenuEntry(value: '교양', label: '교양'));
+                    for (var department in data.keys) {
+                      departmentDropdownList.add(DropdownMenuEntry(
+                          value: department.toString(),
+                          label: department.toString()));
+                      subjectDropdownList.clear();
+                      subjectDropdownList.add(const DropdownMenuEntry(
+                          value: '학부 공통', label: '학부 공통'));
+                    }
+                    if (_myDept != '교양') {
+                      for (String major in data[_myDept]) {
+                        subjectDropdownList
+                            .add(DropdownMenuEntry(value: major, label: major));
+                      }
+                    }
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: DropdownMenu(
+                              initialSelection: _myDept,
+                              label: const Text('학부'),
+                              inputDecorationTheme: const InputDecorationTheme(
+                                filled: true,
+                              ),
+                              dropdownMenuEntries: departmentDropdownList,
+                              onSelected: (String? value) {
+                                setState(() {
+                                  _myDept = value!;
+                                  subjectDropdownList.clear();
+                                  subjectDropdownList.add(
+                                      const DropdownMenuEntry(
+                                          value: '학부 공통', label: '학부 공통'));
+                                  _myMajor = '학부 공통';
+                                  if (_myDept == '교양') {
+                                    return;
+                                  }
+                                  for (String major in data[_myDept]) {
+                                    subjectDropdownList.add(DropdownMenuEntry(
+                                        value: major, label: major));
+                                  }
+                                });
+                              },
                             ),
-                            onSelected: (String? value) {
-                              setState(() {
-                                _myDept = value!;
-                                _myMajor = '학부 공통';
-                              });
-                            },
-                            initialSelection: _myDept,
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: DropdownMenu<String>(
-                            label: Text('학과'),
-                            dropdownMenuEntries: subjectDropdownList,
-                            inputDecorationTheme:
-                                InputDecorationTheme(filled: true),
-                            onSelected: (String? value) {
-                              setState(() {
-                                _myMajor = value!;
-                              });
-                            },
-                            initialSelection: _myMajor,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: DropdownMenu<String>(
-                            label: Text('학년'),
-                            dropdownMenuEntries: gradeDownList,
-                            inputDecorationTheme:
-                                InputDecorationTheme(filled: true),
-                            onSelected: (String? value) {
-                              setState(() {
-                                _myGrade = value!;
-                              });
-                            },
-                            initialSelection: _myGrade,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Flexible(
+                          if (_myDept != '교양') ...[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: DropdownMenu(
+                                initialSelection: _myMajor,
+                                width: 202.0,
+                                label: const Text('학과'),
+                                inputDecorationTheme:
+                                    const InputDecorationTheme(
+                                  filled: true,
+                                ),
+                                dropdownMenuEntries: subjectDropdownList,
+                                onSelected: (String? value) => setState(() {
+                                  _myMajor = value!;
+                                }),
+                              ),
+                            ),
+                          ] else ...[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: DropdownMenu(
+                                  dropdownMenuEntries: regionList,
+                                  label: const Text('교양 영역'),
+                                  inputDecorationTheme:
+                                      const InputDecorationTheme(filled: true),
+                                  onSelected: (String? value) {
+                                    setState(() {
+                                      _region = value!;
+                                    });
+                                  },
+                                  initialSelection: _region),
+                            ),
+                          ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: DropdownMenu(
+                              initialSelection: _myGrade,
+                              label: const Text('학년'),
+                              inputDecorationTheme: const InputDecorationTheme(
+                                filled: true,
+                              ),
+                              dropdownMenuEntries: gradeDownList,
+                              onSelected: (String? value) {
+                                setState(() {
+                                  _myGrade = value!;
+                                });
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                }),
+            StreamBuilder<DatabaseEvent>(
+              stream: getData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const LinearProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return DataLoadingError(errorMessage: snapshot.error);
+                } else if (snapshot.hasData) {
+                  var value = snapshot.data?.snapshot.value;
+                  if (value == null) {
+                    return Container();
+                  }
+                  var list = ClassInfo.fromFirebaseDatabase(value);
+                  list.removeWhere(
+                      (classInfo) => '${classInfo.guestGrade}학년' != _myGrade);
+                  return Flexible(
                     child: ListView.builder(
-                        itemCount: classList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return SimpleCard(
-                            onPressed: () => context.push('/oclass/info',
-                                extra: classList[index]),
-                            title: classList[index].name,
-                            subTitle: classList[index].hostName ?? '이름 공개 안됨',
-                            content: Text(
-                                '${classList[index].guestMjor ?? '학부 전체 대상'}, ${classList[index].subjectKind ?? '공개 안됨'} ,${classList[index].classLocation ?? '공개 안됨'}'),
-                          );
-                        }),
-                  ),
-                ],
-              );
-            }
-          },
+                      itemCount: list.length,
+                      itemBuilder: (context, index) {
+                        return SimpleCard(
+                          onPressed: () =>
+                              context.push('/oclass/info', extra: list[index]),
+                          title: list[index].name,
+                          subTitle: list[index].hostName ?? '이름 공개 안됨',
+                          content: Text(
+                              '${list[index].guestMjor ?? '학부 전체 대상'}, ${list[index].subjectKind ?? '공개 안됨'} ,${list[index].classLocation ?? '공개 안됨'}'),
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            )
+          ],
         ));
   }
 }
