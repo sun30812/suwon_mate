@@ -61,7 +61,6 @@ class _OpenClassState extends State<OpenClass> {
     DropdownMenuEntry(value: '4학년', label: '4학년'),
   ];
 
-
   /// 교양 영역 목록([DropdownMenuEntry]용)
   List<DropdownMenuEntry<String>> regionList = const [
     DropdownMenuEntry(
@@ -110,7 +109,6 @@ class _OpenClassState extends State<OpenClass> {
         .orderByChild('estbMjorNm')
         .equalTo(_myMajor != '학부 공통' ? _myMajor : null)
         .onValue;
-
   }
 
   /// 어떤 영역인지 고르는 [DropdownButton]이다.
@@ -163,42 +161,27 @@ class _OpenClassState extends State<OpenClass> {
                   } else {
                     var data = snapshot.data?.snapshot.value as Map;
                     departmentDropdownList.clear();
-                    departmentDropdownList.add(
-                      const DropdownMenuEntry(value: '교양', label: '교양')
-                    );
+                    departmentDropdownList
+                        .add(const DropdownMenuEntry(value: '교양', label: '교양'));
                     for (var department in data.keys) {
                       departmentDropdownList.add(DropdownMenuEntry(
                           value: department.toString(),
                           label: department.toString()));
                       subjectDropdownList.clear();
-                      subjectDropdownList.add(
-                        const DropdownMenuEntry(value: '학부 공통', label: '학부 공통')
-                      );
+                      subjectDropdownList.add(const DropdownMenuEntry(
+                          value: '학부 공통', label: '학부 공통'));
                     }
+                    if (_myDept != '교양') {
                       for (String major in data[_myDept]) {
                         subjectDropdownList
                             .add(DropdownMenuEntry(value: major, label: major));
                       }
+                    }
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          if (_myDept == '교양')
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: DropdownMenu(
-                                  dropdownMenuEntries: regionList,
-                                  label: const Text('교양 영역'),
-                                  inputDecorationTheme:
-                                      const InputDecorationTheme(filled: true),
-                                  onSelected: (String? value) {
-                                    setState(() {
-                                      _region = value!;
-                                    });
-                                  },
-                                  initialSelection: _region),
-                            ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: DropdownMenu(
@@ -213,32 +196,53 @@ class _OpenClassState extends State<OpenClass> {
                                   _myDept = value!;
                                   subjectDropdownList.clear();
                                   subjectDropdownList.add(
-                                    const DropdownMenuEntry(value: '학부 공통', label: '학부 공통')
-                                  );
-                                  for (String major in data[_myDept]) {
-                                      subjectDropdownList.add(DropdownMenuEntry(
-                                          value: major, label: major));
-                                  }
+                                      const DropdownMenuEntry(
+                                          value: '학부 공통', label: '학부 공통'));
                                   _myMajor = '학부 공통';
+                                  if (_myDept == '교양') {
+                                    return;
+                                  }
+                                  for (String major in data[_myDept]) {
+                                    subjectDropdownList.add(DropdownMenuEntry(
+                                        value: major, label: major));
+                                  }
                                 });
                               },
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DropdownMenu(
-                              initialSelection: _myMajor,
-                              width: 202.0,
-                              label: const Text('학과'),
-                              inputDecorationTheme: const InputDecorationTheme(
-                                filled: true,
+                          if (_myDept != '교양') ...[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: DropdownMenu(
+                                initialSelection: _myMajor,
+                                width: 202.0,
+                                label: const Text('학과'),
+                                inputDecorationTheme:
+                                    const InputDecorationTheme(
+                                  filled: true,
+                                ),
+                                dropdownMenuEntries: subjectDropdownList,
+                                onSelected: (String? value) => setState(() {
+                                  _myMajor = value!;
+                                }),
                               ),
-                              dropdownMenuEntries: subjectDropdownList,
-                              onSelected: (String? value) => setState(() {
-                                _myMajor = value!;
-                              }),
                             ),
-                          ),
+                          ] else ...[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: DropdownMenu(
+                                  dropdownMenuEntries: regionList,
+                                  label: const Text('교양 영역'),
+                                  inputDecorationTheme:
+                                      const InputDecorationTheme(filled: true),
+                                  onSelected: (String? value) {
+                                    setState(() {
+                                      _region = value!;
+                                    });
+                                  },
+                                  initialSelection: _region),
+                            ),
+                          ],
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: DropdownMenu(
