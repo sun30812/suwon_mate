@@ -120,12 +120,14 @@ class _SearchPageState extends State<SearchPage> {
             future: getDepartment,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return LinearProgressIndicator();
+                return const LinearProgressIndicator();
               } else if (snapshot.hasError) {
                 return Container();
               } else {
                 var data = snapshot.data?.snapshot.value as Map;
                 departmentDropdownList.clear();
+                departmentDropdownList
+                    .add(const DropdownMenuEntry(value: '교양', label: '교양'));
                 for (var department in data.keys) {
                   departmentDropdownList.add(DropdownMenuEntry(
                       value: department.toString(),
@@ -135,9 +137,10 @@ class _SearchPageState extends State<SearchPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: DropdownMenu<String>(
                     controller: _searchDepartmentController,
-                    inputDecorationTheme: InputDecorationTheme(filled: true),
+                    inputDecorationTheme:
+                        const InputDecorationTheme(filled: true),
                     dropdownMenuEntries: departmentDropdownList,
-                    label: Text('검색 대상 학부'),
+                    label: const Text('검색 대상 학부'),
                     onSelected: (newValue) {
                       setState(() {
                         _searchDepartmentController.text = newValue!;
@@ -168,7 +171,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.search),
+                icon: const Icon(Icons.search),
                 onPressed: () {
                   setState(() {
                     _searchKeyword = _searchController.text;
@@ -197,7 +200,7 @@ class _SearchPageState extends State<SearchPage> {
         stream: getData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return LinearProgressIndicator();
+            return const LinearProgressIndicator();
           } else if (snapshot.hasError) {
             return DataLoadingError(errorMessage: snapshot.error);
           } else {
