@@ -149,7 +149,7 @@ class _OpenClassState extends State<OpenClass> {
             icon: const Icon(Icons.search),
             label: const Text('검색'),
             onPressed: () {
-              context.push('/oclass/search', extra: [widget.settingsData]);
+              context.push('/oclass/search');
             }),
         body: Column(
           children: [

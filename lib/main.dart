@@ -68,10 +68,7 @@ class App extends ConsumerWidget {
             settingsData: params[3] != null
                 ? jsonDecode(params[3]) as Map<String, dynamic>
                 : {
-                    'offline': false,
-                    'liveSearch': true,
-                    'liveSearchCount': 0.0
-                  },
+                    'offline': false},
             quickMode: params[4] ?? false,
           );
         },
