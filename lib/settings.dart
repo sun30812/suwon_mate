@@ -82,11 +82,6 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
         } else if (snapshot.hasError) {
           return DataLoadingError(errorMessage: snapshot.error);
         } else {
-          // 환경설정에서 설정한 기본 학부 및 학과정보 불러오기
-          getSettings().then((pref) {
-            _myDepartment = pref.getString('myDept') ?? '컴퓨터학부';
-            _myMajor = pref.getString('mySubject') ?? '학부 공통';
-          });
           var data = snapshot.data?.snapshot.value as Map;
           departmentDropdownList.clear();
           for (var department in data.keys) {
@@ -118,7 +113,6 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
                         label: const Text('기본 학부'),
                         inputDecorationTheme:
                             const InputDecorationTheme(filled: true),
-                        enableFilter: true,
                         dropdownMenuEntries: departmentDropdownList,
                         onSelected: (String? value) {
                           setState(() {
