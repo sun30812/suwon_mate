@@ -104,6 +104,13 @@ class _OpenClassState extends State<OpenClass> {
   Stream<DatabaseEvent> getData() {
     DatabaseReference ref = FirebaseDatabase.instance
         .ref(widget.quickMode ? 'estbLectDtaiList_quick' : 'estbLectDtaiList');
+    if (_myDept == '교양') {
+      return ref
+          .child(_myDept)
+          .orderByChild('cltTerrNm')
+          .equalTo(_region)
+          .onValue;
+    }
     return ref
         .child(_myDept)
         .orderByChild('estbMjorNm')
