@@ -47,53 +47,49 @@ class _OpenClassState extends State<OpenClass> {
   late String _myMajor = widget.myMajor;
   late String _myGrade = widget.myGrade;
 
-  /// 학부 목록([DropdownMenuEntry]용)
-  List<DropdownMenuEntry<String>> departmentDropdownList = [];
+  /// 학부 목록([DropdownMenuItem]용)
+  List<DropdownMenuItem<String>> departmentDropdownList = [];
 
-  /// 학과 목록([DropdownMenuEntry]용)
-  List<DropdownMenuEntry<String>> subjectDropdownList = [];
+  /// 학과 목록([DropdownMenuItem]용)
+  List<DropdownMenuItem<String>> subjectDropdownList = [];
 
-  /// 학년 목록([DropdownMenuEntry]용)
-  List<DropdownMenuEntry<String>> gradeDownList = const [
-    DropdownMenuEntry(value: '1학년', label: '1학년'),
-    DropdownMenuEntry(value: '2학년', label: '2학년'),
-    DropdownMenuEntry(value: '3학년', label: '3학년'),
-    DropdownMenuEntry(value: '4학년', label: '4학년'),
+  /// 학년 목록([DropdownMenuItem]용)
+  List<DropdownMenuItem<String>> gradeDownList = const [
+    DropdownMenuItem(value: '1학년', child: Text('1학년')),
+    DropdownMenuItem(value: '2학년', child: Text('2학년')),
+    DropdownMenuItem(value: '3학년', child: Text('3학년')),
+    DropdownMenuItem(value: '4학년', child: Text('4학년')),
   ];
 
-  /// 교양 영역 목록([DropdownMenuEntry]용)
-  List<DropdownMenuEntry<String>> regionList = const [
-    DropdownMenuEntry(
-      value: '전체',
-      label: '전체',
-    ),
-    DropdownMenuEntry(
+  /// 교양 영역 목록([DropdownMenuItem]용)
+  List<DropdownMenuItem<String>> regionList = const [
+    DropdownMenuItem(
       value: '언어와 소통',
-      label: '1영역',
+      child: Text('1영역'),
     ),
-    DropdownMenuEntry(
+    DropdownMenuItem(
       value: '세계와 문명',
-      label: '2영역',
+      child: Text('2영역'),
     ),
-    DropdownMenuEntry(
+    DropdownMenuItem(
       value: '역사와 사회',
-      label: '3영역',
+      child: Text('3영역'),
     ),
-    DropdownMenuEntry(
+    DropdownMenuItem(
       value: '문화와 철학',
-      label: '4영역',
+      child: Text('4영역'),
     ),
-    DropdownMenuEntry(
+    DropdownMenuItem(
       value: '기술과 정보',
-      label: '5영역',
+      child: Text('5영역'),
     ),
-    DropdownMenuEntry(
+    DropdownMenuItem(
       value: '건강과 예술',
-      label: '6영역',
+      child: Text('6영역'),
     ),
-    DropdownMenuEntry(
+    DropdownMenuItem(
       value: '자연과 과학',
-      label: '7영역',
+      child: Text('7영역'),
     )
   ];
   Map allClassList = {};
@@ -116,25 +112,6 @@ class _OpenClassState extends State<OpenClass> {
         .orderByChild('estbMjorNm')
         .equalTo(_myMajor != '학부 공통' ? _myMajor : null)
         .onValue;
-  }
-
-  /// 어떤 영역인지 고르는 [DropdownButton]이다.
-  ///
-  /// [dept]가 교양인 경우 영역을 고를 수 있는 [DropdownButton]이 나타나고, 아닌경우 나타나지 않는다.
-  Widget regionSelector(String dept) {
-    if (dept == '교양') {
-      return DropdownMenu(
-          dropdownMenuEntries: regionList,
-          label: const Text('교양 영역'),
-          inputDecorationTheme: const InputDecorationTheme(filled: true),
-          onSelected: (String? value) {
-            setState(() {
-              _region = value!;
-            });
-          },
-          initialSelection: _region);
-    }
-    return Container();
   }
 
   @override
@@ -168,20 +145,20 @@ class _OpenClassState extends State<OpenClass> {
                   } else {
                     var data = snapshot.data?.snapshot.value as Map;
                     departmentDropdownList.clear();
-                    departmentDropdownList
-                        .add(const DropdownMenuEntry(value: '교양', label: '교양'));
+                    departmentDropdownList.add(
+                        const DropdownMenuItem(value: '교양', child: Text('교양')));
                     for (var department in data.keys) {
-                      departmentDropdownList.add(DropdownMenuEntry(
+                      departmentDropdownList.add(DropdownMenuItem(
                           value: department.toString(),
-                          label: department.toString()));
+                          child: Text(department.toString())));
                       subjectDropdownList.clear();
-                      subjectDropdownList.add(const DropdownMenuEntry(
-                          value: '학부 공통', label: '학부 공통'));
+                      subjectDropdownList.add(const DropdownMenuItem(
+                          value: '학부 공통', child: Text('학부 공통')));
                     }
                     if (_myDept != '교양') {
                       for (String major in data[_myDept]) {
-                        subjectDropdownList
-                            .add(DropdownMenuEntry(value: major, label: major));
+                        subjectDropdownList.add(
+                            DropdownMenuItem(value: major, child: Text(major)));
                       }
                     }
                     return SingleChildScrollView(
@@ -191,27 +168,28 @@ class _OpenClassState extends State<OpenClass> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: DropdownMenu(
-                              initialSelection: _myDept,
-                              label: const Text('학부'),
-                              inputDecorationTheme: const InputDecorationTheme(
-                                filled: true,
-                              ),
-                              dropdownMenuEntries: departmentDropdownList,
-                              onSelected: (String? value) {
+                            child: DropdownButton(
+                              borderRadius: BorderRadius.circular(12.0),
+                              underline: Container(),
+                              icon: const Icon(
+                                  Icons.keyboard_arrow_down_outlined),
+                              value: _myDept,
+                              items: departmentDropdownList,
+                              onChanged: (String? value) {
                                 setState(() {
                                   _myDept = value!;
                                   subjectDropdownList.clear();
                                   subjectDropdownList.add(
-                                      const DropdownMenuEntry(
-                                          value: '학부 공통', label: '학부 공통'));
+                                      const DropdownMenuItem(
+                                          value: '학부 공통',
+                                          child: Text('학부 공통')));
                                   _myMajor = '학부 공통';
                                   if (_myDept == '교양') {
                                     return;
                                   }
                                   for (String major in data[_myDept]) {
-                                    subjectDropdownList.add(DropdownMenuEntry(
-                                        value: major, label: major));
+                                    subjectDropdownList.add(DropdownMenuItem(
+                                        value: major, child: Text(major)));
                                   }
                                 });
                               },
@@ -220,16 +198,14 @@ class _OpenClassState extends State<OpenClass> {
                           if (_myDept != '교양') ...[
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: DropdownMenu(
-                                initialSelection: _myMajor,
-                                width: 202.0,
-                                label: const Text('학과'),
-                                inputDecorationTheme:
-                                    const InputDecorationTheme(
-                                  filled: true,
-                                ),
-                                dropdownMenuEntries: subjectDropdownList,
-                                onSelected: (String? value) => setState(() {
+                              child: DropdownButton(
+                                borderRadius: BorderRadius.circular(12.0),
+                                underline: Container(),
+                                icon: const Icon(
+                                    Icons.keyboard_arrow_down_outlined),
+                                value: _myMajor,
+                                items: subjectDropdownList,
+                                onChanged: (String? value) => setState(() {
                                   _myMajor = value!;
                                 }),
                               ),
@@ -237,29 +213,30 @@ class _OpenClassState extends State<OpenClass> {
                           ] else ...[
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: DropdownMenu(
-                                  dropdownMenuEntries: regionList,
-                                  label: const Text('교양 영역'),
-                                  inputDecorationTheme:
-                                      const InputDecorationTheme(filled: true),
-                                  onSelected: (String? value) {
+                              child: DropdownButton(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  underline: Container(),
+                                  icon: const Icon(
+                                      Icons.keyboard_arrow_down_outlined),
+                                  items: regionList,
+                                  onChanged: (String? value) {
                                     setState(() {
                                       _region = value!;
                                     });
                                   },
-                                  initialSelection: _region),
+                                  value: _region),
                             ),
                           ],
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: DropdownMenu(
-                              initialSelection: _myGrade,
-                              label: const Text('학년'),
-                              inputDecorationTheme: const InputDecorationTheme(
-                                filled: true,
-                              ),
-                              dropdownMenuEntries: gradeDownList,
-                              onSelected: (String? value) {
+                            child: DropdownButton(
+                              borderRadius: BorderRadius.circular(12.0),
+                              underline: Container(),
+                              icon: const Icon(
+                                  Icons.keyboard_arrow_down_outlined),
+                              value: _myGrade,
+                              items: gradeDownList,
+                              onChanged: (String? value) {
                                 setState(() {
                                   _myGrade = value!;
                                 });
