@@ -136,6 +136,7 @@ class _SearchPageState extends State<SearchPage> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: DropdownMenu<String>(
+                    initialSelection: '컴퓨터학부',
                     controller: _searchDepartmentController,
                     inputDecorationTheme:
                         const InputDecorationTheme(filled: true),
