@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:suwon_mate/interfaces.dart';
 
 /// 강의자에 대한 연락처 정보를 가지는 클래스이다.
 ///
@@ -7,7 +8,7 @@ import 'package:flutter/foundation.dart';
 /// 접근 권한이 부여된다.
 ///
 @immutable
-class Contact {
+class Contact implements Savable {
   /// 강의자의 이메일 주소
   final String email;
 
@@ -21,4 +22,7 @@ class Contact {
   /// [json]으로 역직렬화가 필요한 값을 받아서 역직렬화를 시켜준다.
   factory Contact.fromFirebaseDatabase(Map json) =>
       Contact(email: json['email'], phoneNumber: json['mphone']);
+
+  @override
+  Map<String, dynamic> toJson() => {'email': email, 'mphone': phoneNumber};
 }
