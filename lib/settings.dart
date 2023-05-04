@@ -73,7 +73,7 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
               icon: Icons.school_outlined,
               title: '학생 정보',
               detail: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     LinearProgressIndicator(),
                     Padding(
@@ -102,65 +102,66 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
           return InfoCard(
               icon: Icons.school_outlined,
               title: '학생 정보',
-              detail: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('개설 강좌메뉴에서 기본으로 보여질 학부 및 학년을 선택합니다.'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: DropdownMenu<String>(
-                        label: const Text('기본 학부'),
-                        inputDecorationTheme:
-                            const InputDecorationTheme(filled: true),
-                        dropdownMenuEntries: departmentDropdownList,
-                        onSelected: (String? value) {
-                          setState(() {
-                            _myDepartment = value!;
-                            _myMajor = '학부 공통';
-                            majorDropdownList.clear();
-                            majorDropdownList.add(const DropdownMenuEntry(
-                              value: '학부 공통',
-                              label: '학부 공통',
-                            ));
-                            for (var major in data[_myDepartment]) {
-                              majorDropdownList.add(DropdownMenuEntry(
-                                  value: major.toString(),
-                                  label: major.toString()));
-                            }
-                          });
-                        },
-                        initialSelection: _myDepartment),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: DropdownMenu<String>(
-                        inputDecorationTheme:
-                            const InputDecorationTheme(filled: true),
-                        dropdownMenuEntries: majorDropdownList,
-                        label: const Text('기본 전공'),
-                        onSelected: (String? value) {
-                          setState(() {
-                            _myMajor = value!;
-                          });
-                        },
-                        initialSelection: _myMajor),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SegmentedButton<String>(
-                        showSelectedIcon: false,
-                        segments: gradeList,
-                        onSelectionChanged: (value) {
-                          setState(() {
-                            _grade = value.first;
-                          });
-                        },
-                        selected: {_grade}),
-                  ),
-                ],
+              detail: Center(
+                child: Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('개설 강좌메뉴에서 기본으로 보여질 학부 및 학년을 선택합니다.'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DropdownMenu<String>(
+                          label: const Text('기본 학부'),
+                          inputDecorationTheme:
+                              const InputDecorationTheme(filled: true),
+                          dropdownMenuEntries: departmentDropdownList,
+                          onSelected: (String? value) {
+                            setState(() {
+                              _myDepartment = value!;
+                              _myMajor = '학부 공통';
+                              majorDropdownList.clear();
+                              majorDropdownList.add(const DropdownMenuEntry(
+                                value: '학부 공통',
+                                label: '학부 공통',
+                              ));
+                              for (var major in data[_myDepartment]) {
+                                majorDropdownList.add(DropdownMenuEntry(
+                                    value: major.toString(),
+                                    label: major.toString()));
+                              }
+                            });
+                          },
+                          initialSelection: _myDepartment),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DropdownMenu<String>(
+                          inputDecorationTheme:
+                              const InputDecorationTheme(filled: true),
+                          dropdownMenuEntries: majorDropdownList,
+                          label: const Text('기본 전공'),
+                          onSelected: (String? value) {
+                            setState(() {
+                              _myMajor = value!;
+                            });
+                          },
+                          initialSelection: _myMajor),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SegmentedButton<String>(
+                          showSelectedIcon: false,
+                          segments: gradeList,
+                          onSelectionChanged: (value) {
+                            setState(() {
+                              _grade = value.first;
+                            });
+                          },
+                          selected: {_grade}),
+                    ),
+                  ],
+                ),
               ));
         }
       },
