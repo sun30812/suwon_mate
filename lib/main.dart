@@ -66,7 +66,7 @@ class App extends ConsumerWidget {
             myGrade: params[2],
             settingsData: params[3] != null
                 ? jsonDecode(params[3]) as Map<String, dynamic>
-                : {'offline': false},
+                : {'offline': false, 'bottomBanner': true},
             quickMode: params[4] ?? false,
           );
         },
