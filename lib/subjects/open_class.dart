@@ -66,6 +66,10 @@ class _OpenClassState extends State<OpenClass> {
   /// 교양 영역 목록([DropdownMenuItem]용)
   List<DropdownMenuItem<String>> regionList = const [
     DropdownMenuItem(
+      value: '전체',
+      child: Text('전체'),
+    ),
+    DropdownMenuItem(
       value: '언어와 소통',
       child: Text('1영역'),
     ),
@@ -136,11 +140,17 @@ class _OpenClassState extends State<OpenClass> {
     DatabaseReference ref = FirebaseDatabase.instance
         .ref(widget.quickMode ? 'estbLectDtaiList_quick' : 'estbLectDtaiList');
     if (_myDept == '교양') {
+      if (_region == '전체') {
+        return ref
+            .child(_myDept)
+            .onValue;
+      } else {
       return ref
           .child(_myDept)
           .orderByChild('cltTerrNm')
           .equalTo(_region)
           .onValue;
+      }
     }
     return ref
         .child(_myDept)
