@@ -164,7 +164,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                                       return;
                                     }
                                     Clipboard.setData(ClipboardData(
-                                            text: classInfo.hostName))
+                                            text: snapshot.data?.email ?? ''))
                                         .then((value) => ScaffoldMessenger.of(
                                                 context)
                                             .showSnackBar(SnackBar(
@@ -199,7 +199,8 @@ class ClassDetailInfoCard extends StatelessWidget {
                                       return;
                                     }
                                     Clipboard.setData(ClipboardData(
-                                            text: classInfo.hostName))
+                                            text: snapshot.data?.phoneNumber ??
+                                                ''))
                                         .then((value) => ScaffoldMessenger.of(
                                                 context)
                                             .showSnackBar(SnackBar(
