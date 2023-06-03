@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -31,13 +33,12 @@ class OpenClass extends StatefulWidget {
   ///
   /// [myDept]에는 사용자의 학부가 들어가고, [myMajor]에는 사용자의 학과가 들어가야 한다.
   /// 학년은 [myGrade]를 통해 전달되며 사용자의 개인 설정을 전달하기 위해 [settingsData]를 이용한다.
-  const OpenClass(
-      {required this.settingsData,
-      required this.myDept,
-      required this.myMajor,
-      required this.myGrade,
-      required this.quickMode,
-      Key? key})
+  const OpenClass({required this.settingsData,
+    required this.myDept,
+    required this.myMajor,
+    required this.myGrade,
+    required this.quickMode,
+    Key? key})
       : super(key: key);
 
   @override
@@ -118,8 +119,8 @@ class _OpenClassState extends State<OpenClass> {
       return;
     }
     final AnchoredAdaptiveBannerAdSize? size =
-        await AdSize.getAnchoredAdaptiveBannerAdSize(
-            Orientation.portrait, MediaQuery.of(context).size.width.truncate());
+    await AdSize.getAnchoredAdaptiveBannerAdSize(
+        Orientation.portrait, MediaQuery.of(context).size.width.truncate());
     if (size == null) {
       return;
     }
@@ -128,8 +129,8 @@ class _OpenClassState extends State<OpenClass> {
         adUnitId: oclassAdUintId,
         listener: BannerAdListener(
             onAdLoaded: (ad) => setState(() {
-                  _bannerAd = ad as BannerAd?;
-                }),
+              _bannerAd = ad as BannerAd?;
+            }),
             onAdFailedToLoad: (ad, _) => ad.dispose()),
         request: const AdRequest());
     return bannerAd.load();
@@ -145,11 +146,11 @@ class _OpenClassState extends State<OpenClass> {
             .child(_myDept)
             .onValue;
       } else {
-      return ref
-          .child(_myDept)
-          .orderByChild('cltTerrNm')
-          .equalTo(_region)
-          .onValue;
+        return ref
+            .child(_myDept)
+            .orderByChild('cltTerrNm')
+            .equalTo(_region)
+            .onValue;
       }
     }
     return ref
@@ -157,9 +158,6 @@ class _OpenClassState extends State<OpenClass> {
         .orderByChild('estbMjorNm')
         .equalTo(_myMajor != '학부 공통' ? _myMajor : null)
         .onValue;
-
-    pref.setString('db_ver', versionInfo["db_ver"]);
-    return ref.once();
   }
 
   @override
@@ -167,10 +165,6 @@ class _OpenClassState extends State<OpenClass> {
     super.dispose();
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.remove('dp_set');
-    if (!widget.quickMode) {
-      pref.setString('subjects', jsonEncode(subjects));
-      pref.setString('dpMap', jsonEncode(dpMap));
-    }
     _bannerAd?.dispose();
   }
 
@@ -319,7 +313,7 @@ class _OpenClassState extends State<OpenClass> {
                   }
                   var list = ClassInfo.fromFirebaseDatabase(value);
                   list.removeWhere(
-                      (classInfo) => '${classInfo.guestGrade}학년' != _myGrade);
+                          (classInfo) => '${classInfo.guestGrade}학년' != _myGrade);
                   return Flexible(
                     flex: 10,
                     child: ListView.builder(
@@ -341,8 +335,16 @@ class _OpenClassState extends State<OpenClass> {
                 }
               },
             ),
-            if (_bannerAd != null)
+            if (_bannerAd != null) ...[
               Flexible(flex: 1, child: AdWidget(ad: _bannerAd!))
+            ] else ...[
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                ),
+              )
+            ]
           ],
         ));
   }

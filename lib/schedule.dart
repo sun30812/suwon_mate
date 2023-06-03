@@ -50,20 +50,20 @@ class SchedulePage extends StatelessWidget {
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.none) {
-              return Card(
+              return const Card(
                 color: Colors.amber,
                 child: Row(
-                  children: const [
+                  children: [
                     Icon(Icons.announcement),
                     Text('오류가 발생했습니다.'),
                   ],
                 ),
               );
             } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
+              return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     CircularProgressIndicator.adaptive(),
                     Text('학사 일정 불러오는 중..')
                   ],

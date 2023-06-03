@@ -58,9 +58,9 @@ class _NoticePageState extends State<NoticePage> {
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
-              return Column(
+              return const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   CircularProgressIndicator.adaptive(),
                   Text('공지사항 불러오는 중..')
                 ],
@@ -86,18 +86,22 @@ class _NoticePageState extends State<NoticePage> {
                             .split(',')[2]
                             .split(')')[0]);
                     return SimpleCard(
-                        onPressed: () async => launchUrl(
-                            Uri(
-                                scheme: 'https',
-                                host: 'suwon.ac.kr',
-                                queryParameters: {
-                                  'menuno': 674.toString(),
-                                  'bbsno': siteData.siteCode,
-                                  'boardno': siteData.siteCode,
-                                  'siteno': 37.toString(),
-                                  'act': 'view'
-                                }),
-                            mode: LaunchMode.externalApplication),
+                        onPressed: () {
+                          const String menuNumber = '674';
+                          const String siteNumber = '37';
+                          return launchUrl(
+                              Uri(
+                                  scheme: 'https',
+                                  host: 'suwon.ac.kr',
+                                  queryParameters: {
+                                    'menuno': menuNumber,
+                                    'bbsno': siteData.siteCode,
+                                    'boardno': siteData.siteCode,
+                                    'siteno': siteNumber,
+                                    'act': 'view'
+                                  }),
+                              mode: LaunchMode.externalApplication);
+                        },
                         title: siteData.title,
                         content: Text(
                           '${rows.getElementsByClassName('info')[index].getElementsByClassName('date')[0].text.trim()}/${rows.getElementsByClassName('info')[index].getElementsByClassName('hit')[0].text.trim()}',

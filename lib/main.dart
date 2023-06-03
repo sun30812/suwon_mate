@@ -254,8 +254,8 @@ class _MainMenuState extends State<MainMenu> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Row(
-                children: const [Icon(Icons.warning_amber_rounded), Text('경고')],
+              title: const Row(
+                children: [Icon(Icons.warning_amber_rounded), Text('경고')],
               ),
               content:
                   const Text('DB의 구조가 새롭게 변경되었습니다. 이 앱의 모든 데이터들의 초기화가 필요합니다.\n'

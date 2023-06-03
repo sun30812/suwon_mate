@@ -657,10 +657,10 @@ class DataSaveAlert extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(Icons.offline_bolt_outlined, size: 80.0),
           Text(
             '현재 데이터 절약 모드로 인해 이 페이지를 열 수 없습니다.',

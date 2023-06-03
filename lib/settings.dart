@@ -69,12 +69,12 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
       future: getDepartment,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return InfoCard(
+          return const InfoCard(
               icon: Icons.school_outlined,
               title: '학생 정보',
               detail: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     LinearProgressIndicator(),
                     Padding(
                       padding: EdgeInsets.all(8.0),
@@ -227,12 +227,12 @@ class FunctionSettingWidget extends ConsumerWidget {
                                     title: const Text('데이터 절약 모드'),
                                     content: const Text(
                                         '데이터 사용량을 줄이기 위해 일부 기능의 사용을 제한하고, DB 업데이트를 '
-                                            '자동으로 하지 않습니다. \nWeb 플랫폼에서는 지원하지 않습니다.'),
+                                        '자동으로 하지 않습니다. \nWeb 플랫폼에서는 지원하지 않습니다.'),
                                   );
                                 });
                           },
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.only(right: 10.0),
                                 child: Icon(Icons.offline_bolt_outlined),
@@ -281,17 +281,15 @@ class BottomBannerSettingWidget extends ConsumerWidget {
                             builder: (BuildContext context) {
                               return const AlertDialog(
                                 title: Text('하단 배너에 광고 표시'),
-                                content: Text(
-                                    '개설강좌 목록에 들어가면 하단에 배너를 표시합니다.'),
+                                content: Text('개설강좌 목록에 들어가면 하단에 배너를 표시합니다.'),
                               );
                             });
                       },
-                      child: Row(
-                        children: const [
+                      child: const Row(
+                        children: [
                           Padding(
                             padding: EdgeInsets.only(right: 10.0),
-                            child: Icon(Icons
-                                .vertical_align_bottom_rounded),
+                            child: Icon(Icons.vertical_align_bottom_rounded),
                           ),
                           Text('하단 배너에 광고 표시'),
                         ],
@@ -538,10 +536,10 @@ class _SettingPageState extends State<SettingPage> {
               }
               if ((snapshot.data as SharedPreferences).containsKey('dp_set')) {
                 _mySub = '전체';
-                return Center(
+                return const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(Icons.warning_amber_outlined),
                       Text(
                           '일부 구조 개선으로 인해 데이터 갱신이 필요합니다.\n메인에서 개설 강좌 조회 메뉴에 접속해주세요.'),
@@ -700,15 +698,15 @@ class _SettingPageState extends State<SettingPage> {
                                                 title: const Text('데이터 절약 모드'),
                                                 content: const Text(
                                                     '데이터 사용량을 줄이기 위해 일부 기능의 사용을 제한하고, DB 업데이트를 '
-                                                        '자동으로 하지 않습니다. \nWeb 플랫폼에서는 지원하지 않습니다.'),
+                                                    '자동으로 하지 않습니다. \nWeb 플랫폼에서는 지원하지 않습니다.'),
                                               );
                                             });
                                       },
-                                      child: Row(
-                                        children: const [
+                                      child: const Row(
+                                        children: [
                                           Padding(
                                             padding:
-                                            EdgeInsets.only(right: 10.0),
+                                                EdgeInsets.only(right: 10.0),
                                             child: Icon(
                                                 Icons.offline_bolt_outlined),
                                           ),
@@ -758,15 +756,15 @@ class _SettingPageState extends State<SettingPage> {
                                                 title: const Text('입력하여 바로 검색'),
                                                 content: const Text(
                                                     '과목을 검색할 때 입력하는 즉시 검색을 바로 시작합니다.\n'
-                                                        '검색 시 동작이 많이 끊기는 경우 해당 설정을 조절하여 개선할 수 있습니다.'),
+                                                    '검색 시 동작이 많이 끊기는 경우 해당 설정을 조절하여 개선할 수 있습니다.'),
                                               );
                                             });
                                       },
-                                      child: Row(
-                                        children: const [
+                                      child: const Row(
+                                        children: [
                                           Padding(
                                             padding:
-                                            EdgeInsets.only(right: 10.0),
+                                                EdgeInsets.only(right: 10.0),
                                             child: Icon(Icons.search),
                                           ),
                                           Text('입력하여 바로 검색'),
@@ -837,8 +835,8 @@ class _SettingPageState extends State<SettingPage> {
                                             );
                                           });
                                     },
-                                    child: Row(
-                                      children: const [
+                                    child: const Row(
+                                      children: [
                                         Padding(
                                           padding: EdgeInsets.only(right: 10.0),
                                           child: Icon(Icons
