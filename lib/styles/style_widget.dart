@@ -480,7 +480,6 @@ class _InfoCardState extends State<InfoCard> {
                 ),
                 leading: Icon(
                   widget.icon,
-                  color: Theme.of(context).primaryColor,
                 ),
               ),
               widget.detail
