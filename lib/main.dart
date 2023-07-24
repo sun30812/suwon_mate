@@ -14,6 +14,7 @@ import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/schedule.dart';
 import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
+import 'package:suwon_mate/styles/theme.dart';
 import 'package:suwon_mate/subjects/favorite_subject.dart';
 import 'package:suwon_mate/subjects/open_class.dart';
 import 'package:suwon_mate/subjects/open_class_info.dart';
@@ -91,20 +92,14 @@ class App extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
+        darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
+            navigationBarTheme: suwonNavigationTheme,
+            colorScheme: ColorScheme.fromSeed(
+                brightness: Brightness.dark, seedColor: suwonNavy)),
         theme: ThemeData(
           useMaterial3: true,
-          colorSchemeSeed: const Color.fromARGB(255, 0, 54, 112),
-          navigationBarTheme: const NavigationBarThemeData().copyWith(
-              backgroundColor: const Color.fromARGB(255, 0, 54, 112),
-              surfaceTintColor: const Color.fromARGB(255, 0, 54, 112),
-              indicatorColor: const Color.fromARGB(255, 0, 54, 112),
-              iconTheme: MaterialStateProperty.resolveWith((states) {
-                if (states.contains(MaterialState.selected)) {
-                  return const IconThemeData(
-                      color: Color.fromARGB(255, 233, 184, 0));
-                }
-                return null;
-              })),
+          colorSchemeSeed: suwonNavy,
+          navigationBarTheme: suwonNavigationTheme,
         ),
         title: '수원 메이트',
         routerConfig: _routes);
@@ -167,7 +162,6 @@ class _MainPageState extends State<MainPage> {
           ],
         ),
         bottomNavigationBar: NavigationBar(
-          backgroundColor: Colors.grey[300],
           destinations: shortcuts,
           selectedIndex: _pageIndex,
           onDestinationSelected: (value) => setState(() {
