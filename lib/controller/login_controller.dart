@@ -31,6 +31,15 @@ class LoginController {
   /// ## 같이 보기
   /// * [LoginWidget]
   void onLogin(BuildContext context) {
+    if (!_validateEmail()) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('유효하지 않은 이메일입니다.'),
+          duration: const Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0))));
+      return;
+    }
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -77,4 +86,8 @@ class LoginController {
               borderRadius: BorderRadius.circular(8.0))));
     });
   }
+
+  bool _validateEmail() =>
+      _emailController.text.isNotEmpty &&
+      _emailController.text.endsWith('@suwon.ac.kr');
 }
