@@ -871,6 +871,12 @@ class _LoginWidgetState extends State<LoginWidget> with WidgetsBindingObserver {
                   child: Column(
                     children: [
                       const Text('로그인을 하면 강의자의 이메일이나 전화번호를 확인할 수 있습니다.'),
+                      Text(
+                        '주의: 이 기능은 추후 Google Play버전을 위한 것으로 지금은 단순 로그인만 지원합니다.',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.orangeAccent,
+                            fontWeight: FontWeight.bold),
+                      ),
                       TextButton(
                           onPressed: () {
                             showDialog(
@@ -891,14 +897,13 @@ class _LoginWidgetState extends State<LoginWidget> with WidgetsBindingObserver {
                                 ),
                                 actions: [
                                   TextButton(
-                                      onPressed: () {
-                                        loginController.onLogin(context);
-                                      },
-                                      child: const Text('로그인')),
-                                  TextButton(
                                       onPressed: () =>
                                           Navigator.of(context).pop(),
-                                      child: const Text('취소'))
+                                      child: const Text('취소')),
+                                  TextButton(
+                                      onPressed: () =>
+                                          loginController.onLogin(context),
+                                      child: const Text('로그인')),
                                 ],
                               ),
                             );
