@@ -63,32 +63,32 @@ jobs:
   BuildmacOS:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v
+      - uses: actions/checkout@v3
       - name: Flutter action
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          architecture: x6
+          architecture: x64
       - name: Configuration to build macOS App
-        run: flutter config --enable-macos-deskto
+        run: flutter config --enable-macos-desktop
       - name: Install dependency
-        run: flutter pub ge
+        run: flutter pub get
       - name: Pod Repository Update
         working-directory: ./macos
-        run: pod repo updat
+        run: pod repo update
       - name: Pod update
         working-directory: ./macos
-        run: pod updat
+        run: pod update
       - name: Build macOS App
-        run: flutter build maco
+        run: flutter build macos
       - name: Zip .app file
-        run: zip -Dr suwon_mate.app.zip build/macos/Build/Products/Release/suwon_mate.ap
+        run: zip -Dr suwon_mate.app_x64.zip build/macos/Build/Products/Release/suwon_mate.app
       - name: Upload files
         uses: actions/upload-artifact@v3
         with:
           name: output
           path: |
-            suwon_mate.app.zip
+            suwon_mate.app_x64.zip
   #  BuildLinux:
   #    runs-on: ubuntu-latest
   #    steps:
@@ -136,4 +136,4 @@ jobs:
         with:
           files: |
             suwon_mate_android.apk
-            suwon_mate.app.zip
+            suwon_mate.app_x64.zip
