@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:suwon_mate/food/food_info.dart';
 import 'package:suwon_mate/help.dart';
 import 'package:suwon_mate/information/notice_page.dart';
 import 'package:suwon_mate/model/class_info.dart';
@@ -123,6 +124,8 @@ class _MainPageState extends State<MainPage> {
     NavigationDestination(
         icon: Icon(Icons.schedule_outlined), label: '학사 일정', tooltip: '학사 일정'),
     NavigationDestination(
+        icon: Icon(Icons.food_bank_outlined), label: '학식 조회', tooltip: '학식 조회'),
+    NavigationDestination(
         icon: Icon(Icons.star_border_outlined),
         selectedIcon: Icon(Icons.star),
         label: '즐겨찾기',
@@ -194,6 +197,8 @@ class _MainPageState extends State<MainPage> {
       case 1:
         return const SchedulePage();
       case 2:
+        return const FoodInfoPage();
+      case 3:
         return const FavoriteSubjectPage();
       default:
         return FutureBuilder(
@@ -261,8 +266,8 @@ class _MainMenuState extends State<MainMenu> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Row(
-                children: const [Icon(Icons.warning_amber_rounded), Text('경고')],
+              title: const Row(
+                children: [Icon(Icons.warning_amber_rounded), Text('경고')],
               ),
               content:
                   const Text('DB의 구조가 새롭게 변경되었습니다. 이 앱의 모든 데이터들의 초기화가 필요합니다.\n'

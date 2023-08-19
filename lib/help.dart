@@ -20,8 +20,8 @@ class HelpPage extends StatelessWidget {
         title: const Text('도움말'),
       ),
       body: ListView(
-        children: [
-          const InfoCard(
+        children: const [
+          InfoCard(
               icon: Icons.schedule_outlined,
               title: '학사 일정',
               detail: Text(
@@ -33,14 +33,26 @@ class HelpPage extends StatelessWidget {
               title: '개설 강좌 조회',
               detail: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     '과목에 대한 정보를 확인할 수 있습니다. 강의자의 연락사항 정보는 로그인 시 확인이 가능합니다.\n교양 영역의 경우 학부를 교양으로 선택하면 고를 수 있습니다.\n',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],
               )),
-          const InfoCard(
+          InfoCard(
+              icon: Icons.food_bank_outlined,
+              title: '학식 조회 (미리보기)',
+              detail: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '금주의 식단을 확인할 수 있습니다. 이 기능은 아직 불안정 할 수 있습니다.',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ],
+              )),
+          InfoCard(
               icon: Icons.notifications_none,
               title: '공지사항',
               detail: Text(
@@ -51,14 +63,14 @@ class HelpPage extends StatelessWidget {
               icon: Icons.star_outline,
               title: '즐겨찾는 과목',
               detail: Column(
-                children: const [
+                children: [
                   Text(
                     '개설 강좌 조회에서 즐겨찾기에 추가한 과목들만 확인할 수 있습니다.',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],
               )),
-          const InfoCard(
+          InfoCard(
               icon: Icons.settings_outlined,
               title: '설정',
               detail: Text(

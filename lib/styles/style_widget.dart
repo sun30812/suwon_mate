@@ -225,12 +225,12 @@ class ClassDetailInfoCard extends StatelessWidget {
                       ));
                 })
           ] else ...[
-            InfoCard(
+            const InfoCard(
                 icon: Icons.call_outlined,
                 title: '강의자 연락사항',
                 detail: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [Text('해당 정보를 확인하기 위해서는 로그인이 필요합니다.')]))
+                    children: [Text('해당 정보를 확인하기 위해서는 로그인이 필요합니다.')]))
           ],
           InfoCard(
               icon: Icons.school_outlined,
@@ -480,6 +480,7 @@ class _InfoCardState extends State<InfoCard> {
                 ),
                 leading: Icon(
                   widget.icon,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
               widget.detail
@@ -766,10 +767,10 @@ class DataSaveAlert extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(Icons.offline_bolt_outlined, size: 80.0),
           Text(
             '현재 데이터 절약 모드로 인해 이 페이지를 열 수 없습니다.',

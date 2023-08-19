@@ -64,9 +64,9 @@ class _NoticePageState extends State<NoticePage> {
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
-              return Column(
+              return const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   CircularProgressIndicator.adaptive(),
                   Text('공지사항 불러오는 중..')
                 ],
@@ -93,8 +93,8 @@ class _NoticePageState extends State<NoticePage> {
                             .split(')')[0]);
                     return SimpleCard(
                         onPressed: () {
-                          const String menuNumber = "674";
-                          const String siteNumber = "37";
+                          const String menuNumber = '674';
+                          const String siteNumber = '37';
                           return launchUrl(
                               Uri(
                                   scheme: 'https',
