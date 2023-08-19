@@ -67,12 +67,12 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
       future: getDepartment,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return InfoCard(
+          return const InfoCard(
               icon: Icons.school_outlined,
               title: '학생 정보',
               detail: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     LinearProgressIndicator(),
                     Padding(
                       padding: EdgeInsets.all(8.0),
@@ -229,8 +229,8 @@ class FunctionSettingWidget extends ConsumerWidget {
                                   );
                                 });
                           },
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.only(right: 10.0),
                                 child: Icon(Icons.offline_bolt_outlined),
