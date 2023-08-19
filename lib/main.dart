@@ -69,8 +69,7 @@ class App extends ConsumerWidget {
             myGrade: params[2],
             settingsData: params[3] != null
                 ? jsonDecode(params[3]) as Map<String, dynamic>
-                : {
-                    'offline': false},
+                : {'offline': false},
             quickMode: params[4] ?? false,
           );
         },
@@ -123,8 +122,12 @@ class _MainPageState extends State<MainPage> {
         icon: Icon(Icons.apps_outlined), label: '메인', tooltip: '메인'),
     NavigationDestination(
         icon: Icon(Icons.schedule_outlined), label: '학사 일정', tooltip: '학사 일정'),
-    NavigationDestination(
-        icon: Icon(Icons.food_bank_outlined), label: '학식 조회', tooltip: '학식 조회'),
+    if (!kIsWeb) ...[
+      NavigationDestination(
+          icon: Icon(Icons.food_bank_outlined),
+          label: '학식 조회',
+          tooltip: '학식 조회')
+    ],
     NavigationDestination(
         icon: Icon(Icons.star_border_outlined),
         selectedIcon: Icon(Icons.star),
