@@ -42,11 +42,10 @@ class LoginController {
     }
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => const AlertDialog(
         content: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            CircularProgressIndicator(),
+          children: [CircularProgressIndicator(),
             Text('  로그인 링크를 보내는 중..')
           ],
         ),

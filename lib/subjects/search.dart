@@ -234,9 +234,9 @@ class _SearchPageState extends State<SearchPage> {
     if (available) {
       return Container();
     }
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
         Icon(
           Icons.search,
           color: Colors.grey,

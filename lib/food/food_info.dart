@@ -132,8 +132,27 @@ class _FoodInfoState extends State<FoodInfo> {
         dayWeekEntries.add(DropdownMenuEntry(
             value: index, label: studentRows[index + 1].text));
       }
-      var studentFoodList =
-          studentCols[selectedDayWeek + 2].innerHtml.replaceAll('<br>', '\n');
+
+      /// Little Kitchen에 대한 학식 정보를 가진 인덱스
+      const littleKitchenIndex = 0;
+
+      /// Mom's cook에 대한 학식 정보를 가진 인덱스
+      const momsCookIndex = 7;
+
+      /// Chef Table에 대한 학식 정보를 가진 인덱스
+      const chefTableIndex = 14;
+      var studentFoodList = {
+        littleKitchenIndex:
+            studentCols[littleKitchenIndex + selectedDayWeek + 2]
+                .innerHtml
+                .replaceAll('<br>', '\n'),
+        momsCookIndex: studentCols[momsCookIndex + selectedDayWeek + 2]
+            .innerHtml
+            .replaceAll('<br>', '\n'),
+        chefTableIndex: studentCols[chefTableIndex + selectedDayWeek + 2]
+            .innerHtml
+            .replaceAll('<br>', '\n')
+      };
       var stampFoodList =
           stampCols[selectedDayWeek + 1].innerHtml.replaceAll('<br>', '\n');
       var infoList = parse(widget.data.body)
@@ -183,9 +202,27 @@ class _FoodInfoState extends State<FoodInfo> {
             InfoCard(
               icon: Icons.food_bank_outlined,
               title:
-                  '학생식단 | ${studentCols[0].text.trim()} | ${studentCols[1].text.trim()}',
+                  '학생식단 | ${studentCols[littleKitchenIndex].text.trim()} | ${studentCols[littleKitchenIndex + 1].text.trim()}',
               detail: Text(
-                studentFoodList,
+                studentFoodList[littleKitchenIndex] ?? '알 수 없음',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ),
+            InfoCard(
+              icon: Icons.food_bank_outlined,
+              title:
+                  '학생식단 | ${studentCols[momsCookIndex].text.trim()} | ${studentCols[momsCookIndex + 1].text.trim()}',
+              detail: Text(
+                studentFoodList[momsCookIndex] ?? '알 수 없음',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ),
+            InfoCard(
+              icon: Icons.food_bank_outlined,
+              title:
+                  '학생식단 | ${studentCols[chefTableIndex].text.trim()} | ${studentCols[chefTableIndex + 1].text.trim()}',
+              detail: Text(
+                studentFoodList[chefTableIndex] ?? '알 수 없음',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
