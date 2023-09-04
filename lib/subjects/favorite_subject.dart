@@ -25,20 +25,20 @@ class FavoriteListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     List<ClassInfo> classInfo = ref.watch(favoriteControllerNotifierProvider);
     if (ref.read(favoriteControllerNotifierProvider.notifier).isLoading) {
-      return Center(
+      return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             CircularProgressIndicator.adaptive(),
             Text('즐겨찾는 과목 정보 확인 중...')
           ],
         ),
       );
     } else if (classInfo.isEmpty) {
-      return Center(
+      return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Icon(Icons.disabled_by_default_outlined),
             Text('즐겨찾기된 과목이 없습니다.'),
             Text('개설 강좌 조회에서 즐겨찾기를 추가해보세요')
