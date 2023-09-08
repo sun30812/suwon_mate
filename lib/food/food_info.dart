@@ -1,10 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:suwon_mate/styles/style_widget.dart';
 
-/// 수원대 학식 정보를 페이지 URL
-const uri = 'https://www.suwon.ac.kr/index.html?menuno=1792';
+/// 수원대 종합강의동 학식 정보를 가진 페이지 URL
+const aceFoodUrl = 'https://www.suwon.ac.kr/index.html?menuno=1792';
+
+/// 수원대 아마랜스홀 학식 정보를 가진 페이지 URL
+const ama_url = 'https://www.suwon.ac.kr/index.html?menuno=1793';
 
 /// 학식 정보를 확인할 수 있는 페이지이다.
 ///
@@ -20,8 +25,11 @@ class FoodInfoPage extends StatefulWidget {
 
 class _FoodInfoPageState extends State<FoodInfoPage> {
   /// 수원대 학식 정보를 HTML로 가져오는 메서드
-  Future getData() async {
-    return await http.get(Uri.parse(uri));
+  ///
+  /// 수원대 학식의 식단표를 HTML로 파싱하기 위한 메서드이다.
+  /// [foodUrl]에는 학식 정보가 위치한 URL주소를 기입한다.
+  Future getData(String foodUrl) async {
+    return await http.get(Uri.parse(foodUrl));
   }
 
   @override
@@ -42,30 +50,7 @@ class _FoodInfoPageState extends State<FoodInfoPage> {
               ]),
               Expanded(
                 child: TabBarView(
-                  children: [
-                    FutureBuilder(
-                        future: getData(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CircularProgressIndicator.adaptive(),
-                                Text('학식 정보 불러오는 중..')
-                              ],
-                            );
-                          } else if (snapshot.hasError) {
-                            return DataLoadingError(
-                              errorMessage: snapshot.error,
-                            );
-                          } else {
-                            return FoodInfo(
-                                data: snapshot.data as http.Response);
-                          }
-                        }),
-                    const InvalidFoodInfoPage()
-                  ],
+                  children: [foodView(aceFoodUrl), foodView(ama_url)],
                 ),
               ),
             ],
@@ -74,30 +59,26 @@ class _FoodInfoPageState extends State<FoodInfoPage> {
       ),
     );
   }
-}
 
-/// 학식 정보가 존재하지 않을 시 출력하는 페이지
-class InvalidFoodInfoPage extends StatelessWidget {
-  /// 학식 정보가 존재하지 않을 시 출력하는 페이지
-  const InvalidFoodInfoPage({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(
-          Icons.disabled_visible_outlined,
-          size: 38.0,
-        ),
-        Text(
-          '현재 학식은 제공되지 않습니다.',
-          style: Theme.of(context).textTheme.titleLarge,
-        )
-      ],
-    );
+  FutureBuilder<dynamic> foodView(String foodUrl) {
+    return FutureBuilder(
+        future: getData(foodUrl),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator.adaptive(),
+                Text('학식 정보 불러오는 중..')
+              ],
+            );
+          } else if (snapshot.hasError) {
+            log(snapshot.error.toString());
+            return const InvalidFoodInfoPage();
+          } else {
+            return FoodInfo(data: snapshot.data as http.Response);
+          }
+        });
   }
 }
 

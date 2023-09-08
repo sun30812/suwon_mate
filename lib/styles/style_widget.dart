@@ -782,6 +782,33 @@ class DataSaveAlert extends StatelessWidget {
   }
 }
 
+/// 학식 정보가 존재하지 않을 시 출력하는 페이지
+///
+/// 학식 식단표에 대한 정보를 가져오지 못했을 경우 표시하는 페이지
+class InvalidFoodInfoPage extends StatelessWidget {
+  /// 학식 정보가 존재하지 않을 시 출력하는 페이지
+  const InvalidFoodInfoPage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(
+          Icons.disabled_visible_outlined,
+          size: 38.0,
+        ),
+        Text(
+          '현재 학식 정보가 제공되지 않습니다.',
+          style: Theme.of(context).textTheme.titleLarge,
+        )
+      ],
+    );
+  }
+}
+
 /// 설정 창 맨 상단에 존재하는 로그인 위젯이다.
 ///
 /// 이메일 링크를 통한 로그인을 지원하는 위젯이며, 로그인이 필요할 시 이메일을 받아
