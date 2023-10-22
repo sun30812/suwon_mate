@@ -1,5 +1,4 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:suwon_mate/model/class_info.dart';
@@ -165,6 +164,11 @@ class _FluentSearchPageState extends State<FluentSearchPage> {
     if (_searchKeyword.isEmpty) {
       return Container();
     }
+    // if (!Platform.isMacOS) {
+    //   return FutureBuilder<http.Response>(
+    //       future: future, builder: builder
+    //   )
+    // }
     return StreamBuilder<DatabaseEvent>(
         stream: getData(),
         builder: (context, snapshot) {

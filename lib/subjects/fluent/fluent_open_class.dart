@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
-import 'package:http/http.dart' as http;
 
 /// 개설 강좌 조회 시 페이지이다.
 ///
@@ -99,8 +102,30 @@ class _FluentOpenClassState extends State<FluentOpenClass> {
   ];
   Map allClassList = {};
   String _region = '전체';
-  var getDepartment = http.get(Uri.parse('https://suwon-mate-default-rtdb.firebaseio.com/departments.json'));
+  var getDepartment = http.get(Uri.parse(
+      'https://suwon-mate-default-rtdb.firebaseio.com/departments.json'));
 
+  /// 과목에 대한 정보를 FirebaseDatabase로부터 가져오는 메서드이다.(Firebase 관련 API를 지원하는 macOS용)
+  Stream<DatabaseEvent> getDataForMac() {
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref(widget.quickMode ? 'estbLectDtaiList_quick' : 'estbLectDtaiList');
+    if (_myDept == '교양') {
+      if (_region == '전체') {
+        return ref.child(_myDept).onValue;
+      } else {
+        return ref
+            .child(_myDept)
+            .orderByChild('cltTerrNm')
+            .equalTo(_region)
+            .onValue;
+      }
+    }
+    return ref
+        .child(_myDept)
+        .orderByChild('estbMjorNm')
+        .equalTo(_myMajor != '학부 공통' ? _myMajor : null)
+        .onValue;
+  }
 
   /// 과목에 대한 정보를 FirebaseDatabase로부터 가져오는 메서드이다.
   Future<http.Response> getData() {
@@ -110,11 +135,12 @@ class _FluentOpenClassState extends State<FluentOpenClass> {
       if (_region == '전체') {
         return http.get(Uri.parse('$ref/$_myDept.json'));
       } else {
-        return http.get(Uri.parse('$ref/$_myDept.json?orderBy="cltTerrNm"&equalTo="$_region"'));
+        return http.get(Uri.parse(
+            '$ref/$_myDept.json?orderBy="cltTerrNm"&equalTo="$_region"'));
       }
     }
-    return http.get(Uri.parse('$ref/$_myDept.json?orderBy="estbMjorNm"&equalTo="${_myMajor != '학부 공통' ? _myMajor : null}"'));
-
+    return http.get(Uri.parse(
+        '$ref/$_myDept.json?orderBy="estbMjorNm"&equalTo="${_myMajor != '학부 공통' ? _myMajor : null}"'));
   }
 
   @override
@@ -236,38 +262,76 @@ class _FluentOpenClassState extends State<FluentOpenClass> {
                     );
                   }
                 }),
-            FutureBuilder<http.Response>(
-              future: getData(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const ProgressBar();
-                } else if (snapshot.hasError) {
-                  return DataLoadingError(errorMessage: snapshot.error);
-                } else if (snapshot.hasData) {
-                  var value = jsonDecode(snapshot.data!.body) as Map;
-                  var list = ClassInfo.fromFirebaseDatabase(value);
-                  list.removeWhere(
-                      (classInfo) => '${classInfo.guestGrade}학년' != _myGrade);
-                  return Flexible(
-                    child: ListView.builder(
-                      itemCount: list.length,
-                      itemBuilder: (listContext, index) {
-                        return SimpleCard(
-                          onPressed: () => listContext.push('/oclass/info',
-                              extra: list[index]),
-                          title: list[index].name,
-                          subTitle: list[index].hostName ?? '이름 공개 안됨',
-                          content: Text(
-                              '${list[index].guestMjor ?? '학부 전체 대상'}, ${list[index].subjectKind ?? '공개 안됨'} ,${list[index].classLocation ?? '공개 안됨'}'),
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  return Container();
-                }
-              },
-            )
+            if (!Platform.isMacOS) ...[
+              FutureBuilder<http.Response>(
+                future: getData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const ProgressBar();
+                  } else if (snapshot.hasError) {
+                    return DataLoadingError(errorMessage: snapshot.error);
+                  } else if (snapshot.hasData) {
+                    var value = jsonDecode(snapshot.data!.body) as Map;
+                    var list = ClassInfo.fromFirebaseDatabase(value);
+                    list.removeWhere(
+                        (classInfo) => '${classInfo.guestGrade}학년' != _myGrade);
+                    return Flexible(
+                      child: ListView.builder(
+                        itemCount: list.length,
+                        itemBuilder: (listContext, index) {
+                          return SimpleCard(
+                            onPressed: () => listContext.push('/oclass/info',
+                                extra: list[index]),
+                            title: list[index].name,
+                            subTitle: list[index].hostName ?? '이름 공개 안됨',
+                            content: Text(
+                                '${list[index].guestMjor ?? '학부 전체 대상'}, ${list[index].subjectKind ?? '공개 안됨'} ,${list[index].classLocation ?? '공개 안됨'}'),
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              )
+            ] else ...[
+              StreamBuilder<DatabaseEvent>(
+                stream: getDataForMac(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const ProgressBar();
+                  } else if (snapshot.hasError) {
+                    return DataLoadingError(errorMessage: snapshot.error);
+                  } else if (snapshot.hasData) {
+                    var value = snapshot.data?.snapshot.value;
+                    if (value == null) {
+                      return Container();
+                    }
+                    var list = ClassInfo.fromFirebaseDatabase(value);
+                    list.removeWhere(
+                        (classInfo) => '${classInfo.guestGrade}학년' != _myGrade);
+                    return Flexible(
+                      child: ListView.builder(
+                        itemCount: list.length,
+                        itemBuilder: (listContext, index) {
+                          return SimpleCard(
+                            onPressed: () => listContext.push('/oclass/info',
+                                extra: list[index]),
+                            title: list[index].name,
+                            subTitle: list[index].hostName ?? '이름 공개 안됨',
+                            content: Text(
+                                '${list[index].guestMjor ?? '학부 전체 대상'}, ${list[index].subjectKind ?? '공개 안됨'} ,${list[index].classLocation ?? '공개 안됨'}'),
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              )
+            ]
           ],
         ));
   }
