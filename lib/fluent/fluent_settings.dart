@@ -1,4 +1,5 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'dart:convert';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -6,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/controller/settings_controller.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:http/http.dart' as http;
 
 class StudentInfoSettingWidget extends StatefulWidget {
   const StudentInfoSettingWidget({Key? key}) : super(key: key);
@@ -31,7 +33,7 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
   /// 학부의 전공에 관한 `DropdownMenuEntry`리스트
   List<ComboBoxItem<String>> majorDropdownList = [];
 
-  var getDepartment = FirebaseDatabase.instance.ref('departments').once();
+  var getDepartment = http.get(Uri.parse('https://suwon-mate-default-rtdb.firebaseio.com/departments.json'));
 
   /// 학년 정보에 관한 `ComboBoxItem`리스트
   final List<ComboBoxItem<String>> gradeList = [
@@ -62,7 +64,7 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DatabaseEvent>(
+    return FutureBuilder<http.Response>(
       future: getDepartment,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -81,7 +83,7 @@ class _StudentInfoSettingWidgetState extends State<StudentInfoSettingWidget> {
         } else if (snapshot.hasError) {
           return DataLoadingError(errorMessage: snapshot.error);
         } else {
-          var data = snapshot.data?.snapshot.value as Map;
+          var data = jsonDecode(snapshot.data!.body) as Map;
           departmentDropdownList.clear();
           for (var department in data.keys) {
             departmentDropdownList.add(ComboBoxItem(

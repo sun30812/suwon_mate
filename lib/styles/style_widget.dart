@@ -136,7 +136,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                   ),
                 ],
               )),
-          if (FirebaseAuth.instance.currentUser != null) ...[
+          if ((Platform.isAndroid || Platform.isIOS || Platform.isMacOS) && (FirebaseAuth.instance.currentUser != null)) ...[
             FutureBuilder<Contact?>(
                 future: getContact(classInfo.guestDept, classInfo.hostName),
                 builder: (context, snapshot) {

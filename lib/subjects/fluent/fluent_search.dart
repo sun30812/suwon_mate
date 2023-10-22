@@ -43,8 +43,8 @@ class FluentSearchPage extends StatefulWidget {
           (element) => ComboBoxItem(value: element, child: Text(element.label)))
       .toList();
 
-  /// 빠른 개설 강좌 조회 기능 여부를 확인하는 변수
-  final bool quickMode = FirebaseRemoteConfig.instance.getBool('quick_mode');
+  /// 빠른 개설 강좌 조회 기능 여부를 확인하는 변수(데스크톱용은 무조건 false)
+  final bool quickMode = false;
 
   @override
   State<FluentSearchPage> createState() => _FluentSearchPageState();

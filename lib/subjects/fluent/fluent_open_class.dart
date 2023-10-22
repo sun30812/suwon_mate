@@ -1,9 +1,10 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'dart:convert';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
+import 'package:http/http.dart' as http;
 
 /// 개설 강좌 조회 시 페이지이다.
 ///
@@ -98,28 +99,22 @@ class _FluentOpenClassState extends State<FluentOpenClass> {
   ];
   Map allClassList = {};
   String _region = '전체';
-  var getDepartment = FirebaseDatabase.instance.ref('departments').once();
+  var getDepartment = http.get(Uri.parse('https://suwon-mate-default-rtdb.firebaseio.com/departments.json'));
+
 
   /// 과목에 대한 정보를 FirebaseDatabase로부터 가져오는 메서드이다.
-  Stream<DatabaseEvent> getData() {
-    DatabaseReference ref = FirebaseDatabase.instance
-        .ref(widget.quickMode ? 'estbLectDtaiList_quick' : 'estbLectDtaiList');
+  Future<http.Response> getData() {
+    var ref = 'https://suwon-mate-default-rtdb.firebaseio.com/estbLectDtaiList';
+
     if (_myDept == '교양') {
       if (_region == '전체') {
-        return ref.child(_myDept).onValue;
+        return http.get(Uri.parse('$ref/$_myDept.json'));
       } else {
-        return ref
-            .child(_myDept)
-            .orderByChild('cltTerrNm')
-            .equalTo(_region)
-            .onValue;
+        return http.get(Uri.parse('$ref/$_myDept.json?orderBy="cltTerrNm"&equalTo="$_region"'));
       }
     }
-    return ref
-        .child(_myDept)
-        .orderByChild('estbMjorNm')
-        .equalTo(_myMajor != '학부 공통' ? _myMajor : null)
-        .onValue;
+    return http.get(Uri.parse('$ref/$_myDept.json?orderBy="estbMjorNm"&equalTo="${_myMajor != '학부 공통' ? _myMajor : null}"'));
+
   }
 
   @override
@@ -146,7 +141,7 @@ class _FluentOpenClassState extends State<FluentOpenClass> {
         ),
         content: Column(
           children: [
-            FutureBuilder<DatabaseEvent>(
+            FutureBuilder<http.Response>(
                 future: getDepartment,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -154,7 +149,7 @@ class _FluentOpenClassState extends State<FluentOpenClass> {
                   } else if (snapshot.hasError) {
                     return DataLoadingError(errorMessage: snapshot.error);
                   } else {
-                    var data = snapshot.data?.snapshot.value as Map;
+                    var data = jsonDecode(snapshot.data!.body) as Map;
                     departmentDropdownList.clear();
                     departmentDropdownList.add(
                         const ComboBoxItem(value: '교양', child: Text('교양')));
@@ -241,18 +236,15 @@ class _FluentOpenClassState extends State<FluentOpenClass> {
                     );
                   }
                 }),
-            StreamBuilder<DatabaseEvent>(
-              stream: getData(),
+            FutureBuilder<http.Response>(
+              future: getData(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const ProgressBar();
                 } else if (snapshot.hasError) {
                   return DataLoadingError(errorMessage: snapshot.error);
                 } else if (snapshot.hasData) {
-                  var value = snapshot.data?.snapshot.value;
-                  if (value == null) {
-                    return Container();
-                  }
+                  var value = jsonDecode(snapshot.data!.body) as Map;
                   var list = ClassInfo.fromFirebaseDatabase(value);
                   list.removeWhere(
                       (classInfo) => '${classInfo.guestGrade}학년' != _myGrade);
