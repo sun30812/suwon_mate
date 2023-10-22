@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +14,11 @@ class FavoriteSubjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!(Platform.isAndroid || Platform.isIOS)) {
+      return const ScaffoldPage(
+        content: FavoriteListView(),
+      );
+    }
     return const Scaffold(
       body: FavoriteListView(),
     );
@@ -28,9 +36,13 @@ class FavoriteListView extends ConsumerWidget {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            CircularProgressIndicator.adaptive(),
-            Text('즐겨찾는 과목 정보 확인 중...')
+          children: [
+            if (!(Platform.isAndroid || Platform.isIOS)) ...[
+              const ProgressRing()
+            ] else ...[
+              const CircularProgressIndicator.adaptive(),
+            ],
+            const Text('즐겨찾는 과목 정보 확인 중...')
           ],
         ),
       );
@@ -38,8 +50,12 @@ class FavoriteListView extends ConsumerWidget {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.disabled_by_default_outlined),
+          children: [
+            if (!(Platform.isAndroid || Platform.isIOS)) ...[
+              Icon(FluentIcons.disable_updates),
+            ] else ...[
+              Icon(Icons.disabled_by_default_outlined),
+            ],
             Text('즐겨찾기된 과목이 없습니다.'),
             Text('개설 강좌 조회에서 즐겨찾기를 추가해보세요')
           ],

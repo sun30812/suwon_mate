@@ -34,10 +34,8 @@ class ClassDetailInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: ListView(
-        children: [
-          InfoCard(
+    var infoCardList = [
+      InfoCard(
               icon: Icons.account_circle_outlined,
               title: '수업 대상자',
               detail: Text(
@@ -254,7 +252,19 @@ class ClassDetailInfoCard extends StatelessWidget {
                 semanticsLabel:
                 '강의자는 계약 종류는 ${classInfo.promise ?? '공개 안됨'} 이며 ${classInfo.extra ?? '공개 안됨'} 의 수업 방식을 따릅니다.',
               ))
-        ],
+    ];
+    if (!(Platform.isAndroid || Platform.isIOS)) {
+      return Flexible(
+        child: fluent.GridView(
+          gridDelegate: fluent.SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: MediaQuery.of(context).size.width ~/ 200),
+          children: infoCardList,
+        ),
+      );
+    }
+    return Flexible(
+      child: ListView(
+        children: infoCardList,
       ),
     );
   }

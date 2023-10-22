@@ -94,9 +94,8 @@ class HelpPage extends StatelessWidget {
 현재 버전의 프로그램은 개발 및 테스트용으로만 사용하기를 권장합니다.''')),
             Flexible(
               child: fluent.GridView(
-                gridDelegate:
-                    const fluent.SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3),
+                gridDelegate: fluent.SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: MediaQuery.of(context).size.width ~/ 300),
                 children: helpCards,
               ),
             ),

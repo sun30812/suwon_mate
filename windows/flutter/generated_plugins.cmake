@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
+  flutter_acrylic
   url_launcher_windows
 )
 
