@@ -1,64 +1,33 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart' as http;
+import 'package:suwon_mate/schedule.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
-
-/// 수원대학교 공지사항 페이지에서 주요행사를 가져오기 위해 사용되는 메서드이다.
-///
-/// 수원대학교 주요행사 페이지의 내용을 파싱을 위해 html문서로 가져온다. 비동기적 작업으로 수행을 하고
-/// 작업이 완료되는 동안 사용자에게 로딩창을 띄울 수 있도록 [Future]를 반환한다.
-Future<http.Response> getData() {
-  return http.get(Uri.parse('https://www.suwon.ac.kr/index.html?menuno=727'));
-}
-
-/// 현재 시행되고 있는 이벤트를 알려주는 메서드이다. 만일 오늘 해당되는 행사가 없을 시 없음 이라는 값을 반환한다.
-///
-/// 현재 시행되는 이벤트 이름과 날짜 정보를 가진 [scheduleList]를 필요로 한다.
-String getNowEvent(List<Map<String, String>> scheduleList) {
-  DateTime now = DateUtils.dateOnly(DateTime.now());
-  for (Map dat in scheduleList) {
-    String temp = (dat.keys.first as String)
-        .replaceAll(RegExp(r'\([^)]*\)'), '')
-        .replaceAll('.', '');
-    if (temp.contains('~')) {
-      if (now.millisecondsSinceEpoch >=
-              DateTime.parse(temp.substring(0, 8)).millisecondsSinceEpoch &&
-          now.millisecondsSinceEpoch <=
-              DateTime.parse(temp.substring(11, 19)).millisecondsSinceEpoch) {
-        return dat.values.first.toString();
-      }
-    } else if (now == DateTime.parse(temp)) {
-      return dat.values.first.toString();
-    }
-  }
-  return '없음';
-}
 
 /// 학교의 주요 행사를 안내하는 페이지이다.
 ///
 /// 학교의 주요 행사를 위젯으로 정리해놓은 페이지이다. 해당 페이지에서는 사이트에 게시된 전체 일정과 현재 일정을 확인할 수 있다.
-class SchedulePage extends StatelessWidget {
+class FluentSchedulePage extends StatelessWidget {
   /// 학교의 주요 행사를 위젯으로 정리해놓은 페이지이다.
-  const SchedulePage({Key? key}) : super(key: key);
+  const FluentSchedulePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb) {
-      return const NotSupportInPlatform('Web');
-    }
     getData();
-    return Scaffold(
-      body: Center(
+    return ScaffoldPage(
+      header: const PageHeader(
+        title: Text('학사일정'),
+      ),
+      content: Center(
         child: FutureBuilder(
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.none) {
-              return const Card(
-                color: Colors.amber,
-                child: Row(
+              return Card(
+                backgroundColor: Colors.orange,
+                child: const Row(
                   children: [
-                    Icon(Icons.announcement),
+                    Icon(FluentIcons.alert_solid),
                     Text('오류가 발생했습니다.'),
                   ],
                 ),
@@ -67,10 +36,7 @@ class SchedulePage extends StatelessWidget {
               return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator.adaptive(),
-                    Text('학사일정 불러오는 중..')
-                  ],
+                  children: [ProgressRing(), Text('학사일정 불러오는 중..')],
                 ),
               );
             } else if (snapshot.hasError) {
@@ -86,7 +52,7 @@ class SchedulePage extends StatelessWidget {
               for (int index = 0; index < rows.length - 1; index++) {
                 Map<String, String> tempMap = {
                   (rows[1 + index].getElementsByTagName('td')[0]).text:
-                  (rows[1 + index].getElementsByTagName('td')[1]).text
+                      (rows[1 + index].getElementsByTagName('td')[1]).text
                 };
                 scheduleList.add(tempMap);
               }
@@ -97,7 +63,7 @@ class SchedulePage extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(children: [
-                        const Icon(Icons.calendar_month),
+                        const Icon(FluentIcons.calendar_agenda),
                         const Padding(
                           padding: EdgeInsets.only(right: 4.0),
                         ),
@@ -108,10 +74,7 @@ class SchedulePage extends StatelessWidget {
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
-                        Divider(
-                          height: MediaQuery.of(context).size.height,
-                          color: Colors.black,
-                        )
+                        const Divider()
                       ]),
                     ),
                   ),

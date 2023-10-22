@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:suwon_mate/fluent/fluent_main_page.dart';
 import 'package:suwon_mate/food/food_info.dart';
 import 'package:suwon_mate/help.dart';
 import 'package:suwon_mate/information/notice_page.dart';
@@ -17,11 +20,15 @@ import 'package:suwon_mate/settings.dart';
 import 'package:suwon_mate/styles/style_widget.dart';
 import 'package:suwon_mate/styles/theme.dart';
 import 'package:suwon_mate/subjects/favorite_subject.dart';
+import 'package:suwon_mate/subjects/fluent/fluent_open_class_info.dart';
+import 'package:suwon_mate/subjects/fluent/fluent_search.dart';
 import 'package:suwon_mate/subjects/open_class.dart';
 import 'package:suwon_mate/subjects/open_class_info.dart';
 import 'package:suwon_mate/subjects/search.dart';
 
 import 'firebase_options.dart';
+
+const appTitle = '수원 메이트';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +50,12 @@ class App extends ConsumerWidget {
   final _routes = GoRouter(routes: <RouteBase>[
     GoRoute(
         path: '/',
-        builder: (context, state) => const MainPage(),
+        builder: (context, state) {
+          if (!(Platform.isAndroid || Platform.isIOS)) {
+            return const FluentMainPage(appTitle: appTitle);
+          }
+          return const MainPage();
+        },
         routes: <RouteBase>[
           GoRoute(
             path: 'schedule',
@@ -77,20 +89,35 @@ class App extends ConsumerWidget {
           GoRoute(
             path: 'search',
             builder: (context, state) {
+              if (!(Platform.isAndroid || Platform.isIOS)) {
+                return FluentSearchPage();
+              }
               return SearchPage();
             },
           ),
           GoRoute(
             path: 'info',
-            builder: (context, state) => OpenClassInfo(
-              classInfo: state.extra as ClassInfo,
-            ),
+            builder: (context, state) {
+              if (!(Platform.isAndroid || Platform.isIOS)) {
+                return FluentOpenClassInfo(classInfo: state.extra as ClassInfo);
+              }
+              return OpenClassInfo(
+                classInfo: state.extra as ClassInfo,
+              );
+            },
           ),
         ])
   ]);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!(Platform.isAndroid || Platform.isIOS)) {
+      return fluent.FluentApp.router(
+        title: appTitle,
+        routerConfig: _routes,
+        color: suwonNavy,
+      );
+    }
     return MaterialApp.router(
         darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
             navigationBarTheme: suwonNavigationTheme,
@@ -101,7 +128,7 @@ class App extends ConsumerWidget {
           colorSchemeSeed: suwonNavy,
           navigationBarTheme: suwonNavigationTheme,
         ),
-        title: '수원 메이트',
+        title: appTitle,
         routerConfig: _routes);
   }
 }
@@ -121,7 +148,7 @@ class _MainPageState extends State<MainPage> {
     NavigationDestination(
         icon: Icon(Icons.apps_outlined), label: '메인', tooltip: '메인'),
     NavigationDestination(
-        icon: Icon(Icons.schedule_outlined), label: '학사 일정', tooltip: '학사 일정'),
+        icon: Icon(Icons.schedule_outlined), label: '학사일정', tooltip: '학사일정'),
     if (!kIsWeb) ...[
       NavigationDestination(
           icon: Icon(Icons.food_bank_outlined),
