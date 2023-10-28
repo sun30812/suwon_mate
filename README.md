@@ -19,7 +19,6 @@ Google play에 게시된 버전과 달리 광고 자체가 포함되어있지 �
     - [DB안내](#DB안내)
     - [빌드해보기](#빌드해보기)
     - [개발 참고 사항](#개발-참고-사항)
-        - [설정 내 디버그 설정 표시하기](#설정-내-디버그-설정-표시하기)
         - [Web버전에서는 왜 일부 기능이 안되나요?](#Web버전에서의-일부-동작-제한-안내)
 
 ## 분기 소개
@@ -29,18 +28,19 @@ Google play에 게시된 버전과 달리 광고 자체가 포함되어있지 �
 * `legacy`: 이전 버전(v1.x)의 앱 디자인 및 기능을 지원하는 브랜치(대부분 버그 수정만 반영 중)
 
 ## 지원되는 플랫폼
-현재 확인된 기능 별 지원되는 플랫폼 목록입니다.
 
-| 플랫폼  | 앱 실행(메인화면) | 도움말 | 학사 일정 | 개설 강좌 조회 | 공지사항 | 즐겨찾는 과목(베타) | 설정  |
-| :-----: | :---------------: | :----: | :-------: | :------------: | :------: | :-----------------: | :---: |
-| Android |         ✅         |   ✅    |     ✅     |       ✅        |    ✅     |          ✅          |   ✅   |
-|   iOS   |         ✅         |   ✅    |     ✅     |       ✅        |    ✅     |          ✅          |   ✅   |
-|  macOS  |         ✅         |   ✅    |     ✅     |       ✅        |    ✅     |          ✅          |   ✅   |
-|   Web   |         ✅         |   ✅    |     ❌     |       ✅        |    ❌     |          ✅          |   ✅   |
-| Windows |         ✅         |   ✅    |     ✅     |       ❌        |    ✅     |          ❌          |   ❌   |
-|  Linux  |         ✅         |   ✅    |     ✅     |       ❌        |    ✅     |          ❌          |   ❌   |
+현재 확인된 기능 별 지원되는 플랫폼 목록입니다. 앱 구동이나 설정창 진입과 같은 기초 기능은 모든 플랫폼이 지원합니다.
 
-❌ Windows/Linux플랫폼은 현재 작동하지 않습니다.
+|   플랫폼   | 학사 일정 | 개설 강좌 조회 | 공지사항 | 즐겨찾는 과목 | 학식 조회 |
+|:-------:|:-----:|:--------:|:----:|:-------:|:-----:|
+| Android |   ✅   |    ✅     |  ✅   |    ✅    |   ✅   |
+|   iOS   |   ✅   |    ✅     |  ✅   |    ✅    |   ✅   |
+|  macOS  |   ✅   |    ✅     |  ✅   |    ✅    |   ✅   |
+|   Web   |   ❌   |    ✅     |  ❌   |    ✅    |   ✅   |
+| Windows |   ✅   |    ✅     |  ✅   |    ✅    |   ✅   |
+|  Linux  |   ✅   |    ✅     |  ✅   |    ✅    |   ✅   |
+
+❌ Web 버전에서 아직 일부 기능은 사용이 불가능 합니다.
 
 ## 간단 기능 소개
 * 학사 일정을 간단하게 볼 수 있음
@@ -58,11 +58,13 @@ macOS, Windows, Android, Linux용으로 빌드된 파일을 사용하거나 Web 
 
 [Github Release](https://github.com/sun30812/suwon_mate/releases)
 
-* suwon_mate_android.apk: Android 기기에서 동작하는 파일입니다.
-* suwon_mate_win.zip: windows 환경에서 동작하는 파일입니다.
+* suwon\_mate\_android.apk: Android 기기에서 동작하는 파일입니다.
+* suwon\_mate\_win.zip: Windows 환경에서 동작하는 파일입니다.
   * 압축을 푼 후 폴더안에 내용물은 **전부** 유지시켜야 합니다.
-  * [Visual C++ 재배포 가능 패키지](https://docs.microsoft.com/ko-kr/cpp/windows/latest-supported-vc-redist?view=msvc-170) 가 필요합니다. 본인의 아키텍쳐에 맞게 설치하시면 됩니다.(가장 최신 버전 설치하면 됨)
-* suwon_mate.app.zip: macOS환경에서 동작하는 파일입니다.
+	* MSIX 패키징은 인증서가 필요하기에 진행하지 않았습니다.
+    * [Visual C++ 재배포 가능 패키지](https://docs.microsoft.com/ko-kr/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+      가 필요합니다. 본인의 아키텍쳐에 맞게 설치하시면 됩니다.(가장 최신 버전 설치하면 됨)
+* suwon\_mate.app.zip: macOS환경에서 동작하는 파일입니다.
   * 압축을 푼 후 나오는 파일을 Application 폴더에 넣으시면 됩니다.(Finder에서 Cmd+Shift+A누르면 나옴)
   * 만일 실행이 불가능 하다고 나오면 Application 폴더에 들어가서 해당 앱을 우클릭해서 열기를 누르면 이후에 실행이 계속 가능해집니다.
 * suwon_mate_linux.zip: Linux(Ubuntu 20.04LTS, CentOS7에서 작동 확인 됨)환경에서 동작하는 파일입니다.
@@ -108,19 +110,30 @@ flutter build apk
 flutter build ios
 # Web용
 flutter build web
+# Windows용
+flutter build windows
 ```
 나머지 옵션은 터미널 창에 `flutter build --help` 를 입력하면 알 수 있습니다.
 ## 개발 참고 사항
-### 설정 내 디버그 설정 표시하기
-소스코드 내에 `settings.dart` 에 `isDebug` 변수가 있습니다. 이 값을 `true` 로 지정하시면 디버그 설정이 설정 메뉴에 표시됩니다.
 
 ### Web버전에서의 일부 동작 제한 안내
-특정 사이트가 다른 특정 사이트의 데이터를 가져오는 경우 CORS를 차단하기 위해 데이터를 가져올 수 없습니다.  
+
+특정 사이트가 다른 특정 사이트의 데이터를 가져오는 경우 *CORS*를 차단하기 위해 데이터를 가져올 수 없습니다.  
 물론 이를 해결하기 위한 방법이 있는 것으로 알지만 지금 저의 능력으로는
 해결이 불가능 합니다.  
 만일 해결에 성공한다면 기능 제한을 풀 것입니다.
 
 세부적인 내용은 [여기](https://developer.mozilla.org/ko/docs/Web/HTTP/CORS) 를 참고하세요.
+
+### Arm64 Windows용으로 빌드
+
+2023.10.28 기준 flutter의 `stable` 빌드에서는 arm64 Windows용으로 빌드 시 오류가 발생합니다. 빌드를 원하는 경우에는 flutter의 업데이트 채널을 `master`로 전환하시면
+됩니다.
+
+```bash
+flutter channel master # 각 채널에 대한 설명은 flutter channel을 입력하세요
+flutter upgrade
+```
 
 
 README.md에 추가해야할 내용이 있다면 언제든 건의 부탁드립니다.
