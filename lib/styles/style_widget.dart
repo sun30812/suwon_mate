@@ -88,6 +88,25 @@ class ClassDetailInfoCard extends StatelessWidget {
                     '개설 년도는 ${classInfo.openYear}년 이고 교과 종류는 ${classInfo.subjectKind}이며 학점은 ${classInfo.point}점 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
+                  if (!(Platform.isAndroid || Platform.isIOS))
+                    fluent.Button(
+                      child: const Row(
+                        children: [
+                          fluent.Icon(fluent.FluentIcons.copy),
+                          fluent.Text(' 과목 코드 복사')
+                        ],
+                      ),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(
+                                  text: classInfo.subjectCode))
+                              .then((value) => fluent.showSnackbar(
+                                  context, const fluent.InfoBar(
+                                    severity: fluent.InfoBarSeverity.info,
+                                    title: fluent.Text('안내'),
+                                      content: Text('과목 코드가 복사되었습니다.'),)
+                                ));
+                      },
+                    )
                 ],
               )),
           InfoCard(
@@ -110,8 +129,10 @@ class ClassDetailInfoCard extends StatelessWidget {
                             '성함은 ${classInfo.hostName ?? '공개 안됨'} 입니다.',
                         style: const TextStyle(fontSize: 17.0),
                       ),
-                      // IconButton(
-                      //   onPressed: () => Clipboard.setData(ClipboardData(
+                      // if (Platform.isAndroid || Platform.isIOS)...[
+                      //   IconButton(
+                      //   onPressed: () {
+                      //     Clipboard.setData(ClipboardData(
                       //           text: classInfo.hostName ?? '공개 안됨'))
                       //       .then((value) => ScaffoldMessenger.of(context)
                       //           .showSnackBar(SnackBar(
@@ -120,10 +141,12 @@ class ClassDetailInfoCard extends StatelessWidget {
                       //               behavior: SnackBarBehavior.floating,
                       //               shape: RoundedRectangleBorder(
                       //                   borderRadius:
-                      //                       BorderRadius.circular(8.0))))),
+                      //                       BorderRadius.circular(8.0)))));
+                      //   },
                       //   icon: const Icon(Icons.copy),
                       //   tooltip: '강의자 이름 복사',
                       // )
+                      // ]
                     ],
                   ),
                   Text(
@@ -132,6 +155,25 @@ class ClassDetailInfoCard extends StatelessWidget {
                     '직책은 ${classInfo.hostGrade ?? '공개 안됨'} 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
+                  if (!(Platform.isAndroid || Platform.isIOS))
+                    fluent.Button(
+                      child: const Row(
+                        children: [
+                          fluent.Icon(fluent.FluentIcons.copy),
+                          fluent.Text(' 강의자 이름 복사')
+                        ],
+                      ),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(
+                                  text: classInfo.hostName ?? '공개 안됨'))
+                              .then((value) => fluent.showSnackbar(
+                                  context, const fluent.InfoBar(
+                                    severity: fluent.InfoBarSeverity.info,
+                                    title: fluent.Text('안내'),
+                                      content: Text('강의자 이름이 복사되었습니다.'),)
+                                ));
+                      },
+                    )
                 ],
               )),
           if ((Platform.isAndroid || Platform.isIOS || Platform.isMacOS) && (FirebaseAuth.instance.currentUser != null)) ...[
@@ -553,7 +595,7 @@ class _InfoCardState extends State<InfoCard> {
                   color: Theme.of(context).primaryColor,
                 ),
               ),
-              widget.detail
+              SingleChildScrollView(child: widget.detail)
             ],
           ),
         ),
