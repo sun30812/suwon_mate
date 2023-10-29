@@ -33,9 +33,11 @@ const appTitle = '수원 메이트';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  if (!Platform.isLinux) {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Window.initialize();
   await Window.setEffect(effect: WindowEffect.mica, color: Colors.transparent);
+  }
   runApp(ProviderScope(child: App()));
 }
 
@@ -114,6 +116,14 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (Platform.isLinux) {
+      return fluent.FluentApp.router(
+        title: appTitle,
+        routerConfig: _routes,
+        color: suwonNavy,
+        theme: fluent.FluentThemeData(fontFamily: 'Noto Sans CJK KR'),
+      );
+    }
     if (!(Platform.isAndroid || Platform.isIOS)) {
       return fluent.FluentApp.router(
         title: appTitle,
