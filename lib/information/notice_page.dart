@@ -33,9 +33,7 @@ class _NoticePageState extends State<NoticePage> {
           label: const Text('브라우저로 보기'),
           onPressed: () async {
             await launchUrl(
-                Uri(
-                    scheme: 'https',
-                    host: 'www.suwon.ac.kr/index.html?menuno=674'),
+                Uri.parse('https://www.suwon.ac.kr/index.html?menuno=674'),
                 mode: LaunchMode.externalApplication);
           }),
       body: mainScreen(),

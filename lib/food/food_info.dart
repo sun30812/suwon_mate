@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:suwon_mate/styles/style_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// 수원대 학식 정보를 페이지 URL
 const uri = 'https://www.suwon.ac.kr/index.html?menuno=1792';
@@ -93,9 +94,16 @@ class InvalidFoodInfoPage extends StatelessWidget {
           size: 38.0,
         ),
         Text(
-          '현재 학식은 제공되지 않습니다.',
+          '현재 학식 정보를 제공하지 않거나 사이트와의 연동 문제로 인해 표시할 수 없습니다.',
           style: Theme.of(context).textTheme.titleLarge,
-        )
+        ),
+        TextButton(
+            onPressed: () async {
+              await launchUrl(
+                  Uri.parse('https://www.suwon.ac.kr/index.html?menuno=1792'),
+                  mode: LaunchMode.externalApplication);
+            },
+            child: const Text('사이트에서 확인'))
       ],
     );
   }
@@ -133,21 +141,20 @@ class _FoodInfoState extends State<FoodInfo> {
             value: index, label: studentRows[index + 1].text));
       }
 
-      /// Little Kitchen에 대한 학식 정보를 가진 인덱스
       const littleKitchenIndex = 0;
 
-      /// Mom's cook에 대한 학식 정보를 가진 인덱스
+      // ignore: unused_local_variable
       const momsCookIndex = 7;
 
-      /// Chef Table에 대한 학식 정보를 가진 인덱스
+      // ignore: unused_local_variable
+      const chefTableIndex = 14;
+
+      /// 각 식당별 학식 목록
       var studentFoodList = {
         littleKitchenIndex:
             studentCols[littleKitchenIndex + selectedDayWeek + 2]
                 .innerHtml
-                .replaceAll('<br>', '\n'),
-        momsCookIndex: studentCols[momsCookIndex + selectedDayWeek + 2]
-            .innerHtml
-            .replaceAll('<br>', '\n')
+                .replaceAll('<br>', '\n')
       };
       var stampFoodList =
           stampCols[selectedDayWeek + 1].innerHtml.replaceAll('<br>', '\n');
@@ -201,15 +208,6 @@ class _FoodInfoState extends State<FoodInfo> {
                   '학생식단 | ${studentCols[littleKitchenIndex].text.trim()} | ${studentCols[littleKitchenIndex + 1].text.trim()}',
               detail: Text(
                 studentFoodList[littleKitchenIndex] ?? '알 수 없음',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ),
-            InfoCard(
-              icon: Icons.food_bank_outlined,
-              title:
-                  '학생식단 | ${studentCols[momsCookIndex].text.trim()} | ${studentCols[momsCookIndex + 1].text.trim()}',
-              detail: Text(
-                studentFoodList[momsCookIndex] ?? '알 수 없음',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),

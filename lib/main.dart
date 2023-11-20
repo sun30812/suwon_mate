@@ -200,38 +200,49 @@ class _MainPageState extends State<MainPage> {
       case 1:
         return const SchedulePage();
       case 2:
+        if (kIsWeb) {
+          return const FavoriteSubjectPage();
+        }
         return const FoodInfoPage();
       case 3:
+        if (kIsWeb) {
+          return noticeScreen();
+        }
         return const FavoriteSubjectPage();
       default:
-        return FutureBuilder(
-            future: getSettings(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                );
-              } else if (snapshot.hasError) {
-                return DataLoadingError(
-                  errorMessage: snapshot.error,
-                );
+        if (kIsWeb) {
+          return const DataLoadingError(errorMessage: '올바른 접근 경로가 아닙니다.');
+        }
+        return noticeScreen();
+    }
+  }
+
+  FutureBuilder<SharedPreferences> noticeScreen() {
+    return FutureBuilder(
+        future: getSettings(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          } else if (snapshot.hasError) {
+            return DataLoadingError(
+              errorMessage: snapshot.error,
+            );
+          } else {
+            if ((snapshot.data as SharedPreferences).containsKey('settings')) {
+              Map<String, dynamic> functionSetting = jsonDecode(
+                  (snapshot.data as SharedPreferences).getString('settings')!);
+              bool saveMode = functionSetting['offline'] ?? false;
+              if (saveMode) {
+                return const DataSaveAlert();
               } else {
-                if ((snapshot.data as SharedPreferences)
-                    .containsKey('settings')) {
-                  Map<String, dynamic> functionSetting = jsonDecode(
-                      (snapshot.data as SharedPreferences)
-                          .getString('settings')!);
-                  bool saveMode = functionSetting['offline'] ?? false;
-                  if (saveMode) {
-                    return const DataSaveAlert();
-                  } else {
-                    return const NoticePage();
-                  }
-                }
                 return const NoticePage();
               }
-            });
-    }
+            }
+            return const NoticePage();
+          }
+        });
   }
 }
 
