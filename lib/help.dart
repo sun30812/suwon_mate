@@ -108,12 +108,8 @@ class HelpPage extends StatelessWidget {
         centerTitle: true,
         title: const Text('도움말'),
       ),
-      body: Column(
-        children: [
-          ListView(
-            children: helpCards,
-          ),
-        ],
+      body: ListView(
+        children: helpCards,
       ),
     );
   }
