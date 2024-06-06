@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:suwon_mate/styles/style_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// 수원대 학식 정보를 페이지 URL
-const uri = 'https://www.suwon.ac.kr/index.html?menuno=1792';
+/// 수원대 페이지 URL
+const uri = 'https://www.suwon.ac.kr/index.html?menuno=';
 
 /// 학식 정보를 확인할 수 있는 페이지이다.
 ///
@@ -21,8 +21,10 @@ class FoodInfoPage extends StatefulWidget {
 
 class _FoodInfoPageState extends State<FoodInfoPage> {
   /// 수원대 학식 정보를 HTML로 가져오는 메서드
-  Future getData() async {
-    return await http.get(Uri.parse(uri));
+  ///
+  /// [code]의 경우 메뉴 번호인데 1792는 종합강의동 학식 확인 메뉴 1793은 아마랜스홀 학식 확인 메뉴이다.
+  Future getData(String code) async {
+    return await http.get(Uri.parse(uri + code));
   }
 
   @override
@@ -45,7 +47,7 @@ class _FoodInfoPageState extends State<FoodInfoPage> {
                 child: TabBarView(
                   children: [
                     FutureBuilder(
-                        future: getData(),
+                        future: getData('1792'),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -65,7 +67,27 @@ class _FoodInfoPageState extends State<FoodInfoPage> {
                                 data: snapshot.data as http.Response);
                           }
                         }),
-                    const InvalidFoodInfoPage()
+                    FutureBuilder(
+                        future: getData('1793'),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator.adaptive(),
+                                Text('학식 정보 불러오는 중..')
+                              ],
+                            );
+                          } else if (snapshot.hasError) {
+                            return DataLoadingError(
+                              errorMessage: snapshot.error,
+                            );
+                          } else {
+                            return FoodInfo(
+                                data: snapshot.data as http.Response);
+                          }
+                        })
                   ],
                 ),
               ),
@@ -95,7 +117,7 @@ class InvalidFoodInfoPage extends StatelessWidget {
         ),
         Text(
           '현재 학식 정보를 제공하지 않거나 사이트와의 연동 문제로 인해 표시할 수 없습니다.',
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
         TextButton(
             onPressed: () async {
@@ -126,15 +148,12 @@ class _FoodInfoState extends State<FoodInfo> {
   @override
   Widget build(BuildContext context) {
     try {
-      var studentFoodElement =
-          parse(widget.data.body).getElementsByClassName('contents_table2')[0];
-      var stampFoodElement =
-          parse(widget.data.body).getElementsByClassName('contents_table2')[1];
-      var studentRows = studentFoodElement
+      var foodElement =
+          parse(widget.data.body).getElementsByClassName('contents_table2');
+      var studentRows = foodElement[0]
           .getElementsByTagName('tr')[0]
           .getElementsByTagName('th');
-      var studentCols = studentFoodElement.getElementsByTagName('td');
-      var stampCols = stampFoodElement.getElementsByTagName('td');
+      var studentCols = foodElement[0].getElementsByTagName('td');
       List<DropdownMenuEntry<int>> dayWeekEntries = [];
       for (int index = 0; index < studentRows.length - 1; index++) {
         dayWeekEntries.add(DropdownMenuEntry(
@@ -156,8 +175,13 @@ class _FoodInfoState extends State<FoodInfo> {
                 .innerHtml
                 .replaceAll('<br>', '\n')
       };
-      var stampFoodList =
-          stampCols[selectedDayWeek + 1].innerHtml.replaceAll('<br>', '\n');
+      String stampFoodList = '';
+      if (foodElement.length >= 2) {
+        var stampCols = foodElement[1].getElementsByTagName('td');
+        stampFoodList =
+            stampCols[selectedDayWeek + 1].innerHtml.replaceAll('<br>', '\n');
+      }
+
       var infoList = parse(widget.data.body)
           .getElementsByClassName('dotlist')[0]
           .getElementsByTagName('li');
@@ -211,14 +235,16 @@ class _FoodInfoState extends State<FoodInfo> {
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
-            InfoCard(
-              icon: Icons.food_bank_outlined,
-              title: '교직원식단 | ${stampCols[0].text.trim()}',
-              detail: Text(
-                stampFoodList,
-                style: Theme.of(context).textTheme.bodyLarge,
+            if (foodElement.length >= 2)
+              InfoCard(
+                icon: Icons.food_bank_outlined,
+                title:
+                    '교직원식단 | ${foodElement[1].getElementsByTagName('td')[0].text.trim()}',
+                detail: Text(
+                  stampFoodList,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
-            ),
             InfoCard(
               icon: Icons.info_outline,
               title: '식당별 이용 안내',
