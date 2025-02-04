@@ -47,5 +47,6 @@ app.*.map.json
 /.firebase/
 
 # Api Keys
+android/app/google-services.json
 lib/api/
 /macos/build/

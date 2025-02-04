@@ -99,6 +99,7 @@ class _OpenClassState extends State<OpenClass> {
   Map allClassList = {};
   String _region = '전체';
   var getDepartment = FirebaseDatabase.instance.ref('departments').once();
+  var getDBVersion = FirebaseDatabase.instance.ref('version').once();
 
   /// 과목에 대한 정보를 FirebaseDatabase로부터 가져오는 메서드이다.
   Stream<DatabaseEvent> getData() {
@@ -106,15 +107,13 @@ class _OpenClassState extends State<OpenClass> {
         .ref(widget.quickMode ? 'estbLectDtaiList_quick' : 'estbLectDtaiList');
     if (_myDept == '교양') {
       if (_region == '전체') {
+        return ref.child(_myDept).onValue;
+      } else {
         return ref
             .child(_myDept)
+            .orderByChild('cltTerrNm')
+            .equalTo(_region)
             .onValue;
-      } else {
-      return ref
-          .child(_myDept)
-          .orderByChild('cltTerrNm')
-          .equalTo(_region)
-          .onValue;
       }
     }
     return ref
@@ -145,6 +144,18 @@ class _OpenClassState extends State<OpenClass> {
             }),
         body: Column(
           children: [
+            FutureBuilder<DatabaseEvent>(
+                future: getDBVersion,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const LinearProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return DataLoadingError(errorMessage: snapshot.error);
+                  } else {
+                    var data = snapshot.data?.snapshot.value as Map;
+                    return Text('DB 버전: ${data['db_ver']}');
+                  }
+                }),
             FutureBuilder<DatabaseEvent>(
                 future: getDepartment,
                 builder: (context, snapshot) {
