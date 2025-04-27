@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
@@ -92,27 +91,18 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) {
-        ColorScheme lightColorScheme;
-        ColorScheme darkColorScheme;
-
-        if (lightDynamic != null && darkDynamic != null) {
-          lightColorScheme = lightDynamic.harmonized();
-          darkColorScheme = darkDynamic.harmonized();
-        } else {
-          lightColorScheme = ColorScheme.fromSeed(seedColor: suwonNavy);
-          darkColorScheme = ColorScheme.fromSeed(
-              brightness: Brightness.dark, seedColor: suwonNavy);
-        }
-
-        return MaterialApp.router(
-            darkTheme: ThemeData(colorScheme: darkColorScheme),
-            theme: ThemeData(colorScheme: lightColorScheme),
-            title: '수원 메이트',
-            routerConfig: _routes);
-      },
-    );
+    return MaterialApp.router(
+        darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
+            navigationBarTheme: suwonNavigationTheme,
+            colorScheme: ColorScheme.fromSeed(
+                brightness: Brightness.dark, seedColor: suwonNavy)),
+        theme: ThemeData(
+          useMaterial3: true,
+          colorSchemeSeed: suwonNavy,
+          navigationBarTheme: suwonNavigationTheme,
+        ),
+        title: '수원 메이트',
+        routerConfig: _routes);
   }
 }
 
