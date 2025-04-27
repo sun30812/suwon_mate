@@ -39,9 +39,9 @@ class ClassDetailInfoCard extends StatelessWidget {
               title: '수업 대상자',
               detail: Text(
                 '대상 학년: ${classInfo.guestGrade ?? '공개 안됨'}\n대상 학부: ${classInfo.guestDept ?? '공개 안됨'}\n'
-                    '대상 학과: ${classInfo.guestMjor ?? '학부 공통'}',
+                '대상 학과: ${classInfo.guestMjor ?? '학부 공통'}',
                 semanticsLabel:
-                '대상 학년은 ${classInfo.guestGrade ?? '공개 안됨'} 이고 대상 학부는 ${classInfo.guestDept ?? '공개 안됨'} 이며 대상 학과는 ${classInfo.guestMjor ?? '학부 공통'} 입니다.',
+                    '대상 학년은 ${classInfo.guestGrade ?? '공개 안됨'} 이고 대상 학부는 ${classInfo.guestDept ?? '공개 안됨'} 이며 대상 학과는 ${classInfo.guestMjor ?? '학부 공통'} 입니다.',
                 style: const TextStyle(fontSize: 17.0),
               )),
           InfoCard(
@@ -55,7 +55,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                     children: [
                       Text('과목 코드: ${classInfo.subjectCode}',
                           semanticsLabel:
-                          '과목 코드는 ${classInfo.subjectCode} 입니다.',
+                              '과목 코드는 ${classInfo.subjectCode} 입니다.',
                           style: const TextStyle(fontSize: 17.0)),
                       IconButton(
                           tooltip: '과목 코드 복사',
@@ -83,7 +83,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                   Text(
                     '개설년도: ${classInfo.openYear}\n교과 종류: ${classInfo.subjectKind}\n학점: ${classInfo.point}',
                     semanticsLabel:
-                    '개설 년도는 ${classInfo.openYear}년 이고 교과 종류는 ${classInfo.subjectKind}이며 학점은 ${classInfo.point}점 입니다.',
+                        '개설 년도는 ${classInfo.openYear}년 이고 교과 종류는 ${classInfo.subjectKind}이며 학점은 ${classInfo.point}점 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
@@ -105,7 +105,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                       Text(
                         '성함: ${classInfo.hostName ?? '공개 안됨'}',
                         semanticsLabel:
-                        '성함은 ${classInfo.hostName ?? '공개 안됨'} 입니다.',
+                            '성함은 ${classInfo.hostName ?? '공개 안됨'} 입니다.',
                         style: const TextStyle(fontSize: 17.0),
                       ),
                       IconButton(
@@ -127,7 +127,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                   Text(
                     '직책: ${classInfo.hostGrade ?? '공개 안됨'}',
                     semanticsLabel:
-                    '직책은 ${classInfo.hostGrade ?? '공개 안됨'} 입니다.',
+                        '직책은 ${classInfo.hostGrade ?? '공개 안됨'} 입니다.',
                     style: const TextStyle(fontSize: 17.0),
                   ),
                 ],
@@ -155,7 +155,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                                 Text(
                                   '이메일: ${snapshot.data?.email ?? '공개되지 않음'}',
                                   semanticsLabel:
-                                  '이메일은 ${snapshot.data?.email ?? '공개되지 않은 상태'} 입니다.',
+                                      '이메일은 ${snapshot.data?.email ?? '공개되지 않은 상태'} 입니다.',
                                   style: const TextStyle(fontSize: 17.0),
                                 ),
                                 IconButton(
@@ -190,7 +190,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                                 Text(
                                   '전화번호: ${snapshot.data?.phoneNumber ?? '공개되지 않음'}',
                                   semanticsLabel:
-                                  '전화번호는 ${snapshot.data?.phoneNumber ?? '공개되지 않은 상태'} 입니다.',
+                                      '전화번호는 ${snapshot.data?.phoneNumber ?? '공개되지 않은 상태'} 입니다.',
                                   style: const TextStyle(fontSize: 17.0),
                                 ),
                                 IconButton(
@@ -201,8 +201,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                                     Clipboard.setData(ClipboardData(
                                             text: snapshot.data?.phoneNumber ??
                                                 ''))
-                                        .then((value) => ScaffoldMessenger.of(
-                                                context)
+                                        .then((value) => ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
                                                 content: const Text(
                                                     '전화번호가 복사되었습니다.'),
@@ -239,7 +238,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                 '수업 장소 및 요일: ${classInfo.classLocation ?? '공개 안됨'}\n교양 영역: ${classInfo.region ?? '해당 없음'}\n수업 언어: ${classInfo.classLanguage ?? '공개 안됨'}',
                 style: const TextStyle(fontSize: 17.0),
                 semanticsLabel:
-                '수업 장소 및 요일은 ${classInfo.classLocation ?? '공개 안됨'} 이며, 교양 영역은 ${classInfo.region ?? '해당 없음'} 이며, 수업 언어는 ${classInfo.classLanguage ?? '공개 안됨'} 입니다.',
+                    '수업 장소 및 요일은 ${classInfo.classLocation ?? '공개 안됨'} 이며, 교양 영역은 ${classInfo.region ?? '해당 없음'} 이며, 수업 언어는 ${classInfo.classLanguage ?? '공개 안됨'} 입니다.',
               )),
           InfoCard(
               icon: Icons.info_outline,
@@ -248,7 +247,7 @@ class ClassDetailInfoCard extends StatelessWidget {
                 '강의자 계약 정보: ${classInfo.promise ?? '공개 안됨'}\n수업 방식: ${classInfo.extra ?? '공개 안됨'}',
                 style: const TextStyle(fontSize: 17.0),
                 semanticsLabel:
-                '강의자는 계약 종류는 ${classInfo.promise ?? '공개 안됨'} 이며 ${classInfo.extra ?? '공개 안됨'} 의 수업 방식을 따릅니다.',
+                    '강의자는 계약 종류는 ${classInfo.promise ?? '공개 안됨'} 이며 ${classInfo.extra ?? '공개 안됨'} 의 수업 방식을 따릅니다.',
               ))
         ],
       ),
@@ -376,11 +375,12 @@ class SimpleCard extends StatefulWidget {
   final Widget content;
   final Function()? onPressed;
 
-  const SimpleCard({required this.title,
-    this.subTitle,
-    required this.content,
-    Key? key,
-    this.onPressed})
+  const SimpleCard(
+      {required this.title,
+      this.subTitle,
+      required this.content,
+      Key? key,
+      this.onPressed})
       : super(key: key);
 
   @override
@@ -397,7 +397,7 @@ class _SimpleCardState extends State<SimpleCard> {
         shape: RoundedRectangleBorder(
             side: BorderSide(color: Theme.of(context).colorScheme.outline),
             borderRadius: BorderRadius.circular(12.0)),
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: InkWell(
           onTap: widget.onPressed,
           child: Padding(
@@ -448,7 +448,8 @@ class InfoCard extends StatefulWidget {
   /// [icon]으로 지정된 아이콘과 함께 어떤 정보를 출력하는데 사용된다. 아이콘 오른쪽에는
   /// [title]이 출력된다. 세부 내용은 [detail]에서 정할 수 있는데 [Widget]타입이기 때문에
   /// 임의의 위젯을 출력하는 것이 가능하다.
-  const InfoCard({Key? key, required this.icon, required this.title, required this.detail})
+  const InfoCard(
+      {Key? key, required this.icon, required this.title, required this.detail})
       : super(key: key);
 
   @override
@@ -511,12 +512,13 @@ class SearchBar extends StatefulWidget {
   /// [onAcceptPressed]를 통해 검색 버튼이 눌릴 시의 동작을 정의할 수 있다.
   /// 또한 검색창 왼쪽의 아이콘인 [icon]을 지정하는 것이 가능하며
   /// 텍스트를 수정할 때 마다 수행할 동작을 지정하는 경우 [onChanged]를 사용할 수 있다.
-  const SearchBar({Key? key,
-    IconData? acceptIcon,
-    void Function()? onAcceptPressed,
-    required TextEditingController controller,
-    IconData? icon,
-    void Function(String)? onChanged})
+  const SearchBar(
+      {Key? key,
+      IconData? acceptIcon,
+      void Function()? onAcceptPressed,
+      required TextEditingController controller,
+      IconData? icon,
+      void Function(String)? onChanged})
       : _onChanged = onChanged,
         _icon = icon,
         _acceptIcon = acceptIcon,
@@ -626,10 +628,11 @@ class SuwonDialog extends StatelessWidget {
   ///
   /// 알림창의 아이콘은 [icon]을 통해 지정 가능하며, [title]로 제목을 지정하고
   /// 내용으로 출력하고픈 것을 [content]를 통해 지정하면 된다.
-  static Widget simple({required BuildContext context,
-    required IconData icon,
-    required String title,
-    required Widget content}) {
+  static Widget simple(
+      {required BuildContext context,
+      required IconData icon,
+      required String title,
+      required Widget content}) {
     return AlertDialog(
       title: Column(
         children: [
@@ -651,9 +654,8 @@ class SuwonDialog extends StatelessWidget {
   ButtonStyle _okButtonStyle() {
     if (_isDestructive) {
       return ButtonStyle(
-          overlayColor:
-          MaterialStateProperty.all(Colors.redAccent.withAlpha(30)),
-          foregroundColor: MaterialStateProperty.all(Colors.redAccent));
+          overlayColor: WidgetStateProperty.all(Colors.redAccent.withAlpha(30)),
+          foregroundColor: WidgetStateProperty.all(Colors.redAccent));
     }
     return const ButtonStyle();
   }
@@ -736,7 +738,8 @@ class NotSupportInPlatform extends StatelessWidget {
   final String _platform;
 
   /// 플랫폼에서 지원하지 않는 동작의 경우 표시되는 페이지이다.
-  const NotSupportInPlatform(String platform, {
+  const NotSupportInPlatform(
+    String platform, {
     Key? key,
   })  : _platform = platform,
         super(key: key);

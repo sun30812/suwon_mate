@@ -14,8 +14,8 @@ import 'package:flutter/material.dart';
 var suwonNavigationTheme = const NavigationBarThemeData().copyWith(
     surfaceTintColor: suwonNavy,
     indicatorColor: suwonNavy,
-    iconTheme: MaterialStateProperty.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    iconTheme: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return const IconThemeData(color: suwonDeepYellow);
       }
       return null;

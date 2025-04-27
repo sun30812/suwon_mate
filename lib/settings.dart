@@ -303,10 +303,10 @@ class SettingsPage extends StatelessWidget {
                               }));
                     },
                     style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.all(
+                        overlayColor: WidgetStateProperty.all(
                             Colors.redAccent.withAlpha(30)),
                         foregroundColor:
-                            MaterialStateProperty.all(Colors.redAccent)),
+                            WidgetStateProperty.all(Colors.redAccent)),
                     child: const Text(
                       '전체 데이터 초기화',
                     )),
