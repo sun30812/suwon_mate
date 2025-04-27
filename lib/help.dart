@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'styles/style_widget.dart';
@@ -40,18 +41,20 @@ class HelpPage extends StatelessWidget {
                   ),
                 ],
               )),
-          InfoCard(
-              icon: Icons.food_bank_outlined,
-              title: '학식 조회 (미리보기)',
-              detail: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '금주의 식단을 확인할 수 있습니다. 이 기능은 아직 불안정 할 수 있습니다.',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                ],
-              )),
+          if (!kIsWeb) ...[
+            InfoCard(
+                icon: Icons.food_bank_outlined,
+                title: '학식 조회 (미리보기)',
+                detail: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '금주의 식단을 확인할 수 있습니다. 이 기능은 아직 불안정 할 수 있습니다.',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ],
+                )),
+          ],
           InfoCard(
               icon: Icons.notifications_none,
               title: '공지사항',
