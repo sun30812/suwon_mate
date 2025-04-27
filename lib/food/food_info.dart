@@ -160,20 +160,24 @@ class _FoodInfoState extends State<FoodInfo> {
             value: index, label: studentRows[index + 1].text));
       }
 
-      const littleKitchenIndex = 0;
+      const firstKitchenIndex = 0;
 
       // ignore: unused_local_variable
-      const momsCookIndex = 7;
+      const secondKitchenIndex = 7;
 
       // ignore: unused_local_variable
-      const chefTableIndex = 14;
+      const thirdKitchenIndex = 14;
 
       /// 각 식당별 학식 목록
       var studentFoodList = {
-        littleKitchenIndex:
-            studentCols[littleKitchenIndex + selectedDayWeek + 2]
+        firstKitchenIndex:
+            studentCols[firstKitchenIndex + selectedDayWeek + 2]
                 .innerHtml
-                .replaceAll('<br>', '\n')
+                .replaceAll('<br>', '\n'),
+        secondKitchenIndex:
+          studentCols[secondKitchenIndex + selectedDayWeek + 2]
+              .innerHtml
+              .replaceAll('<br>', '\n')
       };
       String stampFoodList = '';
       if (foodElement.length >= 2) {
@@ -229,9 +233,18 @@ class _FoodInfoState extends State<FoodInfo> {
             InfoCard(
               icon: Icons.food_bank_outlined,
               title:
-                  '학생식단 | ${studentCols[littleKitchenIndex].text.trim()} | ${studentCols[littleKitchenIndex + 1].text.trim()}',
+              '학생식단 | ${studentCols[secondKitchenIndex].text.trim()} | ${studentCols[secondKitchenIndex + 1].text.trim()}',
               detail: Text(
-                studentFoodList[littleKitchenIndex] ?? '알 수 없음',
+                studentFoodList[secondKitchenIndex] ?? '알 수 없음',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ),
+            InfoCard(
+              icon: Icons.food_bank_outlined,
+              title:
+                  '학생식단 | ${studentCols[firstKitchenIndex].text.trim()} | ${studentCols[firstKitchenIndex + 1].text.trim()}',
+              detail: Text(
+                studentFoodList[firstKitchenIndex] ?? '알 수 없음',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
