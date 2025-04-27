@@ -29,7 +29,7 @@ jobs:
         run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/suwon_mate_android.apk
 
       - name: Upload files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: output
           path: |
@@ -88,7 +88,7 @@ jobs:
       - name: Zip .app file
         run: zip -Dr suwon_mate.app_x64.zip build/macos/Build/Products/Release/suwon_mate.app
       - name: Upload files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: output
           path: |
@@ -132,7 +132,7 @@ jobs:
     needs: [ BuildAPK, BuildmacOS ]
     steps:
       - name: Download files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: output
       - name: Release
