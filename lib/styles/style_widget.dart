@@ -398,7 +398,7 @@ class _SimpleCardState extends State<SimpleCard> {
         shape: RoundedRectangleBorder(
             side: BorderSide(color: Theme.of(context).colorScheme.outline),
             borderRadius: BorderRadius.circular(12.0)),
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: InkWell(
           onTap: widget.onPressed,
           child: Padding(
@@ -593,10 +593,10 @@ class _SearchBarState extends State<SearchBar> {
 ///               ));
 ///     },
 ///     style: ButtonStyle(
-///         overlayColor: MaterialStateProperty.all(
+///         overlayColor: WidgetStatePropertyAll(
 ///             Colors.redAccent.withAlpha(30)),
 ///         foregroundColor:
-///             MaterialStateProperty.all(Colors.redAccent)),
+///             WidgetStatePropertyAll(Colors.redAccent)),
 ///     child: const Text(
 ///       '디버그: 앱의 모든 설정 데이터 지우기',
 ///     ))
@@ -655,9 +655,8 @@ class SuwonDialog extends StatelessWidget {
   ButtonStyle _okButtonStyle() {
     if (_isDestructive) {
       return ButtonStyle(
-          overlayColor:
-              MaterialStateProperty.all(Colors.redAccent.withAlpha(30)),
-          foregroundColor: MaterialStateProperty.all(Colors.redAccent));
+          overlayColor: WidgetStatePropertyAll(Colors.redAccent.withAlpha(30)),
+          foregroundColor: WidgetStatePropertyAll(Colors.redAccent));
     }
     return const ButtonStyle();
   }
@@ -971,4 +970,3 @@ class _LoginWidgetState extends State<LoginWidget> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
   }
 }
-
