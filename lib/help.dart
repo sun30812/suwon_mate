@@ -35,7 +35,7 @@ class HelpPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '과목에 대한 정보를 확인할 수 있습니다. 강의자의 연락사항 정보는 로그인 시 확인이 가능합니다.\n교양 영역의 경우 학부를 교양으로 선택하면 고를 수 있습니다.\n',
+                    '과목에 대한 정보를 확인할 수 있습니다.\n교양 영역의 경우 학부를 교양으로 선택하면 고를 수 있습니다.\n',
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],

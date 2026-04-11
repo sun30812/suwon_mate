@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:suwon_mate/controller/login_controller.dart';
 import 'package:suwon_mate/model/class_info.dart';
 import 'package:suwon_mate/model/contact.dart';
+import 'package:uni_links/uni_links.dart';
 
 /// 강좌에 대한 세부 정보를 보여주는 페이지이다.
 ///
@@ -931,14 +933,13 @@ class _LoginWidgetState extends State<LoginWidget> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (!kIsWeb) {
-      FirebaseDynamicLinks.instance.onLink.listen((event) async {
-        final Uri deepLink = event.link;
-        if (FirebaseAuth.instance.isSignInWithEmailLink(deepLink.toString())) {
+      linkStream.listen((emailLink) async {
+        if (FirebaseAuth.instance.isSignInWithEmailLink(emailLink.toString())) {
           try {
             FirebaseAuth.instance
                 .signInWithEmailLink(
                     email: loginController.emailController.text,
-                    emailLink: deepLink.toString())
+                    emailLink: emailLink.toString())
                 .then((value) => ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                         content: const Text('로그인 되었습니다.'),

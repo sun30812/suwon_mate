@@ -276,7 +276,6 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         shrinkWrap: true,
         children: [
-          const LoginWidget(),
           const StudentInfoSettingWidget(),
           const FunctionSettingWidget(),
           InfoCard(
