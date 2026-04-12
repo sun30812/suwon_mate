@@ -476,17 +476,15 @@ class _InfoCardState extends State<InfoCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                title: Text(
-                  widget.title,
-                  semanticsLabel: widget.title,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18.0),
-                ),
-                leading: Icon(
-                  widget.icon,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
+                  title: Text(
+                    widget.title,
+                    semanticsLabel: widget.title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18.0),
+                  ),
+                  leading: Icon(
+                    widget.icon,
+                  )),
               widget.detail
             ],
           ),
