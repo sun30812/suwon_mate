@@ -295,7 +295,7 @@ class _MainMenuState extends State<MainMenu> {
                       SharedPreferences pref =
                           await SharedPreferences.getInstance();
                       pref.clear();
-                      if (mounted) {
+                      if (context.mounted) {
                         Navigator.pop(context);
                       }
                     }),
@@ -330,7 +330,7 @@ class _MainMenuState extends State<MainMenu> {
                       migrationCheck();
                       SharedPreferences pref =
                           await SharedPreferences.getInstance();
-                      if (mounted) {
+                      if (context.mounted) {
                         context.push('/oclass', extra: [
                           '컴퓨터학부',
                           '학부 공통',
@@ -349,7 +349,7 @@ class _MainMenuState extends State<MainMenu> {
                       migrationCheck();
                       SharedPreferences pref =
                           await SharedPreferences.getInstance();
-                      if (mounted) {
+                      if (context.mounted) {
                         context.push('/oclass', extra: [
                           pref.getString('myDept') ?? '컴퓨터학부',
                           pref.getString('mySubject') ?? '학부 공통',
