@@ -153,7 +153,12 @@ class _OpenClassState extends State<OpenClass> {
                     return DataLoadingError(errorMessage: snapshot.error);
                   } else {
                     var data = snapshot.data?.snapshot.value as Map;
-                    return Text('DB 버전: ${data['db_ver']}');
+                    return Center(
+                      child: Row(children: [
+                        Icon(Icons.date_range),
+                        Text('DB 버전: ${data['db_ver']}')
+                      ]),
+                    );
                   }
                 }),
             FutureBuilder<DatabaseEvent>(
