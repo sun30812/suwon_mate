@@ -22,13 +22,16 @@ class ClassDetailInfoCard extends StatelessWidget {
   const ClassDetailInfoCard({required this.classInfo, Key? key})
       : super(key: key);
 
-  Future<Contact?>? getContact(String? department, String? name) async {
+  Future<Contact?> getContact(String? department, String? name) async {
     if ((department == null) || (name == null)) {
       return null;
     }
     var database = FirebaseDatabase.instance.ref('contacts');
     var result = await database.child('$department/$name').once();
-    return Contact.fromFirebaseDatabase(result.snapshot.value as Map);
+    final value = result.snapshot.value;
+    if (value == null) return null;
+    return Contact.fromFirebaseDatabase(
+        Map<String, dynamic>.from(value as Map));
   }
 
   @override
@@ -61,23 +64,19 @@ class ClassDetailInfoCard extends StatelessWidget {
                           style: const TextStyle(fontSize: 17.0)),
                       IconButton(
                           tooltip: '과목 코드 복사',
-                          onPressed: () {
-                            Clipboard.setData(
-                                    ClipboardData(text: classInfo.subjectCode))
-                                .then((value) => {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content:
-                                                  const Text('과목 코드가 복사되었습니다.'),
-                                              duration:
-                                                  const Duration(seconds: 1),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0))))
-                                    });
+                          onPressed: () async {
+                            await Clipboard.setData(
+                                ClipboardData(text: classInfo.subjectCode));
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: const Text('과목 코드가 복사되었습니다.'),
+                                      duration: const Duration(seconds: 1),
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0))));
+                            }
                           },
                           icon: const Icon(Icons.copy)),
                     ],
@@ -111,16 +110,22 @@ class ClassDetailInfoCard extends StatelessWidget {
                         style: const TextStyle(fontSize: 17.0),
                       ),
                       IconButton(
-                        onPressed: () => Clipboard.setData(ClipboardData(
-                                text: classInfo.hostName ?? '공개 안됨'))
-                            .then((value) => ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(
-                                    content: const Text('강의자 이름이 복사되었습니다.'),
-                                    duration: const Duration(seconds: 1),
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0))))),
+                        onPressed: () async {
+                          await Clipboard.setData(ClipboardData(
+                              text: classInfo.hostName ?? '공개 안됨'));
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('강의자 이름이 복사되었습니다.'),
+                                duration: const Duration(seconds: 1),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                            );
+                          }
+                        },
                         icon: const Icon(Icons.copy),
                         tooltip: '강의자 이름 복사',
                       )
@@ -167,8 +172,9 @@ class ClassDetailInfoCard extends StatelessWidget {
                                     }
                                     Clipboard.setData(ClipboardData(
                                             text: snapshot.data?.email ?? ''))
-                                        .then((value) => ScaffoldMessenger.of(
-                                                context)
+                                        .then((value) {
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
                                                 content: const Text(
                                                     '이메일 주소가 복사되었습니다.'),
@@ -179,7 +185,9 @@ class ClassDetailInfoCard extends StatelessWidget {
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            8.0)))));
+                                                            8.0))));
+                                      }
+                                    });
                                   },
                                   icon: const Icon(Icons.copy),
                                   tooltip: '이메일 주소 복사',
@@ -196,25 +204,27 @@ class ClassDetailInfoCard extends StatelessWidget {
                                   style: const TextStyle(fontSize: 17.0),
                                 ),
                                 IconButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (snapshot.data?.phoneNumber == null) {
                                       return;
                                     }
-                                    Clipboard.setData(ClipboardData(
-                                            text: snapshot.data?.phoneNumber ??
-                                                ''))
-                                        .then((value) => ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                                content: const Text(
-                                                    '전화번호가 복사되었습니다.'),
-                                                duration:
-                                                    const Duration(seconds: 1),
-                                                behavior:
-                                                    SnackBarBehavior.floating,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8.0)))));
+                                    await Clipboard.setData(ClipboardData(
+                                        text:
+                                            snapshot.data?.phoneNumber ?? ''));
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content:
+                                                  const Text('전화번호가 복사되었습니다.'),
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0))));
+                                    }
                                   },
                                   icon: const Icon(Icons.copy),
                                   tooltip: '전화번호 복사',
@@ -797,13 +807,21 @@ class LoginWidget extends StatefulWidget {
   State<LoginWidget> createState() => _LoginWidgetState();
 }
 
-class _LoginWidgetState extends State<LoginWidget> with WidgetsBindingObserver {
-  var loginController = LoginController();
+class _LoginWidgetState extends State<LoginWidget> {
+  final loginController = LoginController();
+  StreamSubscription<String?>? _linkSubscription;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    if (!kIsWeb) {
+      _linkSubscription = linkStream.listen(
+        (emailLink) async {
+          await _handleEmailLink(emailLink);
+        },
+        onError: (_) {},
+      );
+    }
   }
 
   @override
@@ -852,11 +870,12 @@ class _LoginWidgetState extends State<LoginWidget> with WidgetsBindingObserver {
                                               Navigator.pop(context),
                                           child: const Text('취소')),
                                       TextButton(
-                                          onPressed: () {
-                                            FirebaseAuth.instance
-                                                .signOut()
-                                                .then((value) =>
-                                                    Navigator.pop(context));
+                                          onPressed: () async {
+                                            await FirebaseAuth.instance
+                                                .signOut();
+                                            if (context.mounted) {
+                                              Navigator.pop(context);
+                                            }
                                           },
                                           child: const Text('확인')),
                                     ],
@@ -928,44 +947,47 @@ class _LoginWidgetState extends State<LoginWidget> with WidgetsBindingObserver {
     );
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (!kIsWeb) {
-      linkStream.listen((emailLink) async {
-        if (FirebaseAuth.instance.isSignInWithEmailLink(emailLink.toString())) {
-          try {
-            FirebaseAuth.instance
-                .signInWithEmailLink(
-                    email: loginController.emailController.text,
-                    emailLink: emailLink.toString())
-                .then((value) => ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: const Text('로그인 되었습니다.'),
-                        duration: const Duration(seconds: 1),
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0)))));
-          } catch (e) {
-            showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                      title: const Text('오류'),
-                      content: Text(e.toString()),
-                      actions: [
-                        TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('확인'))
-                      ],
-                    ));
-          }
-        }
-      });
+  Future<void> _handleEmailLink(String? emailLink) async {
+    if (emailLink == null) return;
+    if (FirebaseAuth.instance.isSignInWithEmailLink(emailLink)) {
+      try {
+        await FirebaseAuth.instance.signInWithEmailLink(
+          email: loginController.emailController.text,
+          emailLink: emailLink,
+        );
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('로그인 되었습니다.'),
+            duration: const Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
+        );
+      } catch (e) {
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('오류'),
+            content: Text(e.toString()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('확인'),
+              )
+            ],
+          ),
+        );
+      }
     }
   }
 
   @override
   void dispose() {
+    _linkSubscription?.cancel();
     super.dispose();
-    WidgetsBinding.instance.removeObserver(this);
   }
 }
